@@ -17,13 +17,12 @@ Route::post('login', 'UserController@login');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+
 });
+Route::group(['middleware' => 'auth:api'], function () {
+	Route::resource('accounts', 'AccountAPIController');
 
+	Route::resource('academies', 'AcademyAPIController');
 
-
-Route::resource('accounts', 'AccountAPIController');
-
-Route::resource('academies', 'AcademyAPIController');
-
-Route::resource('instructors', 'InstructorAPIController');
-
+	Route::resource('instructors', 'InstructorAPIController');
+});
