@@ -12,6 +12,7 @@ class UserController extends Controller {
 
     public $successStatus = 200;
 
+
 	/** 
      * login api 
      * 
@@ -55,7 +56,12 @@ class UserController extends Controller {
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
-        return response()->json(compact('token'));
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => env('JWT_TTL', 60) * 60
+        ]);
+//        return response()->json(compact('token'));
     }
 
 	/** 
