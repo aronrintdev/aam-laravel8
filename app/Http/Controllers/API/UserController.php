@@ -16,7 +16,36 @@ class UserController extends Controller {
      * login api 
      * 
      * @return \Illuminate\Http\Response 
-     */ 
+     *
+     * @OA\Post(
+     *   path="/login",
+     *   summary="Create new JWT",
+     *   tags={"login"},
+     *   description="User Login",
+     *   @OA\RequestBody(
+     *     description="login credentials",
+     *     required=true,
+     *     @OA\MediaType(
+     *       mediaType="application/x-www-form-urlencoded",
+     *       @OA\Schema(
+     *         type="object",
+     *         @OA\Property(
+     *           property="email",
+     *           type="string"
+     *         ),
+     *         @OA\Property(
+     *           property="password",
+     *           type="string"
+     *         ),
+     *       )
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *   )
+     * )
+     */
     public function login(Request $request){ 
         $credentials = $request->only('email', 'password');
         try {
