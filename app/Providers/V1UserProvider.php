@@ -4,6 +4,7 @@ use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Str;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Database\Eloquent\Model;
 
 class V1UserProvider implements UserProvider {
 
@@ -16,7 +17,11 @@ class V1UserProvider implements UserProvider {
         $x = $this->conn->table('Accounts');
         $x->where('Email', $identifier);
         $user = $x->first();
-        return new \App\User((array)$user);
+
+        \App\User::unguard();
+        $u = new \App\User((array)$user);
+        \App\User::reguard();
+        return $u;
     }
 
     public function retrieveByToken($identifier, $token) {
@@ -45,7 +50,11 @@ class V1UserProvider implements UserProvider {
         // that there are no matching users for these given credential arrays.
         $user = $query->first();
 
-        return new \App\User((array)$user);
+        \App\User::unguard();
+        $u = new \App\User((array)$user);
+        \App\User::reguard();
+        return $u;
+
     }
 
     public function validateCredentials(Authenticatable $user, array $credentials) {
