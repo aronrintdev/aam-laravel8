@@ -60,11 +60,13 @@ class UserController extends Controller {
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => env('JWT_TTL', 60) * 60
-        ]);
+        ])
+        ->withCookie( cookie('token', $token, 60*60));
+        //cookie name token is not configurable (yet) by JWT
 //        return response()->json(compact('token'));
     }
 
-	/** 
+    /** 
      * Register api 
      * 
      * @return \Illuminate\Http\Response 
