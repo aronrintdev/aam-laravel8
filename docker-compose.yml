@@ -5,12 +5,21 @@ services:
     tty: true
     build:
       context: ./
-      dockerfile: dockerfile-sqlsrv
+      dockerfile: dockerfile-phpfpm
     #image: 'bitnami/php-fpm:7.3'
     ports:
       - 9000:9000
     volumes:
       - .:/app
+  php-composer:
+    tty: true
+    depends_on:
+      - phpfpm
+    image: composer:1.8
+    command: install
+    volumes:
+      - .:/app
+
   nginx:
     image: 'bitnami/nginx:latest'
     depends_on:
@@ -22,4 +31,3 @@ services:
       - '443:8443'
     volumes:
       - ./config/container-nginx.vhost.conf:/opt/bitnami/nginx/conf/vhosts/phpfpm.conf
-
