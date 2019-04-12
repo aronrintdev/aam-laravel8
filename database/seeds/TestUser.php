@@ -19,7 +19,24 @@ class TestUser extends Seeder
             'FirstName'          => 'Pauline',
             'LastName'           => 'Pro',
             'Email'              => 'pauline@example.com',
+            'InstructorID'       => 1,
             'PasswordHash'       => \Hash::make('password'),
+        ]);
+        DB::table('Accounts')->insert([
+            'Password'           => 2,
+            'FirstName'          => 'Carl',
+            'LastName'           => 'Customer',
+            'Email'              => 'carl@customer.test',
+            'PasswordHash'       => \Hash::make('password'),
+        ]);
+
+        DB::table('AcademyInstructors')->insert([
+            'AcademyID'    => 1,
+            'InstructorID' => 1,
+            'IsMaster'     => 1,
+            'IsEnabled'    => 1,
+            'IsHidden'     => 0
+
         ]);
     }
 }
