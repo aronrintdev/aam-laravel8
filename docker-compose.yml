@@ -31,3 +31,4 @@ services:
       - '443:8443'
     volumes:
       - ./config/container-nginx.vhost.conf:/opt/bitnami/nginx/conf/vhosts/phpfpm.conf
+      - .:/app/
