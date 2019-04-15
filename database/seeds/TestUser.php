@@ -12,14 +12,16 @@ class TestUser extends Seeder
      */
     public function run()
     {
+        DB::statement('TRUNCATE TABLE [Accounts]');
+        DB::statement('TRUNCATE TABLE [AcademyInstructors]');
         $faker = Faker::create();
         $faker->seed(4321);
-        DB::table('Accounts')->insert([
+        $paulineId = DB::table('Accounts')->insertGetId([
             'Password'           => 1,
             'FirstName'          => 'Pauline',
             'LastName'           => 'Pro',
             'Email'              => 'pauline@example.com',
-            'InstructorID'       => 1,
+            'InstructorID'       => 2,
             'PasswordHash'       => \Hash::make('password'),
         ]);
         DB::table('Accounts')->insert([
@@ -31,8 +33,8 @@ class TestUser extends Seeder
         ]);
 
         DB::table('AcademyInstructors')->insert([
-            'AcademyID'    => 1,
-            'InstructorID' => 1,
+            'AcademyID'    => 'V1AC',
+            'InstructorID' => $paulineId,
             'IsMaster'     => 1,
             'IsEnabled'    => 1,
             'IsHidden'     => 0

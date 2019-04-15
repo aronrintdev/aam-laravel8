@@ -31,7 +31,10 @@ class V1UserProvider implements UserProvider {
     }
 
     public function retrieveByCredentials(array $credentials) {
-        $query = $this->conn->table('Accounts');
+        $query = $this->conn->table('Accounts as a')
+            ->select('a.*', 'ai.AcademyID', 'ai.IsMaster', 'ai.IsEnabled as IsInstructor', 'ai.IsHidden')
+            ->leftJoin('AcademyInstructors as ai', 'a.AccountID', '=', 'ai.InstructorID');
+
 
         foreach ($credentials as $key => $value) {
             if (Str::contains($key, 'password')) {

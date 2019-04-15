@@ -14,6 +14,7 @@ class TestAcademyTableSeeder extends Seeder
     {
         //
         
+        DB::statement('TRUNCATE TABLE [Academies]');
         $faker = Faker::create();
         $faker->seed(4321);
         DB::table('Academies')->insert([

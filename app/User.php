@@ -32,11 +32,11 @@ class User extends Authenticatable implements JWTSubject
         'password', 'remember_token', 'PasswordHash', 'Password',
     ];
 
-	public function getJWTIdentifier() {
-		return $this->Email;
-	}
+    public function getJWTIdentifier() {
+        return $this->Email;
+    }
 
-	public function getJWTCustomClaims() {
-		return ['aid'=>$this->AccountID, 'fn'=>$this->FirstName, 'ln'=>$this->LastName, 'inst'=> ($this->InstructorID > 0 ?'1':'0')];
-	}
+    public function getJWTCustomClaims() {
+        return ['aid'=>$this->AccountID, 'fn'=>$this->FirstName, 'ln'=>$this->LastName, 'inst'=> ($this->IsInstructor > 0 ? 1:0)];
+    }
 }
