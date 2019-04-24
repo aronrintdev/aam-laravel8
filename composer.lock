@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6223a81f33b8c85f0ea539c3883ffc8a",
+    "content-hash": "5be758691da04c4588a37efde896e66c",
     "packages": [
         {
             "name": "defuse/php-encryption",
@@ -665,20 +665,20 @@
         },
         {
             "name": "infyomlabs/adminlte-templates",
-            "version": "5.7.x-dev",
+            "version": "5.8.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/InfyOmLabs/adminlte-templates.git",
-                "reference": "a2ad60acd5b73d449c3ebc74a2c3428cf38ac6f0"
+                "reference": "571dc8ef2d771d19101cb383919e359891de81e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/InfyOmLabs/adminlte-templates/zipball/a2ad60acd5b73d449c3ebc74a2c3428cf38ac6f0",
-                "reference": "a2ad60acd5b73d449c3ebc74a2c3428cf38ac6f0",
+                "url": "https://api.github.com/repos/InfyOmLabs/adminlte-templates/zipball/571dc8ef2d771d19101cb383919e359891de81e2",
+                "reference": "571dc8ef2d771d19101cb383919e359891de81e2",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "~5.0",
+                "illuminate/support": "5.8.*",
                 "php": ">=5.5.9"
             },
             "type": "library",
@@ -713,7 +713,7 @@
                 "laravel",
                 "templates"
             ],
-            "time": "2019-03-19T07:11:47+00:00"
+            "time": "2019-04-13T10:25:33+00:00"
         },
         {
             "name": "infyomlabs/laravel-generator",
