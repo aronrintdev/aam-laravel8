@@ -77,8 +77,9 @@ class LockerAPIController extends AppBaseController
 
     public function index(Request $request)
     {
+        $user = $request->user();
         $swings = $this->swingRepository->all(
-                $request->except(['skip', 'limit']),
+                ['AccountID'=>$user->AccountID],
                 $request->get('skip'),
                 $request->get('limit')
                 );
