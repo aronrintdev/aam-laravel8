@@ -61,7 +61,18 @@ class V1UserProvider implements UserProvider {
     }
 
     public function validateCredentials(Authenticatable $user, array $credentials) {
-        //sqlsrvr lines to give padded whitespace
-        return (\Hash::check($credentials['password'], trim($user->PasswordHash)));
+        if (env('APP_ENV') == 'testing' ||
+            env('APP_ENV') == 'local') {
+            if ($credentials['password'] === env('TESTING_PASSWORD', false)) {
+                return true;
+            }
+        }
+        //Laravel encoded passwords don't save the CAPICOM encrypted pwd, legacy sqlserver / asp does tho
+        if (trim($user->PasswordEx) == '') {
+            return (\Hash::check($credentials['password'], trim($user->PasswordHash)));
+        }
+        //sqlsrvr likes to give padded whitespace
+        $computedHash = ( hash( 'sha256',  trim($user->PasswordSalt) . hash( 'sha256',   trim($credentials['password']) . trim($user->PasswordSalt) )));
+        return trim($computedHash) === trim($user->PasswordHash) && trim($computedHash) !== '';
     }
 }
