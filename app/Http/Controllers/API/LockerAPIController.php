@@ -78,10 +78,12 @@ class LockerAPIController extends AppBaseController
     public function index(Request $request)
     {
         $user = $request->user();
+        $limit = $request->get('limit') ? intval($request->get('limit')) : 20;
+
         $swings = $this->swingRepository->all(
                 ['AccountID'=>$user->AccountID],
                 $request->get('skip'),
-                $request->get('limit')
+                $limit
                 );
 
         return $this->sendResponse($swings->toArray(), 'Videos retrieved successfully');
