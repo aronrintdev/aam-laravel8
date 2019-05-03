@@ -316,12 +316,14 @@ class Account extends Model
 #    use SoftDeletes;
 
     public $table = 'Accounts';
+    public $timestamps = false;
+
     
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
+#    const CREATED_AT = 'created_at';
+#    const UPDATED_AT = 'updated_at';
 
 
-    protected $dates = ['deleted_at'];
+#    protected $dates = ['deleted_at'];
 
     protected $primaryKey = 'AccountID';
 
@@ -448,6 +450,7 @@ class Account extends Model
      * @var array
      */
     public static $rules = [
+        /*
         'AccountID' => 'required',
         'NotifyMe' => 'required',
         'Email' => 'required',
@@ -457,7 +460,6 @@ class Account extends Model
         'Closed' => 'required',
         'FirstName' => 'required',
         'Gender' => 'required'
+         */
     ];
-
-    
 }
