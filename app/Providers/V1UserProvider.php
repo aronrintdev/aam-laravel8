@@ -75,5 +75,8 @@ class V1UserProvider implements UserProvider {
         //sqlsrvr likes to give padded whitespace
         $computedHash = ( hash( 'sha256',  trim($user->PasswordSalt) . hash( 'sha256',   trim($credentials['password']) . trim($user->PasswordSalt) )));
         return trim($computedHash) === trim($user->PasswordHash) && trim($computedHash) !== '';
+
+        //there's another method that uses aes256 and PasswordEx, but it's encrypted with Capicom and
+        //not able to be decrypted with vanilla php.  (requires COM object on Win32)
     }
 }
