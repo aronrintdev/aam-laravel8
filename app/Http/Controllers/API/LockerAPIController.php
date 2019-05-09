@@ -13,6 +13,55 @@ use Response;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 
+
+/**
+ *
+ *
+     * @OA\Schema(
+     *   schema="swing_record",
+     *   required={""},
+     *   allOf={@OA\Schema(ref="http://jsonapi.org/schema#/components/schemas/resource")},
+     *   @OA\Property(
+     *     property="id",
+     *     description="Swing ID",
+     *     type="integer",
+     *          format="int32"
+     *   ),
+     *   @OA\Property(
+     *     property="title",
+     *     description="title or description",
+     *     type="string"
+     *   ),
+     *   @OA\Property(
+     *     property="date_uploaded",
+     *     description="Date video was uploaded",
+     *     type="string"
+     *   ),
+     *   @OA\Property(
+     *     property="thumb_url",
+     *     description="URL of thumbnail picture",
+     *     type="string"
+     *   ),
+     *   @OA\Property(
+     *     property="video_url",
+     *     description="URL of video file",
+     *     type="string"
+     *   ),
+     *   @OA\Property(
+     *     property="vimeo_id",
+     *     description="ID of video on Vimeo",
+     *     type="string"
+     *   ),
+     *   @OA\Property(
+     *     property="status_id",
+     *     description="SwingStatusID",
+     *     type="integer",
+     *          format="int32"
+     *   ),
+     * )
+     *
+     */
+
 /**
  * Class LockerController
  * @package App\Http\Controllers\API
@@ -66,14 +115,25 @@ class LockerAPIController extends AppBaseController
      * @OA\Get(
      *   path="/locker",
      *   summary="Get a listing of your Videos.",
-     *   tags={"Swing", "Locker"},
-     *   description="Get all videos",
+     *   description="Get all your videos",
      *   @OA\MediaType(
      *     mediaType="application/json"
      *   ),
      *   @OA\Response(
      *     response=200,
-     *     ref="#/components/responses/Swings"
+     *     description="List of all of videos connected to the logged in account which are not deleted",
+     *     @OA\MediaType(
+     *     mediaType="application/json",
+     *
+     *     @OA\Schema(
+     *      @OA\Property(
+     *         property="data",
+     *         type="array",
+     *         @OA\Items(ref="#/components/schemas/swing_record")
+     *       )
+     *       )
+     *       )
+     *     )
      *   )
      * )
      */
@@ -84,7 +144,7 @@ class LockerAPIController extends AppBaseController
         $limit = $request->get('limit') ? intval($request->get('limit')) : 20;
 
         $swings = $this->swingRepository->all(
-                ['AccountID'=>$user->AccountID],
+                ['AccountID'=>$user->AccountID, 'Deleted'=>false],
                 $request->get('skip'),
                 $limit
                 );
@@ -95,7 +155,9 @@ class LockerAPIController extends AppBaseController
 				'title'   => $swing['Description'],
 				'video_url'    => 'https://v1sports.com/SwingStore/'.$swing['VideoPath'],
 				'thumb_url'    => str_replace('.mp4', '.jpg', 'https://v1sports.com/SwingStore/'.$swing['VideoPath']),
-                //'thumb_url'    => 'https://v1sports.com/SwingStore/190424231844IP9M2449503.jpg',
+				'vimeo_id'     => $swing['VimeoID'],
+				'status_id'    => $swing['SwingStatusID'],
+				//'thumb_url'    => 'https://v1sports.com/SwingStore/190424231844IP9M2449503.jpg',
 				'date_uploaded' => $swing['DateUploaded'],
 			];
 		});
