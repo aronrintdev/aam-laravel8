@@ -15,54 +15,6 @@ use League\Fractal\Resource\Collection;
 
 
 /**
- *
- *
-     * @OA\Schema(
-     *   schema="swing_record",
-     *   required={""},
-     *   allOf={@OA\Schema(ref="http://jsonapi.org/schema#/components/schemas/resource")},
-     *   @OA\Property(
-     *     property="id",
-     *     description="Swing ID",
-     *     type="integer",
-     *          format="int32"
-     *   ),
-     *   @OA\Property(
-     *     property="title",
-     *     description="title or description",
-     *     type="string"
-     *   ),
-     *   @OA\Property(
-     *     property="date_uploaded",
-     *     description="Date video was uploaded",
-     *     type="string"
-     *   ),
-     *   @OA\Property(
-     *     property="thumb_url",
-     *     description="URL of thumbnail picture",
-     *     type="string"
-     *   ),
-     *   @OA\Property(
-     *     property="video_url",
-     *     description="URL of video file",
-     *     type="string"
-     *   ),
-     *   @OA\Property(
-     *     property="vimeo_id",
-     *     description="ID of video on Vimeo",
-     *     type="string"
-     *   ),
-     *   @OA\Property(
-     *     property="status_id",
-     *     description="SwingStatusID",
-     *     type="integer",
-     *          format="int32"
-     *   ),
-     * )
-     *
-     */
-
-/**
  * Class LockerController
  * @package App\Http\Controllers\API
  *
@@ -149,7 +101,59 @@ class LockerAPIController extends AppBaseController
                 $limit
                 );
 
-        $resource = new Collection($swings->toArray(), function(array $swing) {
+        $resource = new Collection($swings->toArray(), [$this, 'swingRecordTranslate']);
+
+        return response()->json((new Manager)->createData($resource)->toArray());
+        //return $this->sendResponse($swings->toArray(), 'Videos retrieved successfully');
+    }
+
+    /**
+     *
+     *
+     * @OA\Schema(
+     *   schema="swing_record",
+     *   required={""},
+     *   allOf={@OA\Schema(ref="http://jsonapi.org/schema#/components/schemas/resource")},
+     *   @OA\Property(
+     *     property="id",
+     *     description="Swing ID",
+     *     type="integer",
+     *          format="int32"
+     *   ),
+     *   @OA\Property(
+     *     property="title",
+     *     description="title or description",
+     *     type="string"
+     *   ),
+     *   @OA\Property(
+     *     property="date_uploaded",
+     *     description="Date video was uploaded",
+     *     type="string"
+     *   ),
+     *   @OA\Property(
+     *     property="thumb_url",
+     *     description="URL of thumbnail picture",
+     *     type="string"
+     *   ),
+     *   @OA\Property(
+     *     property="video_url",
+     *     description="URL of video file",
+     *     type="string"
+     *   ),
+     *   @OA\Property(
+     *     property="vimeo_id",
+     *     description="ID of video on Vimeo",
+     *     type="string"
+     *   ),
+     *   @OA\Property(
+     *     property="status_id",
+     *     description="SwingStatusID",
+     *     type="integer",
+     *          format="int32"
+     *   ),
+     * )
+     */
+    public function swingRecordTranslate(array $swing) {
             return [
                 'id'      => (int) $swing['SwingID'],
                 'title'   => $swing['Description'],
@@ -160,9 +164,5 @@ class LockerAPIController extends AppBaseController
                 //'thumb_url'    => 'https://v1sports.com/SwingStore/190424231844IP9M2449503.jpg',
                 'date_uploaded' => $swing['DateUploaded'],
             ];
-        });
-
-        return response()->json((new Manager)->createData($resource)->toArray());
-        //return $this->sendResponse($swings->toArray(), 'Videos retrieved successfully');
     }
 }
