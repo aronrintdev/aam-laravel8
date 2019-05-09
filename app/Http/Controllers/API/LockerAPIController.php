@@ -25,6 +25,7 @@ use League\Fractal\Resource\Collection;
  *     mediaType="application/json",
  *     @OA\Schema(
  *        allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
+ *
  *        @OA\Property(
  *         property="data",
  *         type="object",
@@ -78,6 +79,7 @@ class LockerAPIController extends AppBaseController
      *     mediaType="application/json",
      *
      *     @OA\Schema(
+     *      allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
      *      @OA\Property(
      *         property="data",
      *         type="array",
@@ -89,7 +91,6 @@ class LockerAPIController extends AppBaseController
      *   )
      * )
      */
-
     public function index(Request $request)
     {
         $user = $request->user();
@@ -108,12 +109,9 @@ class LockerAPIController extends AppBaseController
     }
 
     /**
-     *
-     *
      * @OA\Schema(
      *   schema="swing_record",
      *   required={""},
-     *   allOf={@OA\Schema(ref="http://jsonapi.org/schema#/components/schemas/resource")},
      *   @OA\Property(
      *     property="id",
      *     description="Swing ID",
