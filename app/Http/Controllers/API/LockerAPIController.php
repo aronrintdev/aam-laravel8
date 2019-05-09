@@ -149,20 +149,20 @@ class LockerAPIController extends AppBaseController
                 $limit
                 );
 
-		$resource = new Collection($swings->toArray(), function(array $swing) {
-			return [
-				'id'      => (int) $swing['SwingID'],
-				'title'   => $swing['Description'],
-				'video_url'    => 'https://v1sports.com/SwingStore/'.$swing['VideoPath'],
-				'thumb_url'    => str_replace('.mp4', '.jpg', 'https://v1sports.com/SwingStore/'.$swing['VideoPath']),
-				'vimeo_id'     => $swing['VimeoID'],
-				'status_id'    => $swing['SwingStatusID'],
-				//'thumb_url'    => 'https://v1sports.com/SwingStore/190424231844IP9M2449503.jpg',
-				'date_uploaded' => $swing['DateUploaded'],
-			];
-		});
+        $resource = new Collection($swings->toArray(), function(array $swing) {
+            return [
+                'id'      => (int) $swing['SwingID'],
+                'title'   => $swing['Description'],
+                'video_url'    => 'https://v1sports.com/SwingStore/'.$swing['VideoPath'],
+                'thumb_url'    => str_replace('.mp4', '.jpg', 'https://v1sports.com/SwingStore/'.$swing['VideoPath']),
+                'vimeo_id'     => $swing['VimeoID'],
+                'status_id'    => $swing['SwingStatusID'],
+                //'thumb_url'    => 'https://v1sports.com/SwingStore/190424231844IP9M2449503.jpg',
+                'date_uploaded' => $swing['DateUploaded'],
+            ];
+        });
 
-		return response()->json((new Manager)->createData($resource)->toArray());
-//        return $this->sendResponse($swings->toArray(), 'Videos retrieved successfully');
+        return response()->json((new Manager)->createData($resource)->toArray());
+        //return $this->sendResponse($swings->toArray(), 'Videos retrieved successfully');
     }
 }
