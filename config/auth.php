@@ -45,6 +45,11 @@ return [
             'driver' => 'jwt',
             'provider' => 'users',
         ],
+
+        'backend' => [
+            'driver' => 'access_token',
+            'provider' => 'robotusers',
+        ],
     ],
 
     /*
@@ -74,10 +79,10 @@ return [
         //    'model' => App\User::class,
         //],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'robotusers' => [
+             'driver' => 'database',
+             'table' => 'users',
+         ],
     ],
 
     /*

@@ -81,7 +81,7 @@ class AccountAPIController extends AppBaseController
         $accounts = $this->accountRepository->all(
                 $request->except(['skip', 'limit']),
                 $request->get('skip'),
-                $request->get('limit')
+                $request->get('limit') ? $request->get('limit') : 10
                 );
 
         return $this->sendJsonApiResponse('account', 'AccountID', $accounts->toArray());
@@ -270,4 +270,72 @@ class AccountAPIController extends AppBaseController
 
         return $this->sendResponse($id, 'Account deleted successfully');
     }
+
+    /**
+     * only for backend authenticated clients
+     */
+    public function search(Request $request)
+    {
+        $searchParams = $request->except(['skip', 'limit']);
+        if (empty($searchParams)) {
+            throw new \Exception();
+        }
+        $searchParams['Deleted'] =false;
+
+        $accounts = $this->accountRepository->all(
+                $searchParams,
+                $request->get('skip'),
+                $request->get('limit') ? $request->get('limit') : 10
+                );
+
+        return $this->sendJsonApiResponse('account', 'AccountID', $accounts->toArray());
+    }
+
+    /**
+     * only for backend authenticated clients
+     */
+    public function updatePassword(Request $request)
+    {
+        $updateParams = $request->except(['hmac']);
+        if (empty($updateParams)) {
+            throw new \Exception();
+        }
+        if (hash_hmac('sha256', json_encode($updateParams), env('JWT_SECRET')) != $request->input('hmac')) {
+            throw new \Exception();
+        }
+
+        $this->performPasswordUpdate($updateParams['email'], $updateParams['password']);
+    }
+
+    protected function performPasswordUpdate($email, $password) {
+
+        $query = $this->accountRepository->makeModel()->newQuery();
+
+        $query->where('Email', $email);
+        $account =  $query->get(['AccountID'])->first();
+            $newSalt = substr(base64_encode(random_bytes(16)), 0, 16);
+            $newSalt= 'IpoMQuv7g4aWgRd9';
+            $newPassword = hash('sha256', $newSalt. hash('sha256', $password . $newSalt));
+
+            $this->accountRepository->update([
+                'PasswordSalt'=>$newSalt,
+                'PasswordHash'=>$newPassword,
+            ], $account->AccountID);
+            /*
+            $account->PasswordSalt = $newSalt;
+            $account->PasswordHash = $newPassword;
+            $account->save();
+             */
+
+        /*
+        $accounts = $this->accountRepository->all(
+                $updateParams,
+                $request->get('skip'),
+                $request->get('limit') ? $request->get('limit') : 10
+                );
+
+        return $this->sendJsonApiResponse('account', 'AccountID', $accounts->toArray());
+         */
+    }
+
 }
