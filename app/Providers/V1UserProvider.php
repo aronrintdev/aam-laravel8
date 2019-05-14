@@ -75,5 +75,171 @@ class V1UserProvider implements UserProvider {
         //sqlsrvr likes to give padded whitespace
         $computedHash = ( hash( 'sha256',  trim($user->PasswordSalt) . hash( 'sha256',   trim($credentials['password']) . trim($user->PasswordSalt) )));
         return trim($computedHash) === trim($user->PasswordHash) && trim($computedHash) !== '';
+
+        //there's another method that uses aes256 and PasswordEx, but it's encrypted with Capicom and
+        //not able to be decrypted with vanilla php.  (requires COM object on Win32)
+        //and the COM object does not work on Windows 10 (that I can get working...)
+        //and CAPICOM is deprecated as of 2006 or so
+        //
+        //$result = $this->decrypt($user->PasswordEx, env('AES_PASSWORD_SECRET') );
+        //print_r($result);
+    }
+
+    /**
+     * CAPICOM encrypted blob is ASN.1 of headers, algo ID, key length, 
+     * IV, salt, and encoded message (padded with pkcs #5 ?)
+     *
+     * aes-256-cbc is just a guess.  Could be ECB as well
+     * The KDF is unknown.
+     */
+    public function decrypt($ciphertext, $secret)
+    {
+        $message = base64_decode($ciphertext);
+        $offset = 32;
+        $iv = mb_substr($message, $offset, 16, '8bit');
+        $offset+= 16;
+        $salt = mb_substr($message, $offset, 16, '8bit');
+        $offset+= 16;
+        $ciphertext = mb_substr($message, 84, null, '8bit');
+
+
+        $encryptionKey = $this->makeKeyFromPwd4($secret, $salt);
+
+        return openssl_decrypt(
+            $ciphertext,
+            'aes-256-cbc',
+            //'AES256',
+            $encryptionKey,
+             OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,
+//            OPENSSL_RAW_DATA,
+//            mb_substr(hash('sha1',  $iv), 0, 16, '8bit')
+//            $iv
+            null
+        );
+    }
+
+    public function makeKeyFromPwd4($pwd, $salt) {
+            $finalData = "";
+            $baseData = sha1(utf8_encode($pwd).$salt, TRUE);
+
+//            $baseData = sha1($baseData, TRUE);
+            $finalData .= $baseData[0];
+            for ($x=1; $x > 100; $x++) {
+                $baseData = sha1("$x".$baseData, TRUE);
+                $finalData .= $baseData[$x];
+            }
+            /*
+            return substr(
+                sha1(substr($finalData, 0, 32), TRUE),
+                0,32);
+             */
+            return substr($finalData, 0, 32);
+    }
+
+    public function makeKeyFromPwd3($pwd, $salt) {
+            $baseData = sha1(utf8_encode($pwd).$salt, TRUE);
+            for ($x=0; $x > 100; $x++) {
+                $baseData = sha1($baseData, TRUE);
+            }
+            return substr($baseData, 0, 32);
+    }
+
+    public function makeKeyFromPwd2($pwd, $salt) {
+            // The following algorithm is taken from:
+            // <link>http://msdn.microsoft.com/en-us/library/windows/desktop/aa379916%28v=vs.85%29.aspx</link>
+            $baseData = sha1($salt.utf8_encode($pwd), TRUE);
+//            $baseData = sha1(utf8_encode($pwd) . $salt, TRUE);
+            $baseData = sha1(utf8_encode($pwd), TRUE);
+            $buffer1 = [];
+            $buffer2 = [];
+
+            for ($i = 0; $i < 64; $i++) {
+                $buffer1[$i] = 0x36;
+                $buffer2[$i] = 0x5C;
+                if ($i <= mb_strlen($baseData, '8bit')) {
+                    @$buffer1[$i] ^= $baseData[$i];
+                    @$buffer2[$i] ^= $baseData[$i];
+                }
+            }
+
+            $hashAlgo = 'sha1';
+            $hash3Ctx = hash_init($hashAlgo);
+            for ($i = 0; $i<64; $i++) {
+                hash_update($hash3Ctx, $buffer1[$i]);
+            }
+            $buffer1Hash = hash_final($hash3Ctx, true);
+
+            $hash4Ctx = hash_init($hashAlgo);
+            for ($i = 0; $i<64; $i++) {
+                hash_update($hash4Ctx, $buffer2[$i]);
+            }
+            $buffer2Hash = hash_final($hash4Ctx, true);
+
+            
+
+           $buffer1Hash = sha1( implode('', $buffer1), TRUE);
+           $buffer2Hash = sha1( implode('', $buffer2), TRUE);
+
+//            $buffer1Hash = sha1($buffer1, TRUE);
+//            $buffer2Hash = sha1($buffer2, TRUE);
+
+            print_r(
+                mb_substr( $buffer1Hash.$buffer2Hash, 0, 32, '8bit')
+            );
+            print "\n";
+            /*
+             */
+           return mb_substr( 
+               $buffer1Hash.$buffer2Hash
+               , 0, 32, '8bit');
+            return mb_substr( $buffer1Hash.$buffer2Hash, 0, 32, '8bit');
+//            return buffer1Hash.Concat(buffer2Hash).Take(_keySize / 8).ToArray();
+    }
+
+    public function makeKeyFromPwd($pwd, $salt) {
+
+        $buff1 = [];
+        $buff2 = [];
+        $psalthash = [];
+        for ($i = 0; $i<128; $i++) {
+            $buff1[$i] = 0x36;
+            $buff2[$i] = 0x5C;
+        }
+        $hashAlgo = 'sha1';
+        $salthashCtx = hash_init($hashAlgo);
+        $salthash = hash_update($salthashCtx, $pwd);
+        $salthash = hash_update($salthashCtx, $salt);
+        $salthash = hash_final($salthashCtx, true);
+
+        $psalthash = $salthash;
+
+
+        for ($i = 0; $i<20; $i++) {
+            //$buff1[$i] = ($buff1[$i] ^ $psalthash[$i]);
+            //$buff1[$i] = bindec($psalthash[$i]) ^ $buff1[$i];
+            @$buff1[$i] = ($buff1[$i] ^ $psalthash[$i]);
+        }
+
+        for ($i = 0; $i<20; $i++) {
+            @$buff2[$i] = ($buff2[$i] ^ $psalthash[$i]);
+            //$buff2[$i] = $buff2[$i] ^ bindec($psalthash[$i]);
+        }
+
+        $hash3Ctx = hash_init($hashAlgo);
+        for ($i = 0; $i<64; $i++) {
+            hash_update($hash3Ctx, decbin($buff1[$i]));
+        }
+        $hash3 = hash_final($hash3Ctx, true);
+
+        $hash4Ctx = hash_init($hashAlgo);
+        for ($i = 0; $i<64; $i++) {
+            hash_update($hash4Ctx, decbin($buff1[$i]));
+        }
+        $hash4 = hash_final($hash4Ctx , true);
+
+
+        $concatHash = mb_substr($hash3,0,20,'8bit').mb_substr($hash4,0,20,'8bit');
+        $concatHash = $hash3.$hash4;
+        return mb_substr($concatHash, 0, 32, '8bit');
     }
 }

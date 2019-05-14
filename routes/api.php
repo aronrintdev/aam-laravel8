@@ -19,12 +19,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 
 });
+//Route::get('/update-password-test/', 'AccountAPIController@updatePasswordTest');
+Route::group(['middleware' => 'auth:backend'], function () {
+    Route::get('/search-accounts/', 'AccountAPIController@search');
+    Route::post('/update-password/', 'AccountAPIController@updatePassword');
+});
+
 Route::group(['middleware' => 'auth:api'], function () {
-	Route::resource('accounts', 'AccountAPIController');
+    Route::resource('accounts', 'AccountAPIController');
 
-	Route::resource('academies', 'AcademyAPIController');
+    Route::resource('academies', 'AcademyAPIController');
 
-	Route::resource('instructors', 'InstructorAPIController');
+    Route::resource('instructors', 'InstructorAPIController');
 
-	Route::resource('locker', 'LockerAPIController');
+    Route::resource('locker', 'LockerAPIController');
 });
