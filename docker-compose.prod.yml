@@ -1,0 +1,25 @@
+version: '3'
+networks:
+  web:
+    external: true
+  db:
+    external: true
+  zto:
+    driver: bridge
+
+services:
+  aam.web:
+    environment:
+      - BACK_DB_CONNECTION=backendmysql
+      - BACK_DB_HOST=mysql_server
+      - BACK_DB_DATABASE=account_live
+      - BACK_DB_USERNAME=vosuser_live
+      - BACK_DB_PASSWORD='secret'
+    networks:
+      - 'web'
+
+  aam.php:
+    networks:
+      - 'web'
+      - 'db'
+      - 'zto'
