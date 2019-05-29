@@ -1,34 +1,33 @@
+---
 version: '3'
 
+#etworks:
+#  nginx-proxy:
+#    external:
+#      name: frontend-lb
 services:
-  phpfpm:
+  aam-php:
     tty: true
     build:
       context: ./
-      dockerfile: dockerfile-phpfpm
-    #image: 'bitnami/php-fpm:7.3'
+      dockerfile: ci/dockerfile-phpfpm
+    expose:
+      - 9000
     ports:
       - 9000:9000
     volumes:
       - .:/app
-  php-composer:
-    tty: true
-    depends_on:
-      - phpfpm
-    image: composer:1.8
-    command: install
-    volumes:
-      - .:/app
 
-  nginx:
+  aam-web:
     image: 'bitnami/nginx:latest'
     depends_on:
-      - phpfpm
+      - aam-php
     cap_add:
       - NET_ADMIN
+    expose:
+      - 80
     ports:
       - '80:8080'
-      - '443:8443'
     volumes:
       - ./config/container-nginx.vhost.conf:/opt/bitnami/nginx/conf/vhosts/phpfpm.conf
       - .:/app/

@@ -30,6 +30,7 @@ class AccountRepository extends BaseRepository
         'Phone',
         'AutoSMS',
         'NotifyMe',
+        'email',
         'Email',
         'Vimeo_Token',
         'PasswordEx',

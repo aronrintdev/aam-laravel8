@@ -6,6 +6,8 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\DatabaseUserProvider;
+use Illuminate\Auth\TokenGuard;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -32,6 +34,13 @@ class AuthServiceProvider extends ServiceProvider
             // Return an instance of Illuminate\Contracts\Auth\UserProvider...
             return new V1UserProvider(\DB::connection('sqlsrv'));
             //return new V1UserProvider($app->make('riak.connection'));
+        });
+
+        Auth::extend('access_token', function ($app, $name, array $config) {
+            // automatically build the DI, put it as reference
+            $userProvider = app()->makeWith(DatabaseUserProvider::class, ['table'=>'users', 'conn'=>\DB::connection('backendmysql')]);
+            $request = app('request');
+            return new TokenGuard($userProvider, $request, 'api_token', 'api_token', false);
         });
     }
 }

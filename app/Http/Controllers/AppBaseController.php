@@ -27,9 +27,7 @@ class AppBaseController extends Controller
 
 
             return Response::json([
-                    'data' => [
-                        $objList
-                    ]
+                    'data' => $objList
             ]);
         }
 

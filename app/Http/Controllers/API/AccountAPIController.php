@@ -86,7 +86,7 @@ class AccountAPIController extends AppBaseController
         $accounts = $this->accountRepository->all(
                 $request->except(['skip', 'limit']),
                 $request->get('skip'),
-                $request->get('limit')
+                $request->get('limit') ? $request->get('limit') : 10
                 );
 
         return $this->sendJsonApiResponse('account', 'AccountID', $accounts->toArray());

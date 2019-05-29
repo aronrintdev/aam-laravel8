@@ -5,8 +5,6 @@ namespace App\Http\Requests\API;
 use App\Models\Account;
 use InfyOm\Generator\Request\APIRequest;
 
-$PHPDOCS$
-$DOCS$
 class UpdateAccountAPIRequest extends APIRequest
 {
     /**
