@@ -138,4 +138,15 @@ class AcademyRepository extends BaseRepository
     {
         return Academy::class;
     }
+
+    public function findByStudentId($studentId)
+    {
+        $query = $this->model->newQuery();
+        $query->select('Academies.*');
+        $query->where('AccountID', $studentId);
+        $query->join('AcademyStudents', 'Academies.AcademyID', 'AcademyStudents.AcademyID');
+        return $query->get();
+
+        return $query->find($id, $columns);
+    }
 }

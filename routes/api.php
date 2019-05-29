@@ -26,5 +26,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 	Route::resource('instructors', 'InstructorAPIController');
 
-	Route::resource('locker', 'LockerAPIController');
+    Route::resource('locker', 'LockerAPIController');
+
+    Route::get('/accounts/{id}/academies', 'AccountAPIController@showAcademies');
 });

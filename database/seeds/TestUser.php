@@ -40,5 +40,10 @@ class TestUser extends Seeder
             'IsHidden'     => 0
 
         ]);
+
+        DB::table('AcademyStudents')->insert([
+            'AcademyID'    => 'V1AC',
+            'AccountID'     => 2,
+        ]);
     }
 }
