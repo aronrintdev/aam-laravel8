@@ -5,7 +5,7 @@ require 'recipe/laravel.php';
 
 $packageName = 'vos-aam-' . date('Ymd_his').'.tar.gz';
 // Project name
-set('application', 'vos-accounts');
+set('application', 'vos-aam');
 
 // Project repository
 set('repository', 'https://github.com/v1-sports/aam.git');
@@ -48,8 +48,14 @@ task('package', function () use ($packageName) {
 after('deploy:failed', 'deploy:unlock');
 
 // Migrate database before symlink new release.
-
 after('deploy:update_code', 'artisan:migrate');
+
+//transfer the tar to the release path so that deployer cleans
+//those up after a while and we don't run out of disk space
+task('deploy:update_code', function () use ($packageName) {
+    runLocally("scp -oStrictHostKeyChecking=no -rC build/$packageName {{user}}@{{hostname}}:{{release_path}}/{$packageName}");
+    run("cd {{release_path}} && tar -C . -zxf {$packageName}");
+});
 
 task('deploy:restart', function () use ($packageName) {
     //if we don't set the project name it will always change
@@ -57,13 +63,6 @@ task('deploy:restart', function () use ($packageName) {
     //and then we cannot just restart or rebuild.
     $dockerProjectName = 'vostest';
     run("cd {{deploy_path}} && cd current && docker-compose -f docker-compose.yml -f docker-compose.prod.yml -p $dockerProjectName up -d aam-webapp");
-});
-
-//transfer the tar to the release path so that deployer cleans
-//those up after a while and we don't run out of disk space
-task('deploy:update_code', function () use ($packageName) {
-    runLocally("scp -oStrictHostKeyChecking=no -rC build/$packageName {{user}}@{{hostname}}:{{release_path}}/{$packageName}");
-    run("cd {{release_path}} && tar -C . -zxf {$packageName}");
 });
 
 task('deploy', [
