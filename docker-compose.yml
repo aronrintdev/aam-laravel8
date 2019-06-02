@@ -6,28 +6,27 @@ version: '3'
 #    external:
 #      name: frontend-lb
 services:
-  aam-php:
+  aam-webapp:
     tty: true
     build:
       context: ./
       dockerfile: ci/dockerfile-phpfpm
-    expose:
-      - 9000
     ports:
-      - 9000:9000
+      - 8080:8080
     volumes:
       - .:/app
+      - ./config/container-nginx.vhost.conf:/etc/nginx/conf.d/container-vhost.conf
 
-  aam-web:
-    image: 'bitnami/nginx:latest'
-    depends_on:
-      - aam-php
-    cap_add:
-      - NET_ADMIN
-    expose:
-      - 80
-    ports:
-      - '80:8080'
-    volumes:
-      - ./config/container-nginx.vhost.conf:/opt/bitnami/nginx/conf/vhosts/phpfpm.conf
-      - .:/app/
+#  aam-web:
+#    image: 'bitnami/nginx:latest'
+#    depends_on:
+#      - aam-php
+#    cap_add:
+#      - NET_ADMIN
+#    expose:
+#      - 80
+#    ports:
+#      - '80:8080'
+#    volumes:
+#      - ./config/container-nginx.vhost.conf:/opt/bitnami/nginx/conf/vhosts/phpfpm.conf
+#      - .:/app/

@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  migrate-mysql:
+    build:
+      context: ./
+      dockerfile: dockerfile-phpfpm
+    networks:
+      - db
+      - zto
+    command:
+        sh -c 'cd /app && php artisan key:generate && php artisan migrate -f --database=backendmysql'
+    volumes:
+      - ${SOURCE}:/app
+
+networks:
+  db:
+    external: true
+  zto:
+    driver: bridge

@@ -1,0 +1,7 @@
+FROM php:7.3.4-cli-alpine3.9
+
+RUN curl -LO https://deployer.org/deployer.phar
+RUN mv deployer.phar /usr/local/bin/dep
+RUN chmod +x /usr/local/bin/dep
+RUN apk add openssh-client
+WORKDIR /app
