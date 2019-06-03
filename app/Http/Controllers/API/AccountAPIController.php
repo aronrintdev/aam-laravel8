@@ -394,6 +394,7 @@ class AccountAPIController extends AppBaseController
             'id'            => trim($record['AcademyID']),
             'attributes'    => [
                 'name'          => $record['Name'],
+                'code'          => $record['AcademyID'],
                 'color-base'    => $record['BaseColor'],
                 'color-bg'      => $record['BGColor'],
                 'logo'          => $record['Logo'],
