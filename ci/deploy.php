@@ -10,7 +10,8 @@ require 'recipe/laravel.php';
 $buildTime = date('Ymd_his');
 set('new_package_name', function () use ($buildTime) {
     $stage = input()->hasArgument('stage') ? ''.input()->getArgument('stage') : 'test';
-    $packageName = 'vos-aam-' . $stage . '-' . $buildTime . '.tar.gz';
+    $app = get('application');
+    $packageName = $app.'-'. $stage . '-' . $buildTime . '.tar.gz';
     return $packageName;
 });
 
@@ -90,7 +91,7 @@ task('build:package', function () {
     $stage = input()->hasArgument('stage') ? ''.input()->getArgument('stage') : 'test';
     run("mkdir -p build/");
     $files = [
-        'public/', 'app/', 'ci/', 'config/', 'vendor/', 'resources/', 'routes/', 'bootstrap/', 'artisan', 'docker-compose.yml',
+        'public/', 'app/', 'ci/', 'config/', 'database/', 'vendor/', 'resources/', 'routes/', 'bootstrap/', 'artisan', 'docker-compose.yml',
     ];
     if ($stage == 'stage') {
         $files[] = "docker-compose.stage.yml";
@@ -124,6 +125,15 @@ task('deploy:restart', function () {
     $dockerProjectName = 'vos'.$stage;
     run("cd {{deploy_path}} && cd current && docker-compose -f docker-compose.yml -f docker-compose.$stage.yml -p $dockerProjectName up -d aam-webapp");
 });
+
+after('deploy:update_code', 'artisan:migrate');
+desc('Execute artisan migrate');
+task('artisan:migrate', function () use ($dockerProjectName) {
+    $stage = input()->hasArgument('stage') ? ''.input()->getArgument('stage') : 'test';
+    $dockerProjectName = 'vos'.$stage;
+    run("cd {{release_path}} && SOURCE={{release_path}} docker-compose -f ci/compose-build.yml -f docker-compose.$stage.yml -p $dockerProjectName exec aam-webapp php artisan migrate --database=backendmysql --force");
+})->once();
+
 
 task('deploy', [
     'build',
