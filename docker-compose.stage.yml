@@ -1,0 +1,26 @@
+version: '3'
+networks:
+  stage:
+    external: true
+  db:
+    external: true
+  zto:
+    driver: bridge
+
+services:
+  aam-webapp:
+    environment:
+      - BACK_DB_CONNECTION=backendmysql
+      - BACK_DB_HOST=mysql_server
+      - BACK_DB_DATABASE=account_live
+      - BACK_DB_USERNAME=vosuser_live
+      - BACK_DB_PASSWORD='secret'
+    networks:
+      - 'stage'
+      - 'db'
+      - 'zto'
+    volumes:
+      - .:/app
+      - ./config/container-nginx.vhost.conf:/etc/nginx/conf.d/container-vhost.conf
+      - ../../shared/.env:/app/.env
+      - ../../shared/storage:/app/storage

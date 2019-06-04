@@ -8,7 +8,7 @@ services:
       dockerfile: ./dockerfile-php-deployer
       context: ./
     command:
-        sh -c 'pwd && dep -f"ci/deploy.php" --no-ansi deploy'
+        ['sh', '-c', 'pwd && dep -f"ci/deploy.php" --no-ansi ${TASK}']
     volumes:
       - ${SOURCE}:/app
       - ${SSH_KEY}:/home/www-data/.ssh/id_rsa
