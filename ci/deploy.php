@@ -126,12 +126,12 @@ task('deploy:restart', function () {
     run("cd {{deploy_path}} && cd current && docker-compose -f docker-compose.yml -f docker-compose.$stage.yml -p $dockerProjectName up -d aam-webapp");
 });
 
-after('deploy:update_code', 'artisan:migrate');
+after('deploy:writable', 'artisan:migrate');
 desc('Execute artisan migrate');
 task('artisan:migrate', function () use ($dockerProjectName) {
     $stage = input()->hasArgument('stage') ? ''.input()->getArgument('stage') : 'test';
     $dockerProjectName = 'vos'.$stage;
-    run("cd {{release_path}} && SOURCE={{release_path}} docker-compose -f ci/compose-build.yml -f docker-compose.$stage.yml -p $dockerProjectName exec aam-webapp php artisan migrate --database=backendmysql --force");
+    run("cd {{release_path}} && SOURCE={{release_path}} docker-compose -f docker-compose.yml -f docker-compose.$stage.yml -p $dockerProjectName exec -T aam-webapp php artisan migrate --database=backendmysql --force");
 })->once();
 
 
