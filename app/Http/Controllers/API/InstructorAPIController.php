@@ -6,9 +6,16 @@ use App\Http\Requests\API\CreateInstructorAPIRequest;
 use App\Http\Requests\API\UpdateInstructorAPIRequest;
 use App\Models\Instructor;
 use App\Repositories\InstructorRepository;
+use App\Repositories\AccountRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use Response;
+
+use App\Transformers\StudentTransformer;
+use League\Fractal\Manager;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Serializer\JsonApiSerializer;
+
 
 /**
  * Class InstructorController
@@ -254,7 +261,6 @@ class InstructorAPIController extends AppBaseController
      *   )
      * )
      */
-
     public function destroy($id)
     {
         /** @var Instructor $instructor */
@@ -268,4 +274,71 @@ class InstructorAPIController extends AppBaseController
 
         return $this->sendResponse($id, 'Instructor deleted successfully');
     }
+
+    /**
+     * @param int $id
+     * @return Response
+     *
+     * @OA\POST(
+     *   path="/instructors/{id}/students",
+     *   summary="Get student accounts for an instructor",
+     *   tags={"Instructor"},
+     *   description="Get student accounts",
+     *   @OA\MediaType(
+     *     mediaType="application/json"
+     *   ),
+     *   @OA\Parameter(
+     *     name="id",
+     *     description="id of Instructor",
+     *     @OA\Schema(ref="#/components/schemas/Instructor/properties/InstructorID"),
+     *     required=true,
+     *     in="path"
+     *   ),
+     *   @OA\RequestBody(
+     *     description="Account that should be updated",
+     *     required=true,
+     *     @OA\MediaType(
+     *       mediaType="application/json",
+     *       @OA\Schema(ref="#/components/schemas/Account")
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     ref="#/components/responses/Accounts"
+     *   )
+     * )
+     */
+    public function showStudents($id, Request $request)
+    {
+        if (\Auth::user()->AccountID != $id) {
+            return response()->json(['error'=>'Unauthorized.'], 403);
+        }
+        $input = $request->all();
+        /** @var Instructor $instructor */
+        $instructor = $this->instructorRepository->find($id);
+
+        $this->accountRepository = new AccountRepository(app());
+        $accountList = $this->accountRepository->all(
+            ['AccountID' => $input],
+            $request->get('skip'),
+            $request->get('limit') ? $request->get('limit') : 10
+        );
+        $manager = new Manager();
+        $manager->setSerializer(new JsonApiSerializer());
+        $resource = new Collection($accountList->all(), new StudentTransformer);
+        return response()->json((new Manager)->createData($resource)->toArray());
+    }
+    /*
+    public function index(Request $request)
+    {
+        $accounts = $this->accountRepository->all(
+                $request->except(['skip', 'limit']),
+                $request->get('skip'),
+                $request->get('limit') ? $request->get('limit') : 10
+                );
+
+        return $this->sendJsonApiResponse('account', 'AccountID', $accounts->toArray());
+    }
+     */
 }

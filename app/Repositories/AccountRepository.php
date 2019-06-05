@@ -17,6 +17,7 @@ class AccountRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
+        'AccountID',
         'OldAccountID',
         'CardExpires',
         'BillPhone',
