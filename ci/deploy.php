@@ -93,6 +93,9 @@ task('build:package', function () {
     $files = [
         'public/', 'app/', 'ci/', 'config/', 'database/', 'vendor/', 'resources/', 'routes/', 'bootstrap/', 'artisan', 'docker-compose.yml',
     ];
+    if ($stage == 'test') {
+        $files[] = "docker-compose.test.yml";
+    }
     if ($stage == 'stage') {
         $files[] = "docker-compose.stage.yml";
     }
