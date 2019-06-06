@@ -50,6 +50,21 @@ use League\Fractal\Serializer\JsonApiSerializer;
  *       )
  *     )
  *   )
+ * ),
+ * @OA\Response(
+ *   response="Students",
+ *   description="successful operation",
+ *   @OA\MediaType(
+ *     mediaType="application/json",
+ *     @OA\Schema(
+ *        allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
+ *        @OA\Property(
+ *         property="data",
+ *         type="array",
+ *         @OA\Items(ref="#/components/schemas/Student")
+ *       )
+ *     )
+ *   )
  * )
  */
 
@@ -295,17 +310,21 @@ class InstructorAPIController extends AppBaseController
      *     in="path"
      *   ),
      *   @OA\RequestBody(
-     *     description="Account that should be updated",
-     *     required=true,
+     *     description="list of student IDs to include in response",
+     *     required=false,
      *     @OA\MediaType(
      *       mediaType="application/json",
-     *       @OA\Schema(ref="#/components/schemas/Account")
+     *        @OA\Property(
+     *         property="data",
+     *         type="array",
+     *         @OA\Items(type="integer")
+     *       )
      *     )
      *   ),
      *   @OA\Response(
      *     response=200,
      *     description="successful operation",
-     *     ref="#/components/responses/Accounts"
+     *     ref="#/components/responses/Students"
      *   )
      * )
      */
