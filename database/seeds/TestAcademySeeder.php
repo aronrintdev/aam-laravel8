@@ -26,7 +26,19 @@ class TestAcademyTableSeeder extends Seeder
             'BaseColor'          => 'CC9900',
             'BannerText'         => 'Powered By Docker SQL Server',
             'SampleLesson'       => 999,
-            'Logo'               => 'foo.jpg',
+            'Logo'               => 'https://images-na.ssl-images-amazon.com/images/I/91-2xY0B3WL._SX679_.jpg',
+        ]);
+
+        DB::table('Academies')->insert([
+            'AcademyID'          => 'SHYG',
+            'AdminAccountID'     => 3,
+            'Name'               => 'Shy Guy',
+            'Description'        => 'Shy Guys are from Mario',
+            'SportID'            => 1,
+            'BaseColor'          => 'CC0099',
+            'BannerText'         => 'Powered By Docker SQL Server',
+            'SampleLesson'       => 999,
+            'Logo'               => 'http://img4.wikia.nocookie.net/__cb20140424011935/fantendo/images/0/02/Shy_Guy_MGGT.png',
         ]);
 
 /**

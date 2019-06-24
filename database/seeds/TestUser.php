@@ -17,18 +17,25 @@ class TestUser extends Seeder
         $faker = Faker::create();
         $faker->seed(4321);
         $paulineId = DB::table('Accounts')->insertGetId([
-            'Password'           => 1,
+//            'AccountID'          => 1,
             'FirstName'          => 'Pauline',
             'LastName'           => 'Pro',
             'Email'              => 'pauline@example.com',
             'InstructorID'       => 2,
             'PasswordHash'       => \Hash::make('password'),
         ]);
-        DB::table('Accounts')->insert([
-            'Password'           => 2,
+        $carlId = DB::table('Accounts')->insertGetId([
+//            'AccountID'          => 2,
             'FirstName'          => 'Carl',
             'LastName'           => 'Customer',
             'Email'              => 'carl@customer.test',
+            'PasswordHash'       => \Hash::make('password'),
+        ]);
+        $shyId = DB::table('Accounts')->insertGetId([
+//            'AccountID'          => 3,
+            'FirstName'          => 'Shy',
+            'LastName'           => 'Guy',
+            'Email'              => 'shy@example.com',
             'PasswordHash'       => \Hash::make('password'),
         ]);
 
@@ -41,9 +48,22 @@ class TestUser extends Seeder
 
         ]);
 
+        DB::table('AcademyInstructors')->insert([
+            'AcademyID'    => 'SHYG',
+            'InstructorID' => $shyId,
+            'IsMaster'     => 1,
+            'IsEnabled'    => 1,
+            'IsHidden'     => 0
+
+        ]);
+
         DB::table('AcademyStudents')->insert([
             'AcademyID'    => 'V1AC',
-            'AccountID'     => 2,
+            'AccountID'    => $carlId,
+        ]);
+        DB::table('AcademyStudents')->insert([
+            'AcademyID'    => 'SHYG',
+            'AccountID'    => $carlId,
         ]);
     }
 }
