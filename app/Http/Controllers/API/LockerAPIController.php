@@ -152,15 +152,23 @@ class LockerAPIController extends AppBaseController
      * )
      */
     public function swingRecordTranslate(array $swing) {
-            return [
-                'id'      => (int) $swing['SwingID'],
-                'title'   => $swing['Description'],
-                'video_url'    => 'https://v1sports.com/SwingStore/'.$swing['VideoPath'],
-                'thumb_url'    => str_replace('.mp4', '.jpg', 'https://v1sports.com/SwingStore/'.$swing['VideoPath']),
-                'vimeo_id'     => $swing['VimeoID'],
-                'status_id'    => $swing['SwingStatusID'],
-                //'thumb_url'    => 'https://v1sports.com/SwingStore/190424231844IP9M2449503.jpg',
-                'date_uploaded' => $swing['DateUploaded'],
-            ];
+        $videoUrl = $swing['VideoPath'];
+        if (substr($videoUrl, 0, 4) !== 'http') {
+            $videoUrl = 'https://v1sports.com/SwingStore/'.$swing['VideoPath'];
+        }
+        $thumbUrl = str_replace( ['.mp4', '.webm'], '.jpg', $swing['VideoPath']);
+        if (substr($thumbUrl, 0, 4) !== 'http') {
+            $thumbUrl = 'https://v1sports.com/SwingStore/'.$thumbUrl;
+        }
+        return [
+            'id'      => (int) $swing['SwingID'],
+            'title'   => $swing['Description'],
+            'video_url'    => $videoUrl,
+            'thumb_url'    => $thumbUrl,
+            'vimeo_id'     => $swing['VimeoID'],
+            'status_id'    => $swing['SwingStatusID'],
+            //'thumb_url'    => 'https://v1sports.com/SwingStore/190424231844IP9M2449503.jpg',
+            'date_uploaded' => $swing['DateUploaded'],
+        ];
     }
 }
