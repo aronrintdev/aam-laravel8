@@ -23,6 +23,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group(['middleware' => 'auth:backend'], function () {
     Route::get('/search-accounts/', 'AccountAPIController@search');
     Route::post('/update-password/', 'AccountAPIController@updatePassword');
+    Route::get('/academies/{id}', 'AcademyAPIController@show');
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
