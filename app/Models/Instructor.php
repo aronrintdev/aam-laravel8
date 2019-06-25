@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @OA\Schema(
- *   schema="Instructor",
+ *   schema="InstructorRaw",
  *   required={""},
  *   allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/resource")},
  *   @OA\Property(
@@ -363,4 +363,8 @@ class Instructor extends Model
     ];
 
     
+    public function academies() {
+        return $this->belongsToMany('App\Models\Academy', 'AcademyInstructors', 'InstructorID', 'AcademyID');
+        //return $this->belongsToMany('App\Models\Academy')->user('App\Models\AcademyInstructors');
+    }
 }

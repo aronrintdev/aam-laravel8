@@ -9,7 +9,6 @@ use Laravel\Passport\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 
-
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable; //, HAsApiTokens;
@@ -42,5 +41,15 @@ class User extends Authenticatable implements JWTSubject
 
     public function getJWTCustomClaims() {
         return ['aid'=>$this->AccountID, 'fn'=>$this->FirstName, 'ln'=>$this->LastName, 'inst'=> ($this->IsInstructor > 0 ? 1:0), 'accid'=>$this->AcademyID];
+    }
+
+    /**
+     * Determine if user was logged in with backend guard or not
+     */
+    public function isApiAgent() {
+        if ($this->api_token != '') {
+            return true;
+        }
+        return false;
     }
 }

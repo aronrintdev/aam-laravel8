@@ -160,7 +160,7 @@ class InstructorAPIController extends AppBaseController
      *   @OA\Parameter(
      *     name="id",
      *     description="id of Instructor",
-     *     @OA\Schema(ref="#/components/schemas/Instructor/properties/InstructorID"),
+     *     @OA\Schema(ref="#/components/schemas/InstructorRaw/properties/InstructorID"),
      *     required=true,
      *     in="path"
      *   ),
@@ -202,7 +202,7 @@ class InstructorAPIController extends AppBaseController
      *     in="path",
      *     description="id of Instructor that should be updated",
      *     required=true,
-     *     @OA\Schema(ref="#/components/schemas/Instructor/properties/InstructorID")
+     *     @OA\Schema(ref="#/components/schemas/InstructorRaw/properties/InstructorID")
      *   ),
      *   @OA\RequestBody(
      *     description="Instructor that should be updated",
@@ -251,7 +251,7 @@ class InstructorAPIController extends AppBaseController
      *   @OA\Parameter(
      *     name="id",
      *     description="id of Instructor",
-     *     @OA\Schema(ref="#/components/schemas/Instructor/properties/InstructorID"),
+     *     @OA\Schema(ref="#/components/schemas/InstructorRaw/properties/InstructorID"),
      *     required=true,
      *     in="path"
      *   ),
@@ -305,7 +305,7 @@ class InstructorAPIController extends AppBaseController
      *   @OA\Parameter(
      *     name="id",
      *     description="id of Instructor",
-     *     @OA\Schema(ref="#/components/schemas/Instructor/properties/InstructorID"),
+     *     @OA\Schema(ref="#/components/schemas/InstructorRaw/properties/InstructorID"),
      *     required=true,
      *     in="path"
      *   ),

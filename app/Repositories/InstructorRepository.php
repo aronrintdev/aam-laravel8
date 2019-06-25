@@ -79,4 +79,32 @@ class InstructorRepository extends BaseRepository
     {
         return Instructor::class;
     }
+
+    /**
+     * select * FROM [Instructors]
+     * inner join [Accounts] on [Instructors].[InstructorID] = [Accounts].[AccountID]
+     * inner join [AcademyInstructors] on [Accounts].[AccountID] = [AcademyInstructors].[InstructorID]
+     * where [AcademyInstructors].[AcademyID] = 'v1ac'
+     */
+    public function forAcademy($academyId, $search = [], $skip = null, $limit = null, $columns = ['*'])
+    {
+        $query = $this->model->newQuery();
+        $query->select('Accounts.*');
+        $query->where('AcademyInstructors.AcademyID', '=', $academyId);
+        if (count($search)) {
+            foreach($search as $key => $value) {
+                if (in_array($key, $this->getFieldsSearchable())) {
+                    if (is_array($value)) {
+                        $query->whereIn($key, $value);
+                    } else {
+                        $query->where($key, $value);
+                    }
+                }
+            }
+        }
+
+        $query->join('Accounts',           'Instructors.InstructorID', 'Accounts.AccountID');
+        $query->join('AcademyInstructors', 'Accounts.AccountID', 'AcademyInstructors.InstructorID');
+        return $query->get($columns);
+    }
 }

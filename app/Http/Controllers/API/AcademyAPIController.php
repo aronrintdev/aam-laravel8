@@ -6,9 +6,17 @@ use App\Http\Requests\API\CreateAcademyAPIRequest;
 use App\Http\Requests\API\UpdateAcademyAPIRequest;
 use App\Models\Academy;
 use App\Repositories\AcademyRepository;
+use App\Repositories\AccountRepository;
+use App\Repositories\InstructorRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use Response;
+
+use App\Transformers\InstructorTransformer;
+use League\Fractal\Manager;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Serializer\JsonApiSerializer;
+
 
 /**
  * Class AcademyController
@@ -269,5 +277,65 @@ class AcademyAPIController extends AppBaseController
         $academy->delete();
 
         return $this->sendResponse($id, 'Academy deleted successfully');
+    }
+
+    /**
+     * @param string $id
+     * @return Response
+     *
+     * @OA\GET(
+     *   path="/academies/{id}/instructors",
+     *   summary="Get instructor accounts for an acadmey",
+     *   tags={"Academy"},
+     *   description="Get instructor accounts",
+     *   @OA\MediaType(
+     *     mediaType="application/json"
+     *   ),
+     *   @OA\Parameter(
+     *     name="id",
+     *     description="Academy Code/ID",
+     *     @OA\Schema(ref="#/components/schemas/Academy/properties/AcademyID"),
+     *     required=true,
+     *     in="path"
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     ref="#/components/responses/Instructors"
+     *   )
+     * )
+     */
+    public function showInstructors($id, Request $request)
+    {
+        $user = \Auth::user();
+        $academy = $this->academyRepository->find($id);
+
+        $this->instructorRepository = new InstructorRepository(app());
+
+        $fields = ['FirstName', 'LastName'];
+        //if the user is not an instructor then don't query the emails
+        //because we shouldn't allow straight up email harvesting
+        if($user->isApiAgent()) {
+            $fields[] = 'Email';
+        } else {
+            $instructor  = $this->instructorRepository->find($user->AccountID);
+            if ($instructor) {
+                $academies = $instructor->academies()->get();
+                if (in_array($id, $academies->pluck('AcademyID')->all())) {
+                }
+            }
+        }
+
+        $accountList = $this->instructorRepository->forAcademy(
+            $id,
+            [],
+            $request->get('skip'),
+            $request->get('limit') ? $request->get('limit') : 10,
+            $fields
+        );
+        $manager = new Manager();
+        $manager->setSerializer(new JsonApiSerializer());
+        $resource = new Collection($accountList->all(), new InstructorTransformer);
+        return response()->json((new Manager)->createData($resource)->toArray());
     }
 }
