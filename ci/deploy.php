@@ -108,8 +108,6 @@ task('build:package', function () {
 // [Optional] if deploy fails automatically unlock.
 after('deploy:failed', 'deploy:unlock');
 
-// Migrate database before symlink new release.
-after('deploy:update_code', 'artisan:migrate');
 
 //transfer the tar to the release path so that deployer cleans
 //those up after a while and we don't run out of disk space
@@ -129,12 +127,13 @@ task('deploy:restart', function () {
     run("cd {{deploy_path}} && cd current && docker-compose -f docker-compose.yml -f docker-compose.$stage.yml -p $dockerProjectName up -d aam-webapp");
 });
 
+// Migrate database before symlink new release.
 after('deploy:writable', 'artisan:migrate');
 desc('Execute artisan migrate');
 task('artisan:migrate', function () use ($dockerProjectName) {
     $stage = input()->hasArgument('stage') ? ''.input()->getArgument('stage') : 'test';
     $dockerProjectName = 'vos'.$stage;
-    run("cd {{release_path}} && SOURCE={{release_path}} docker-compose -f docker-compose.yml -f docker-compose.$stage.yml -p $dockerProjectName exec -T aam-webapp php artisan migrate --database=backendmysql --force");
+    run("cd {{release_path}} && SOURCE={{release_path}} docker-compose -p $dockerProjectName exec -T aam-webapp php artisan migrate --database=backendmysql --force");
 })->once();
 
 
