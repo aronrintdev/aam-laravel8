@@ -39,13 +39,23 @@ class TestUser extends Seeder
             'PasswordHash'       => \Hash::make('password'),
         ]);
 
+        DB::table('Instructors')->insert([
+            'AcademyID'    => '',
+            'InstructorID' => $paulineId,
+        ]);
+
+        DB::table('Instructors')->insert([
+            'AcademyID'    => '',
+            'InstructorID' => $shyId,
+        ]);
+
+
         DB::table('AcademyInstructors')->insert([
             'AcademyID'    => 'V1AC',
             'InstructorID' => $paulineId,
             'IsMaster'     => 1,
             'IsEnabled'    => 1,
             'IsHidden'     => 0
-
         ]);
 
         DB::table('AcademyInstructors')->insert([
@@ -54,7 +64,6 @@ class TestUser extends Seeder
             'IsMaster'     => 1,
             'IsEnabled'    => 1,
             'IsHidden'     => 0
-
         ]);
 
         DB::table('AcademyStudents')->insert([
