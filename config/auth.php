@@ -15,7 +15,7 @@ return [
 
     'defaults' => [
         'guard' => 'web',
-        'passwords' => 'users',
+        'passwords' => 'backendusers',
     ],
 
     /*
@@ -38,7 +38,7 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'robotusers',
         ],
 
         'api' => [
@@ -48,6 +48,11 @@ return [
 
         'backend' => [
             'driver' => 'access_token',
+            'provider' => 'robotusers',
+        ],
+
+        'admins' => [
+            'driver' => 'session',
             'provider' => 'robotusers',
         ],
     ],
@@ -80,7 +85,7 @@ return [
         //],
 
         'robotusers' => [
-             'driver' => 'database',
+             'driver' => 'robotusers',
              'table' => 'users',
          ],
     ],
@@ -101,6 +106,12 @@ return [
     */
 
     'passwords' => [
+        'backendusers' => [
+            'provider' => 'robotusers',
+            'connection' => 'backendmysql',
+            'table' => 'password_resets',
+            'expire' => 60,
+        ],
         'users' => [
             'provider' => 'users',
             'table' => 'password_resets',
