@@ -96,6 +96,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *     type="boolean"
  *   ),
  *   @OA\Property(
+ *     property="FB_UserID",
+ *     description="FB_UserID",
+ *     type="integer",
+ *          format="int32"
+ *   ),
+ *   @OA\Property(
  *     property="SecondarySalesPerson",
  *     description="SecondarySalesPerson",
  *     type="string"
@@ -271,6 +277,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *     property="TopTextBaseColor",
  *     description="TopTextBaseColor",
  *     type="string"
+ *   ),
+ *   @OA\Property(
+ *     property="FB_FanPage_ID",
+ *     description="FB_FanPage_ID",
+ *     type="integer",
+ *          format="int32"
  *   ),
  *   @OA\Property(
  *     property="EmailBody",
@@ -640,6 +652,7 @@ class Academy extends Model
         'YT_URL' => 'string',
         'CreatedWebURL' => 'string',
         'PrivateFlag' => 'boolean',
+        'FB_UserID' => 'integer',
         'SecondarySalesPerson' => 'string',
         'SampleLesson' => 'integer',
         'NotBuiltFlag' => 'boolean',
@@ -674,6 +687,7 @@ class Academy extends Model
         'TW_Key' => 'string',
         'CreatedWebLogin' => 'string',
         'TopTextBaseColor' => 'string',
+        'FB_FanPage_ID' => 'integer',
         'EmailBody' => 'string',
         'DiscountFlag' => 'boolean',
         'V1GA_Locker' => 'boolean',

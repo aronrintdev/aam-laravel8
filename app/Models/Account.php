@@ -235,6 +235,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *     type="string"
  *   ),
  *   @OA\Property(
+ *     property="FB_UserID",
+ *     description="FB_UserID",
+ *     type="integer",
+ *          format="int32"
+ *   ),
+ *   @OA\Property(
  *     property="Country",
  *     description="Country",
  *     type="string"
@@ -398,8 +404,11 @@ class Account extends Model
         'CardExpires' => 'string',
         'BillPhone' => 'string',
         'LastName_U' => 'string',
+        'LessonLevel' => 'integer',
+        'CxnSpeed' => 'integer',
         'LastName' => 'string',
         'AlwaysUseDefault' => 'boolean',
+        'CardType' => 'integer',
         'AccountID' => 'integer',
         'Phone' => 'string',
         'AutoSMS' => 'boolean',
@@ -417,6 +426,8 @@ class Account extends Model
         'Zip' => 'string',
         'BillPhoneExt' => 'string',
         'BillStreet' => 'string',
+        'LessonAgeRange' => 'integer',
+        'OS' => 'integer',
         'Balance' => 'integer',
         'CardCVV' => 'string',
         'InstructorID' => 'integer',
@@ -430,15 +441,18 @@ class Account extends Model
         'BillZip' => 'string',
         'City' => 'string',
         'CardHolder' => 'string',
+        'FB_UserID' => 'integer',
         'Country' => 'string',
         'PasswordSalt' => 'string',
         'State' => 'string',
         'BillCompany' => 'string',
         'FB_SessionKey' => 'string',
+        'LessonGender' => 'integer',
         'PasswordHash' => 'string',
         'AddressHeader' => 'string',
         'BillCity' => 'string',
         'CardNumber' => 'string',
+        'LessonFeeRange' => 'integer',
         'FirstName_U' => 'string',
         'FirstName' => 'string',
         'Gender' => 'boolean'

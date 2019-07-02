@@ -20,3 +20,11 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index');
 
+
+
+
+Route::resource('academies', 'AcademyController');
+
+Route::resource('accounts', 'AccountController');
+
+Route::resource('swings', 'SwingController');
