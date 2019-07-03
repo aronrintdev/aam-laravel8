@@ -5,14 +5,23 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Str;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Connection;
 
-class V1UserProvider implements UserProvider {
+use Tymon\JWTAuth\Contracts\Providers\Auth as JWTContract;
+
+class V1UserProvider implements UserProvider, JWTContract {
 
     protected $conn = null;
+    protected $u    = null;
 
-    public function __construct($db) {
+    public function __construct(Connection $db) {
         $this->conn = $db;
     }
+
+    public function byId($id) {
+        return $this->retrieveById($id);
+    }
+
     public function retrieveById($identifier) {
         $x = $this->conn->table('Accounts');
         $x->where('Email', $identifier);
@@ -28,6 +37,10 @@ class V1UserProvider implements UserProvider {
     }
 
     public function updateRememberToken(Authenticatable $user, $token) {
+    }
+
+    public function byCredentials(array $credentials) {
+        return $this->retrieveByCredentials($credentials);
     }
 
     public function retrieveByCredentials(array $credentials) {
@@ -56,8 +69,13 @@ class V1UserProvider implements UserProvider {
         \App\User::unguard();
         $u = new \App\User((array)$user);
         \App\User::reguard();
+        $this->u = $u;
         return $u;
 
+    }
+
+    public function user() {
+        return $this->u;
     }
 
     public function validateCredentials(Authenticatable $user, array $credentials) {
