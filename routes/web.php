@@ -16,15 +16,15 @@ Route::get('/', function () {
 });
 
 
-Auth::routes();
+//Auth::routes();
 
 Route::get('/home', 'HomeController@index');
 
 
+Route::group(['middleware' => 'auth:web'], function () {
+    Route::resource('academies', 'AcademyController');
 
+    Route::resource('accounts', 'AccountController');
 
-Route::resource('academies', 'AcademyController');
-
-Route::resource('accounts', 'AccountController');
-
-Route::resource('swings', 'SwingController');
+    Route::resource('swings', 'SwingController');
+});
