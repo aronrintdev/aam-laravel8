@@ -47,7 +47,7 @@ return [
         ],
 
         'backend' => [
-            'driver' => 'access_token',
+            'driver' => 'token',
             'provider' => 'robotusers',
         ],
 
