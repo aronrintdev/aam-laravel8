@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="overflow-x:visible">
 <head>
     <meta charset="UTF-8">
     <title>InfyOm Generator</title>
@@ -25,13 +25,18 @@
 
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <style>
+        table th {
+            background-color:white;
+        }
+    </style>
 
     @yield('css')
 </head>
 
-<body class="skin-blue sidebar-mini">
+<body class="skin-blue sidebar-mini" style="overflow-x:scroll">
 @if (!Auth::guest())
-    <div class="wrapper">
+    <div class="wrapper" style="overflow-x:initial !important">
         <!-- Main Header -->
         <header class="main-header">
 
