@@ -88,8 +88,8 @@ class InstructorRepository extends BaseRepository
      */
     public function forAcademy($academyId, $search = [], $skip = null, $limit = null, $columns = ['*'])
     {
+        $columns[] = 'Accounts.AccountID';
         $query = $this->model->newQuery();
-        $query->select('Accounts.*');
         $query->where('AcademyInstructors.AcademyID', '=', $academyId);
         if (count($search)) {
             foreach($search as $key => $value) {
