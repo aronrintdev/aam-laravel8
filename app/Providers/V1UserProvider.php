@@ -66,9 +66,16 @@ class V1UserProvider implements UserProvider, JWTContract {
         // that there are no matching users for these given credential arrays.
         $user = $query->first();
 
+        if (!$user) {
+            return null;
+        }
         \App\User::unguard();
         $u = new \App\User((array)$user);
         \App\User::reguard();
+        if (!$this->validateCredentials($u, $credentials)) {
+            return null;
+        }
+
         $this->u = $u;
         return $u;
 
@@ -88,7 +95,9 @@ class V1UserProvider implements UserProvider, JWTContract {
         }
         //Laravel encoded passwords don't save the CAPICOM encrypted pwd, legacy sqlserver / asp does tho
         if (trim($user->PasswordEx) == '') {
-            return (\Hash::check($credentials['password'], trim($user->PasswordHash)));
+            if(\Hash::check($credentials['password'], trim($user->PasswordHash))) {
+                return true;
+            }
         }
         //sqlsrvr likes to give padded whitespace
         $computedHash = ( hash( 'sha256',  trim($user->PasswordSalt) . hash( 'sha256',   trim($credentials['password']) . trim($user->PasswordSalt) )));
