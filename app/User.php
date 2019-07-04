@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Str;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -23,7 +24,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'FirstName', 'LastName', 'Address', 'City', 'State', 'Zip',
+        'name', 'email', 'FirstName', 'LastName', 'Address', 'City', 'State', 'Zip', 'Email',
     ];
 
     /**
@@ -52,4 +53,37 @@ class User extends Authenticatable implements JWTSubject
         }
         return false;
     }
+
+    public function getKey() {
+        return $this->Email;
+    }
+
+    public function getEmailForPasswordReset()
+    {
+        return $this->Email;
+    }
+
+    /**
+     * MS Capitalization issue with email / Email
+     */
+    public function routeNotificationForMail($notification = null) {
+        return $this->getEmailForPasswordReset();
+    }
+
+    public function routeNotificationFor($driver, $notification = null)
+    {
+        if (method_exists($this, $method = 'routeNotificationFor'.Str::studly($driver))) {
+            return $this->{$method}($notification);
+        }
+
+        switch ($driver) {
+            case 'database':
+                return $this->notifications();
+            case 'mail':
+                return $this->getEmailForPasswordReset();
+            case 'nexmo':
+                return $this->phone_number;
+        }
+    }
+
 }
