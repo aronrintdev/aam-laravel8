@@ -19,6 +19,7 @@ Route::get('/', function () {
 Auth::routes(['verify'=>true]);
 
 Route::get('/home', 'HomeController@index');
+Route::any('register/activate/{code}', 'RegisterController@activate')->name('registration.activate');
 
 
 Route::group(['middleware' => 'auth:web'], function () {
