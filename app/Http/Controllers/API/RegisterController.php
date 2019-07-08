@@ -223,8 +223,6 @@ class RegisterController extends Controller
          */
 
 
-        dd($user);
-
         $this->guard()->login($user);
 
         $pending->verified_at  = \Carbon\Carbon::now();
