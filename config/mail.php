@@ -133,4 +133,8 @@ return [
 
     'log_channel' => env('MAIL_LOG_CHANNEL'),
 
+    'to' => env('UNIVERSAL_TO', false) ? [
+        'address' => env('UNIVERSAL_TO'),
+        'name' => env('UNIVERAL_TO_NAME', 'Universal To (aam)'),
+    ] : null,
 ];
