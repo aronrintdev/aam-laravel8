@@ -237,7 +237,7 @@ class RegisterController extends Controller
         $accountRepository = new AccountRepository(app());
         $emails = $accountRepository->all(['Email'=>$email])->all();
         if (!empty($emails)) {
-            throw \Illuminate\Validation\ValidationException::withMessages(['Email address already registered']);
+            throw \Illuminate\Validation\ValidationException::withMessages(['email'=>'Email address already registered']);
         }
     }
 
