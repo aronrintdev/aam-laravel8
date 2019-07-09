@@ -65,7 +65,7 @@ set('deploy_path', '/home/ubuntu/aam');
 
 // Hosts
 
-host('45.55.60.11')
+host('167.71.185.13')
 ->stage('test')
 ->user('ubuntu')
 ->identityFile('~/.ssh/id_rsa')
