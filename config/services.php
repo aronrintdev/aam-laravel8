@@ -39,5 +39,9 @@ return [
             'tolerance' => env('STRIPE_WEBHOOK_TOLERANCE', 300),
         ],
     ],
-
+    //mandrill uses same api key as password
+    //not sure why laravel requires in 2 separate spots
+    'mandrill' => [
+        'secret' => env('MAIL_PASSWORD'),
+    ],
 ];
