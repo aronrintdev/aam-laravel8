@@ -35,7 +35,7 @@ class RegistrationVerification extends Mailable
                 Lang::getFromJson('Verify Email Address'),
                 $url
             )
-            ->line(Lang::getFromJson('Please note, your account will not be accessible until you have authenticated your account information by verifying your email address entered at sign up. If you did not create an account, no further action is required.'));
+            ->line(Lang::getFromJson('Please note, your account will not be accessible until you have authenticated your account information by verifying your email address entered at sign up. If you did not create an account, no further action is required.'))
             ->line(Lang::getFromJson('If you need further support help, please contact us at <support@v1sports.com>.'));
     }
 
