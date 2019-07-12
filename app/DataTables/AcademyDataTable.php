@@ -64,6 +64,58 @@ class AcademyDataTable extends DataTable
      */
     protected function getColumns()
     {
+
+        return [
+            [
+                'name'=>'AcademyID',
+                'data'=>'AcademyID',
+                'title'=>'Academy ID',
+                'orderable'=>true,
+                'searchable'=>true,
+            ],
+            [
+                'name'=>'HiddenFlag',
+                'data'=>'HiddenFlag',
+                'title'=>'Hidden',
+                'orderable'=>false,
+                'searchable'=>false,
+            ],
+            [
+                'name'=>'Name',
+                'data'=>'Name',
+                'title'=>'Name',
+                'orderable'=>true,
+                'searchable'=>true,
+            ],
+            [
+                'name'=>'Live',
+                'data'=>'Live',
+                'title'=>'Live',
+                'orderable'=>true,
+                'searchable'=>false,
+            ],
+            [
+                'name'=>'PrivateFlag',
+                'data'=>'PrivateFlag',
+                'title'=>'Private',
+                'orderable'=>false,
+                'searchable'=>false,
+            ],
+            [
+                'name'=>'AcademyCountry',
+                'data'=>'AcademyCountry',
+                'title'=>'Country',
+                'orderable'=>true,
+                'searchable'=>true,
+            ],
+            [
+                'name'=>'Description',
+                'data'=>'Description',
+                'title'=>'Desc',
+                'orderable'=>true,
+                'searchable'=>true,
+            ],
+        ];
         return [
             'AcademyID',
             'HiddenFlag',
