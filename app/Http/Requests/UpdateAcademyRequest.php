@@ -15,7 +15,11 @@ class UpdateAcademyRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        if ($this->user()->isApiAgent()) {
+            return true;
+        }
+        $academy = Academy::find($this->input('id'));
+        return $academy && $this->user()->can('update', $academy);
     }
 
     /**

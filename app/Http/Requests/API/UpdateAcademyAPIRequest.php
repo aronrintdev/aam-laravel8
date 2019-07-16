@@ -5,8 +5,6 @@ namespace App\Http\Requests\API;
 use App\Models\Academy;
 use InfyOm\Generator\Request\APIRequest;
 
-$PHPDOCS$
-$DOCS$
 class UpdateAcademyAPIRequest extends APIRequest
 {
     /**
@@ -16,7 +14,12 @@ class UpdateAcademyAPIRequest extends APIRequest
      */
     public function authorize()
     {
-        return true;
+        if ($this->user()->isApiAgent()) {
+            return true;
+        }
+        $academy = Academy::find($this->route('academy'));
+        if($academy) $academy->AcademyID = trim($academy->AcademyID);
+        return $academy && $this->user()->can('update', $academy);
     }
 
     /**
@@ -26,6 +29,8 @@ class UpdateAcademyAPIRequest extends APIRequest
      */
     public function rules()
     {
-        return Academy::$rules;
+        //don't enforce any required params for updating
+        return [];
+        //return Academy::$rules;
     }
 }
