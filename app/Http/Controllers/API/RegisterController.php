@@ -269,7 +269,7 @@ class RegisterController extends Controller
         $newSalt = substr(base64_encode(random_bytes(16)), 0, 16);
         $newPassword = hash('sha256', $newSalt. hash('sha256', $data['password'] . $newSalt));
 
-        $names = explode(' ', $data['name');
+        $names = explode(' ', $data['name']);
         $firstname = @array_shift($names);
         $lastname = implode(' ', $names);
 
