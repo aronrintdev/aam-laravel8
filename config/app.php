@@ -173,6 +173,7 @@ return [
         \InfyOm\AdminLTETemplates\AdminLTETemplatesServiceProvider::class, 
         \Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         Sentry\Laravel\ServiceProvider::class,
+        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
 
 
         /*
@@ -238,6 +239,7 @@ return [
         'JWTAuth'    => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
         'Sentry' => Sentry\Laravel\Facade::class,
+        'Bugsnag' => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
     ],
 
 ];
