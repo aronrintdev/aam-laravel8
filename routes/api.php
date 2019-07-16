@@ -16,7 +16,8 @@ use Illuminate\Http\Request;
 Route::group(['middleware' => 'guest'], function () {
     Route::post('login', 'UserController@login', 'login');
     Route::post('register', 'RegisterController@register', 'register');
-    Route::any('register/activate/{code}', 'RegisterController@activate')->name('registration.activate');
+    Route::any('/register/activate/{code}', 'RegisterController@activate')->name('registration.activate');
+    Route::any('/register/resend', 'RegisterController@resend', 'resend')->name('registration.resend');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

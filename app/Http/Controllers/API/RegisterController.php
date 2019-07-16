@@ -150,6 +150,65 @@ class RegisterController extends Controller
         return response()->json($respjson);
     }
 
+    /**
+     * Resend the verification notification.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     *
+     * @OA\Post(
+     *   path="/register/resend",
+     *   summary="Resend verification notification",
+     *   tags={"Register"},
+     *   @OA\MediaType(
+     *     mediaType="application/json"
+     *   ),
+     *   @OA\RequestBody(
+     *     description="",
+     *     required=true,
+     *     @OA\MediaType(
+     *       mediaType="application/json",
+     *       example={"email": "foo@example.com"},
+     *       @OA\Schema(
+     *         @OA\Property(
+     *           property="email",
+     *         ),
+     *       ),
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Validation Successfully sent",
+     *   ),
+     *   @OA\Response(
+     *     response=422,
+     *     description="Validation failed",
+     *   )
+     * )
+     */
+    public function resend(Request $request)
+    {
+        $pending = PendingRegistration::where('email', $request->input('email'))
+            ->first();
+        if (!$pending) {
+            return response()->json(['email'=>$request->input('email')], 404);
+        }
+        $code = $pending['code'];
+        $url  = $pending['url'];
+
+        //\Log::info('URL ' . $url, ['all'=> $request->all()]);
+        $user = new \App\User(['Email'=>$request->input('email')]);
+        $mail   = new \App\Mail\RegistrationVerification($user, $code, $url);
+        Mail::to( $user->Email )->send($mail);
+
+       $respjson = ['message'=>'Verification successfully sent'];
+        //obviously don't send code with the response, this is just for testing
+        if (config('app.env') == 'testing' || config('app.env') == 'local') {
+            $respjson['code'] = $code;
+        }
+
+        return response()->json($respjson);
+    }
 
     /**
      * Activate a registration after email is verified.
