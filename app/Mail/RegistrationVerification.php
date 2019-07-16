@@ -29,6 +29,7 @@ class RegistrationVerification extends Mailable
             $url .= $code;
         }
         $this->message = (new MailMessage)
+            ->greeting(' ')
             ->subject(Lang::getFromJson('Verify Email Address | V1 Sports'))
             ->line(Lang::getFromJson('Click the button below to verify your email address and activate your account.'))
             ->action(
