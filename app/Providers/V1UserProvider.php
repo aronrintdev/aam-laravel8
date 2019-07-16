@@ -23,8 +23,10 @@ class V1UserProvider implements UserProvider, JWTContract {
     }
 
     public function retrieveById($identifier) {
-        $x = $this->conn->table('Accounts');
-        $x->where('Email', $identifier);
+        $x = $this->conn->table('Accounts as a')
+            ->select('a.*', 'ai.AcademyID', 'ai.IsMaster', 'ai.IsEnabled as IsInstructor', 'ai.IsHidden')
+            ->leftJoin('AcademyInstructors as ai', 'a.AccountID', '=', 'ai.InstructorID')
+            ->where('Email', $identifier);
         $user = $x->first();
 
         \App\User::unguard();
