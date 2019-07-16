@@ -516,8 +516,9 @@ class Academy extends Model
 
     public $table = 'Academies';
     
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
+    public $timestamps = false;
+    #const CREATED_AT = 'created_at';
+    #const UPDATED_AT = 'updated_at';
 
 
     protected $dates = ['deleted_at'];
