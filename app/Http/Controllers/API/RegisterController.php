@@ -269,18 +269,22 @@ class RegisterController extends Controller
         $newSalt = substr(base64_encode(random_bytes(16)), 0, 16);
         $newPassword = hash('sha256', $newSalt. hash('sha256', $data['password'] . $newSalt));
 
+        $names = explode(' ', $data['name');
+        $firstname = @array_shift($names);
+        $lastname = implode(' ', $names);
 
         $a = new \App\Models\Account([
-            'FirstName' => $data['name'],
-            'Email' => $data['email'],
-            'PasswordSalt'=>$newSalt,
-            'PasswordHash'=>$newPassword,
+            'FirstName'    => $firstname,
+            'LastName'     => $lastname,
+            'Email'        => $data['email'],
+            'PasswordSalt' => $newSalt,
+            'PasswordHash' => $newPassword,
         ]);
         $a->save();
         $u = new User([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password'=>$newPassword,
+            'name'     => $data['name'],
+            'email'    => $data['email'],
+            'password' => $newPassword,
         ]);
 
         return $u;
