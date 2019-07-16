@@ -341,9 +341,11 @@ class RegisterController extends Controller
         ]);
         $a->save();
         $u = new User([
-            'name'     => $data['name'],
-            'email'    => $data['email'],
-            'password' => $newPassword,
+            'LastName'  => $firstname,
+            'FirstName' => $lastname,
+            'email'     => $data['email'],
+            'Email'     => $data['email'],
+            'password'  => $newPassword,
         ]);
 
         return $u;
