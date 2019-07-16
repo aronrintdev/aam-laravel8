@@ -20,7 +20,7 @@ class EnableCors {
 
         // ALLOW OPTIONS METHOD
         $headers = [
-            'Access-Control-Allow-Methods'=> 'POST, GET, OPTIONS, PUT, DELETE',
+            'Access-Control-Allow-Methods'=> 'POST, GET, OPTIONS, PUT, PATCH, DELETE',
             'Access-Control-Allow-Headers'=> 'Content-Type, X-Auth-Token, Origin,Authorization,X-Csrf-Token,X-Requested-With'
         ];
         if($request->getMethod() == "OPTIONS") {
