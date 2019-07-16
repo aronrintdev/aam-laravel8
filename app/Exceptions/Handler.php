@@ -49,6 +49,15 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($request->expectsJson() || $request->acceptsAnyContentType()) {
+            if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
+                return response()->json(['errors'=>[ ['status'=>403, 'title'=>'Forbidden'] ]], 403);
+            }
+            if ($exception instanceof \Illuminate\Validation\ValidationException) {
+                return response()->json(['errors'=>[ ['status'=>422, 'title'=>'Validation Exception', 'message'=>$exception->errorBag('default')->getMessage()] ]], 422);
+            }
+
+        }
         return parent::render($request, $exception);
     }
 }
