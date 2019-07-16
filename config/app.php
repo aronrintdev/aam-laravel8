@@ -166,12 +166,13 @@ return [
         /*
          * Package Service Providers...
          */
-		Collective\Html\HtmlServiceProvider::class,
-		Laracasts\Flash\FlashServiceProvider::class,
-		Prettus\Repository\Providers\RepositoryServiceProvider::class,
-		\InfyOm\Generator\InfyOmGeneratorServiceProvider::class,
-		\InfyOm\AdminLTETemplates\AdminLTETemplatesServiceProvider::class, 
-		\Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+        Collective\Html\HtmlServiceProvider::class,
+        Laracasts\Flash\FlashServiceProvider::class,
+        Prettus\Repository\Providers\RepositoryServiceProvider::class,
+        \InfyOm\Generator\InfyOmGeneratorServiceProvider::class,
+        \InfyOm\AdminLTETemplates\AdminLTETemplatesServiceProvider::class, 
+        \Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+        Sentry\Laravel\ServiceProvider::class,
 
 
         /*
@@ -236,6 +237,7 @@ return [
         'Flash'     => Laracasts\Flash\Flash::class,
         'JWTAuth'    => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
+        'Sentry' => Sentry\Laravel\Facade::class,
     ],
 
 ];
