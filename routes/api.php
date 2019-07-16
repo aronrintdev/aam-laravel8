@@ -28,8 +28,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group(['middleware' => 'auth:backend,api'], function () {
     Route::get('/search-accounts/', 'AccountAPIController@search');
     Route::post('/update-password/', 'AccountAPIController@updatePassword');
-    Route::get('/academies/{id}', 'AcademyAPIController@show');
-    Route::get('/academies/{id}/instructors', 'AcademyAPIController@showInstructors');
+    Route::get('/academies/{id}', 'AcademyAPIController@show')->name('academies.show');
+    Route::get('/academies/{id}/instructors', 'AcademyAPIController@showInstructors')->name('academies.instructors');
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
