@@ -53,7 +53,6 @@ set('shared_dirs', [
 ]);
 // Laravel shared file
 set('shared_files', [
-    '.env',
 ]);
 
 // Writable dirs by web server 
@@ -99,7 +98,7 @@ task('build:package', function () {
     $stage = input()->hasArgument('stage') ? ''.input()->getArgument('stage') : 'test';
     run("mkdir -p build/");
     $files = [
-        'public/', 'app/', 'ci/', 'config/', 'database/', 'vendor/', 'resources/', 'routes/', 'bootstrap/', 'artisan', 'docker-compose.yml',
+        'public/', 'app/', 'ci/', 'config/', 'database/', 'vendor/', 'resources/', 'routes/', 'bootstrap/', 'artisan', 'docker-compose.yml', 'docker-compose.'.$stage.'.yml', '.env',
     ];
     if ($stage == 'test') {
         $files[] = "docker-compose.test.yml";
@@ -141,7 +140,7 @@ desc('Execute artisan migrate');
 task('artisan:migrate', function () use ($dockerProjectName) {
     $stage = input()->hasArgument('stage') ? ''.input()->getArgument('stage') : 'test';
     $dockerProjectName = 'vos'.$stage;
-    run("cd {{release_path}} && SOURCE={{release_path}} docker-compose -p $dockerProjectName run --rm -T aam-webapp php artisan migrate --database=backendmysql --force");
+    run("cd {{release_path}} && SOURCE={{release_path}} docker-compose -f docker-compose.yml -f docker-compose.$stage.yml -p $dockerProjectName run --rm -T aam-webapp php artisan migrate --database=backendmysql --force");
 })->once();
 
 
