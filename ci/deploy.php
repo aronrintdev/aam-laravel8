@@ -64,6 +64,14 @@ set('http_user', 'www-data');
 set('deploy_path', '/home/ubuntu/aam');
 
 // Hosts
+host('134.209.42.80')
+->stage('prod')
+->user('ubuntu')
+->identityFile('~/.ssh/id_rsa')
+->multiplexing(false)
+    ->addSshOption('StrictHostKeyChecking', 'no')
+    ->set('deploy_path', '/home/ubuntu/aam');
+
 
 host('167.71.185.13')
 ->stage('test')
@@ -133,7 +141,7 @@ desc('Execute artisan migrate');
 task('artisan:migrate', function () use ($dockerProjectName) {
     $stage = input()->hasArgument('stage') ? ''.input()->getArgument('stage') : 'test';
     $dockerProjectName = 'vos'.$stage;
-    run("cd {{release_path}} && SOURCE={{release_path}} docker-compose -p $dockerProjectName exec -T aam-webapp php artisan migrate --database=backendmysql --force");
+    run("cd {{release_path}} && SOURCE={{release_path}} docker-compose -p $dockerProjectName run --rm -T aam-webapp php artisan migrate --database=backendmysql --force");
 })->once();
 
 
