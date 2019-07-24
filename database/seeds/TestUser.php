@@ -39,6 +39,13 @@ class TestUser extends Seeder
             'PasswordHash'       => \Hash::make('password'),
         ]);
 
+        $nancyId = DB::table('Accounts')->insertGetId([
+            'FirstName'          => 'Nancy',
+            'LastName'           => 'NewCustomer',
+            'Email'              => 'nancy@customer.test',
+            'PasswordHash'       => \Hash::make('password'),
+        ]);
+
         DB::table('Instructors')->insert([
             'AcademyID'    => '',
             'InstructorID' => $paulineId,
