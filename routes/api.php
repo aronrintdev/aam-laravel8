@@ -43,4 +43,5 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::get('/accounts/{id}/academies', 'AccountAPIController@showAcademies');
     Route::post('/instructors/{id}/students', 'InstructorAPIController@showStudents');
+    Route::post('/academies/{id}/enroll', 'AcademyAPIController@enrollAcademy');
 });

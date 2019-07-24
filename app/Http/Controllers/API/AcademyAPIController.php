@@ -9,6 +9,7 @@ use App\Repositories\AcademyRepository;
 use App\Repositories\AccountRepository;
 use App\Repositories\InstructorRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\AppBaseController;
 use Response;
 
@@ -338,4 +339,55 @@ class AcademyAPIController extends AppBaseController
         $resource = new Collection($accountList->all(), new InstructorTransformer);
         return response()->json((new Manager)->createData($resource)->toArray());
     }
+
+    /**
+     * @param String $id academyID 
+     * @param Request $request
+     * @return Response
+     *
+     * @OA\Post(
+     *   path="/academies/{id}/enroll",
+     *   summary="Join an academy as a student",
+     *   tags={"Academy"},
+     *   description="Join an Academy",
+     *   @OA\Parameter(
+     *     name="id",
+     *     description="id of Academy",
+     *     @OA\Schema(ref="#/components/schemas/Academy/properties/AcademyID"),
+     *     required=true,
+     *     in="path"
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *   )
+     * )
+     */
+    public function enrollAcademy($id, Request $request)
+    {
+        $user = \Auth::user();
+        $academy = $this->academyRepository->find($id);
+
+        //This should check academy join preferences, but we don't
+        //have that in the legacy DB
+
+
+        //if the user is an API agent, they're not really an Account record
+        //of the legacy DB, so don't do anything
+        if($user->isApiAgent()) {
+            return response()->json(['errors'=>['status'=>402]], 402);
+        }
+
+        try {
+            DB::table('AcademyStudents')->insert([
+                'AcademyID'=>trim($academy->AcademyID),
+                'AccountID'=>$user->AccountID,
+            ]);
+        } catch (\Exception $e) {
+            //unique key prevents duplicates
+        }
+
+        return response()->json([], 200);
+    }
+
 }
