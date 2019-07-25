@@ -194,7 +194,7 @@ class RegisterController extends Controller
             return response()->json(['email'=>$request->input('email')], 404);
         }
         $code = $pending['code'];
-        $url  = $pending['url'];
+        $url  = $pending->request['url'];
 
         //\Log::info('URL ' . $url, ['all'=> $request->all()]);
         $user = new \App\User(['Email'=>$request->input('email')]);
