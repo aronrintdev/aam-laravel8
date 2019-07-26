@@ -176,18 +176,25 @@ class V1UserProvider implements UserProvider, JWTContract {
     public function makeKeyFromPwd2($pwd, $salt) {
             // The following algorithm is taken from:
             // <link>http://msdn.microsoft.com/en-us/library/windows/desktop/aa379916%28v=vs.85%29.aspx</link>
-            $baseData = sha1($salt.utf8_encode($pwd), TRUE);
-//            $baseData = sha1(utf8_encode($pwd) . $salt, TRUE);
-            $baseData = sha1(utf8_encode($pwd), TRUE);
+//            $baseData = sha1($salt.utf8_encode($pwd), false);
+            $baseData = sha1(utf8_encode($pwd) . $salt, false);
+//            $baseData = sha1(utf8_encode($pwd), false);
+            $newbasedata = [];
+            for ($i=0; $i<40; $i+=2) {
+                $newbasedata[] = hexdec($baseData[$i].$baseData[$i+1]);
+            }
+            $baseData = $newbasedata;
             $buffer1 = [];
             $buffer2 = [];
 
             for ($i = 0; $i < 64; $i++) {
                 $buffer1[$i] = 0x36;
                 $buffer2[$i] = 0x5C;
-                if ($i <= mb_strlen($baseData, '8bit')) {
-                    @$buffer1[$i] ^= $baseData[$i];
-                    @$buffer2[$i] ^= $baseData[$i];
+               // if ($i <= mb_strlen($baseData, '8bit')) {
+                //if ($i < mb_strlen($baseData, '8bit')) {
+                if ($i < count($baseData)) {
+                    $buffer1[$i] = $buffer1[$i] ^ decbin($baseData[$i]);
+                    $buffer2[$i] = $buffer2[$i] ^ decbin($baseData[$i]);
                 }
             }
 
@@ -206,6 +213,8 @@ class V1UserProvider implements UserProvider, JWTContract {
 
             
 
+           //$buffer1Hash = implode('', $buffer1);
+           //$buffer2Hash = implode('', $buffer2);
            $buffer1Hash = sha1( implode('', $buffer1), TRUE);
            $buffer2Hash = sha1( implode('', $buffer2), TRUE);
 
