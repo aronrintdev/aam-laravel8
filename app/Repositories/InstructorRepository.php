@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Instructor;
 use App\Repositories\BaseRepository;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class InstructorRepository
@@ -106,5 +107,35 @@ class InstructorRepository extends BaseRepository
         $query->join('Accounts',           'Instructors.InstructorID', 'Accounts.AccountID');
         $query->join('AcademyInstructors', 'Accounts.AccountID', 'AcademyInstructors.InstructorID');
         return $query->get($columns);
+    }
+
+
+    /**
+     * select * FROM [Accounts]
+     * inner join [InstructorStudents] on [Accounts].[AccountID] = [InstructorStudents].[AccountID]
+     * where [Instructors].[InstructorID] = '$instructorId'
+     */
+    public function students($instructorId, $skip = null, $limit = null, $columns = ['*'])
+    {
+        $columns = ['Accounts.*'];
+        //$query = $this->model->newQuery();
+        $query = (new \App\Models\Account())->newQuery();
+        $query->where('InstructorStudents.InstructorID', '=', $instructorId);
+        $query->join('InstructorStudents',           'InstructorStudents.AccountID', 'Accounts.AccountID');
+        return $query->get($columns);
+    }
+
+    public function totalStudents($instructorId)
+    {
+        $columns = [DB::raw('COUNT(*) as total_count')];
+        //$query = $this->model->newQuery();
+        $query = (new \App\Models\Account())->newQuery();
+        $query->where('InstructorStudents.InstructorID', '=', $instructorId);
+        $query->join('InstructorStudents',           'InstructorStudents.AccountID', 'Accounts.AccountID');
+
+        //get is different than select
+        $results = $query->select($columns);
+
+        return !empty($results) ? $results->first()->total_count : 0;
     }
 }

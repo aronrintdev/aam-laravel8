@@ -327,6 +327,27 @@ class InstructorAPIController extends AppBaseController
      *     ref="#/components/responses/Students"
      *   )
      * )
+     * @OA\GET(
+     *   path="/instructors/{id}/students",
+     *   summary="Get student accounts for an instructor",
+     *   tags={"Instructor"},
+     *   description="Get student accounts",
+     *   @OA\MediaType(
+     *     mediaType="application/json"
+     *   ),
+     *   @OA\Parameter(
+     *     name="id",
+     *     description="id of Instructor",
+     *     @OA\Schema(ref="#/components/schemas/InstructorRaw/properties/InstructorID"),
+     *     required=true,
+     *     in="path"
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     ref="#/components/responses/Students"
+     *   )
+     * )
      */
     public function showStudents($id, Request $request)
     {
@@ -337,17 +358,36 @@ class InstructorAPIController extends AppBaseController
         /** @var Instructor $instructor */
         $instructor = $this->instructorRepository->find($id);
 
+        if (empty($instructor)) {
+            return $this->sendError('Instructor not found');
+        }
+
+        /*
         $this->accountRepository = new AccountRepository(app());
         $accountList = $this->accountRepository->all(
             ['AccountID' => $input],
             $request->get('skip'),
-            $request->get('limit') ? $request->get('limit') : 10
+            $request->get('limit') ? $request->get('limit') : 10,
         );
+        $total = $this->accountRepository->total(
+            ['AccountID' => $input],
+        );
+         */
+        $accountList = $this->instructorRepository->students(
+            $instructor->InstructorID,
+            $request->get('skip'),
+            $request->get('limit') ? $request->get('limit') : 10,
+        );
+        $total = $this->instructorRepository->totalStudents(
+            $instructor->InstructorID
+        );
+
         $manager = new Manager();
         $manager->setSerializer(new JsonApiSerializer());
-        $resource = new Collection($accountList->all(), new StudentTransformer);
+        $resource = (new Collection($accountList->all(), new StudentTransformer))->setMetaValue('total', $total);
         return response()->json((new Manager)->createData($resource)->toArray());
     }
+
     /*
     public function index(Request $request)
     {
