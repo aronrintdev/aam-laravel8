@@ -117,9 +117,9 @@ class InstructorRepository extends BaseRepository
      */
     public function students($instructorId, $includeAcademy=true, $skip = null, $limit = null, $columns = ['*'])
     {
-        $columns = ['Accounts.*'];
-        //$query = $this->model->newQuery();
+        $columns = ['Accounts.AccountID', 'Accounts.FirstName', 'Accounts.LastName', 'Accounts.Email'];
         $query = (new \App\Models\Account())->newQuery();
+        $query->where('InstructorStudents.InstructorID', '=', $instructorId);
         $query->leftjoin('InstructorStudents',           function($j) use($instructorId) {
             $j->on('InstructorStudents.AccountID', '=', 'Accounts.AccountID');
             $j->on('InstructorStudents.InstructorID', '=', \DB::raw($instructorId));
@@ -134,15 +134,18 @@ class InstructorRepository extends BaseRepository
                 $j->on('AcademyStudents.AcademyID', '=', 'AcademyInstructors.AcademyID');
             });
 
-            $query->where('AcademyInstructors.InstructorID', '=', $instructorId);
-        } else {
-            $query->where('InstructorStudents.InstructorID', '=', $instructorId);
+            $query->orWhere('AcademyInstructors.InstructorID', '=', $instructorId);
         }
-        /*
-        ini_set('html_errors', 0);
-        echo($query->toSql());
-        exit();
-         */
+        $query->groupBy(['Accounts.AccountID', 'Accounts.Email', 'Accounts.FirstName', 'Accounts.LastName']);
+
+        if (!is_null($skip)) {
+            $query->skip($skip);
+        }
+
+        if (!is_null($limit)) {
+            $query->limit($limit);
+        }
+
         return $query->get($columns);
     }
 
@@ -151,7 +154,7 @@ class InstructorRepository extends BaseRepository
         $columns = [DB::raw('COUNT(*) as total_count')];
         //$query = $this->model->newQuery();
         $query = (new \App\Models\Account())->newQuery();
-        //$query->where('InstructorStudents.InstructorID', '=', $instructorId);
+        $query->where('InstructorStudents.InstructorID', '=', $instructorId);
         $query->leftjoin('InstructorStudents',           function($j) use($instructorId) {
             $j->on('InstructorStudents.AccountID', '=', 'Accounts.AccountID');
             $j->on('InstructorStudents.InstructorID', '=', DB::raw($instructorId));
@@ -167,10 +170,9 @@ class InstructorRepository extends BaseRepository
                 $j->on('AcademyStudents.AcademyID', '=', 'AcademyInstructors.AcademyID');
             });
 
-            $query->where('AcademyInstructors.InstructorID', '=', $instructorId);
-        } else {
-            $query->where('InstructorStudents.InstructorID', '=', $instructorId);
+            $query->orWhere('AcademyInstructors.InstructorID', '=', $instructorId);
         }
+        $query->groupBy(['Accounts.AccountID']);
 
         //get is different than select
         $results = $query->select($columns);
