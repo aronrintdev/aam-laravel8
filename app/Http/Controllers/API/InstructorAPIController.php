@@ -362,24 +362,15 @@ class InstructorAPIController extends AppBaseController
             return $this->sendError('Instructor not found');
         }
 
-        /*
-        $this->accountRepository = new AccountRepository(app());
-        $accountList = $this->accountRepository->all(
-            ['AccountID' => $input],
-            $request->get('skip'),
-            $request->get('limit') ? $request->get('limit') : 10,
-        );
-        $total = $this->accountRepository->total(
-            ['AccountID' => $input],
-        );
-         */
         $accountList = $this->instructorRepository->students(
             $instructor->InstructorID,
+            true,
             $request->get('skip'),
             $request->get('limit') ? $request->get('limit') : 10,
         );
         $total = $this->instructorRepository->totalStudents(
-            $instructor->InstructorID
+            $instructor->InstructorID,
+            true,
         );
 
         $manager = new Manager();

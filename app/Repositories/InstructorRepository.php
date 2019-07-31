@@ -115,23 +115,62 @@ class InstructorRepository extends BaseRepository
      * inner join [InstructorStudents] on [Accounts].[AccountID] = [InstructorStudents].[AccountID]
      * where [Instructors].[InstructorID] = '$instructorId'
      */
-    public function students($instructorId, $skip = null, $limit = null, $columns = ['*'])
+    public function students($instructorId, $includeAcademy=true, $skip = null, $limit = null, $columns = ['*'])
     {
         $columns = ['Accounts.*'];
         //$query = $this->model->newQuery();
         $query = (new \App\Models\Account())->newQuery();
-        $query->where('InstructorStudents.InstructorID', '=', $instructorId);
-        $query->join('InstructorStudents',           'InstructorStudents.AccountID', 'Accounts.AccountID');
+        $query->leftjoin('InstructorStudents',           function($j) use($instructorId) {
+            $j->on('InstructorStudents.AccountID', '=', 'Accounts.AccountID');
+            $j->on('InstructorStudents.InstructorID', '=', \DB::raw($instructorId));
+        });
+        if ($includeAcademy) {
+            $query->leftjoin('AcademyStudents',              function($j) {
+                $j->on('AcademyStudents.AccountID', '=', 'Accounts.AccountID');
+            });
+
+            $query->leftjoin('AcademyInstructors',              function($j) use ($instructorId){
+                $j->on('AcademyInstructors.InstructorID', '=', \DB::raw($instructorId));
+                $j->on('AcademyStudents.AcademyID', '=', 'AcademyInstructors.AcademyID');
+            });
+
+            $query->where('AcademyInstructors.InstructorID', '=', $instructorId);
+        } else {
+            $query->where('InstructorStudents.InstructorID', '=', $instructorId);
+        }
+        /*
+        ini_set('html_errors', 0);
+        echo($query->toSql());
+        exit();
+         */
         return $query->get($columns);
     }
 
-    public function totalStudents($instructorId)
+    public function totalStudents($instructorId, $includeAcademy=true)
     {
         $columns = [DB::raw('COUNT(*) as total_count')];
         //$query = $this->model->newQuery();
         $query = (new \App\Models\Account())->newQuery();
-        $query->where('InstructorStudents.InstructorID', '=', $instructorId);
-        $query->join('InstructorStudents',           'InstructorStudents.AccountID', 'Accounts.AccountID');
+        //$query->where('InstructorStudents.InstructorID', '=', $instructorId);
+        $query->leftjoin('InstructorStudents',           function($j) use($instructorId) {
+            $j->on('InstructorStudents.AccountID', '=', 'Accounts.AccountID');
+            $j->on('InstructorStudents.InstructorID', '=', DB::raw($instructorId));
+        });
+
+        if ($includeAcademy) {
+            $query->leftjoin('AcademyStudents',              function($j) {
+                $j->on('AcademyStudents.AccountID', '=', 'Accounts.AccountID');
+            });
+
+            $query->leftjoin('AcademyInstructors',              function($j) use ($instructorId){
+                $j->on('AcademyInstructors.InstructorID', '=', DB::raw($instructorId));
+                $j->on('AcademyStudents.AcademyID', '=', 'AcademyInstructors.AcademyID');
+            });
+
+            $query->where('AcademyInstructors.InstructorID', '=', $instructorId);
+        } else {
+            $query->where('InstructorStudents.InstructorID', '=', $instructorId);
+        }
 
         //get is different than select
         $results = $query->select($columns);
