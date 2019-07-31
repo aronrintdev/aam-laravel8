@@ -403,4 +403,59 @@ class AccountAPIController extends AppBaseController
             ],
         ];
     }
+
+    /**
+     * @param Request $request
+     * @return Response
+     *
+     * @OA\Post(
+     *   path="/accounts/{id}/follow/{instructorId}",
+     *   summary="Follow an instructor",
+     *   tags={"Account"},
+     *   description="Create a connection to an instructor",
+     *   @OA\MediaType(
+     *      mediaType="application/json"
+     *   ),
+     *   @OA\Parameter(
+     *     name="id",
+     *     description="id of user Account",
+     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID"),
+     *     required=true,
+     *     in="path"
+     *   ),
+     *   @OA\Parameter(
+     *     name="instructorId",
+     *     description="id of instructor Account",
+     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID"),
+     *     required=true,
+     *     in="path"
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *   )
+     * )
+     */
+
+    public function follow(Request $request, $id, $instructorId)
+    {
+        $user = \Auth::user();
+        $account = $this->accountRepository->find($id);
+        if ($user->AccountID != $id) {
+            //check if instructor is instructor
+            //TODO: only allow instructor adding student if
+            //student is already in academy
+
+            if ($user->AccountID != $instructorId) {
+                return response()->json(['errors'=>['status'=>403]], 403);
+            }
+        }
+        \DB::table('InstructorStudents')->insert([
+            'InstructorID'  => $instructorId,
+            'AccountID'     => $id,
+            'StudentCharge' => 0,
+        ]);
+
+        return $this->sendResponse([], 'Account saved successfully');
+    }
 }

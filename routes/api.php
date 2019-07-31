@@ -30,6 +30,7 @@ Route::group(['middleware' => 'auth:backend,api'], function () {
     Route::post('/update-password/', 'AccountAPIController@updatePassword');
     Route::get('/academies/{id}', 'AcademyAPIController@show')->name('academies.show');
     Route::get('/academies/{id}/instructors', 'AcademyAPIController@showInstructors')->name('academies.instructors');
+    Route::post('/accounts/{id}/follow/{instructorId}', 'AccountAPIController@follow')->name('accounts.follow');
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
