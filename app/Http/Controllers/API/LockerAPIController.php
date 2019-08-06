@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 //use App\Http\Requests\API\CreateInstructorAPIRequest;
 //use App\Http\Requests\API\UpdateInstructorAPIRequest;
 use App\Models\Swing;
+use App\Models\Instructor;
 use App\Repositories\SwingRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
@@ -109,12 +110,101 @@ class LockerAPIController extends AppBaseController
     }
 
     /**
+     * @param Request $request
+     * @return Response
+     *
+     * @OA\Post(
+     *   path="/locker/assignSwings",
+     *   summary="Assign a swing to yourself as instructor",
+     *   @OA\RequestBody(
+     *     description="list of swing IDs",
+     *     required=false,
+     *     @OA\MediaType(
+     *       mediaType="application/json",
+     *       @OA\Schema(
+     *         @OA\Property(
+     *           property="instructor_id",
+     *           type="integer",
+     *           format="int32"
+     *         ),
+     *         @OA\Property(
+     *           property="swing_ids",
+     *           description="Swing ID",
+     *           type="array",
+     *           @OA\Items(type="integer")
+     *         ),
+     *       )
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="List of all of videos connected to the logged in account which are not deleted",
+     *     @OA\MediaType(
+     *     mediaType="application/json",
+     *
+     *     @OA\Schema(
+     *      allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
+     *      @OA\Property(
+     *         property="data",
+     *         type="array",
+     *         @OA\Items(ref="#/components/schemas/swing_record")
+     *       )
+     *      )
+     *      )
+     *   )
+     * )
+     */
+    public function assignSwings(Request $request) {
+        $instructor = Instructor::find(
+            $request->input('instructor_id')
+        );
+        if (!$instructor) {
+            return response()->json('Unauthorized', 403);
+        }
+        if (\Auth::user()->AccountID != $instructor->InstructorID) {
+            return response()->json('Unauthorized', 403);
+        }
+        $swingIdList = $request->input('swing_ids');
+
+        //TODO: ensure the AccountIDs are related to the instructor or academy
+        //X-AUTHORIZE
+        //['SwingID' => $swingid, 'AccountID' => $request->input('AccountID')];
+
+        $swings = $this->swingRepository->all([
+            'SwingID'=>$swingIdList,
+            'Deleted'=>0,
+        ]);
+
+        $swings->each(function($item) use ($instructor) {
+            $item->SwingStatusID = 1;
+            $item->InstructorID = $instructor->InstructorID;
+            $item->DateAccepted = \Carbon\Carbon::now()->format('Y-m-d H:i:s');
+            //TODO: should we set this?  the old API did
+            //$item->DateUploaded = $today->format('Y-m-d H:i:s');
+            //$item->Charge = $instructor->Fee;
+            //$item->ProCharge = -(1.0 - $instructor->DiscountRate) * $instructor->Fee;
+            $item->save();
+        });
+
+        $resource = new Collection($swings->toArray(), [$this, 'swingRecordTranslate']);
+        return response()->json((new Manager)->createData($resource)->toArray());
+
+    }
+
+
+    /**
      * @OA\Schema(
      *   schema="swing_record",
      *   required={""},
      *   @OA\Property(
      *     property="id",
      *     description="Swing ID",
+     *     type="integer",
+     *          format="int32"
+     *   ),
+     *   @OA\Property(
+     *     property="account_id",
+     *     description="Account ID",
      *     type="integer",
      *          format="int32"
      *   ),
@@ -161,12 +251,13 @@ class LockerAPIController extends AppBaseController
             $thumbUrl = 'https://v1sports.com/SwingStore/'.$thumbUrl;
         }
         return [
-            'id'      => (int) $swing['SwingID'],
-            'title'   => $swing['Description'],
-            'video_url'    => $videoUrl,
-            'thumb_url'    => $thumbUrl,
-            'vimeo_id'     => $swing['VimeoID'],
-            'status_id'    => $swing['SwingStatusID'],
+            'id'            => (int) $swing['SwingID'],
+            'account_id'    => (int) $swing['AccountID'],
+            'title'         => $swing['Description'],
+            'video_url'     => $videoUrl,
+            'thumb_url'     => $thumbUrl,
+            'vimeo_id'      => $swing['VimeoID'],
+            'status_id'     => $swing['SwingStatusID'],
             //'thumb_url'    => 'https://v1sports.com/SwingStore/190424231844IP9M2449503.jpg',
             'date_uploaded' => $swing['DateUploaded'],
         ];
