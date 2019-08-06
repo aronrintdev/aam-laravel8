@@ -17,6 +17,7 @@ class SwingRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
+        'SwingID',
         'AccountID',
         'DateUploaded'
     ];
