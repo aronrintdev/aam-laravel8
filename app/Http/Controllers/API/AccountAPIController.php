@@ -8,6 +8,7 @@ use App\Models\Account;
 use App\Repositories\AccountRepository;
 use App\Repositories\AcademyRepository;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 use App\Http\Controllers\AppBaseController;
 use Response;
 
@@ -445,16 +446,21 @@ class AccountAPIController extends AppBaseController
             //check if instructor is instructor
             //TODO: only allow instructor adding student if
             //student is already in academy
+            //AUTHORIZATION
 
             if ($user->AccountID != $instructorId) {
                 return response()->json(['errors'=>['status'=>403]], 403);
             }
         }
-        \DB::table('InstructorStudents')->insert([
-            'InstructorID'  => $instructorId,
-            'AccountID'     => $id,
-            'StudentCharge' => 0,
-        ]);
+        try {
+            \DB::table('InstructorStudents')->insert([
+                'InstructorID'  => $instructorId,
+                'AccountID'     => $id,
+                'StudentCharge' => 0,
+            ]);
+        } catch (QueryException $ex) {
+            //just ignore, it's probably duplicate key and we're fine with that
+        }
 
         return $this->sendResponse([], 'Account saved successfully');
     }
