@@ -147,6 +147,7 @@ class Swing extends Model
 //    use SoftDeletes;
 
     public $table = 'Swings';
+    public $timestamps = false;
     
 //    const CREATED_AT = 'created_at';
 //    const UPDATED_AT = 'updated_at';
