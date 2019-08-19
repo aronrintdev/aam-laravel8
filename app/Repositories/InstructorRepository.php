@@ -151,7 +151,7 @@ class InstructorRepository extends BaseRepository
 
     public function totalStudents($instructorId, $includeAcademy=true)
     {
-        $columns = [DB::raw('COUNT(*) as total_count')];
+        $columns = [DB::raw('COUNT( DISTINCT Accounts.AccountID) as total_count')];
         //$query = $this->model->newQuery();
         $query = (new \App\Models\Account())->newQuery();
         $query->where('InstructorStudents.InstructorID', '=', $instructorId);
