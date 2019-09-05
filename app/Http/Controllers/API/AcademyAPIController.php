@@ -173,6 +173,19 @@ class AcademyAPIController extends AppBaseController
             return $this->sendError('Academy not found');
         }
 
+        //"fix" logo
+        //logo is stored as the word "none" or "golf.gif"
+        //but these are totally unused.
+        //real logos are stored on the windows hdd and are not
+        //in a database.
+        //in the future we hope to have them in the DB as full urls like
+        //https://cdn.asset.domain/path/something
+        if (strlen($academy->Logo) < 12) {
+            //usually the windows script will look on the HDD to find if it is jpg, gif, jpeg, or png
+            //we don't have that luxury, just do jpg
+            $academy->Logo = sprintf('https://www.v1sports.com/Academy/%s/images/%s_logo.jpg',
+                $academy->AcademyID, $academy->AcademyID);
+        }
         return $this->sendResponse($academy->toArray(), 'Academy retrieved successfully');
     }
 

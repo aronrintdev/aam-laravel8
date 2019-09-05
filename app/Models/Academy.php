@@ -752,4 +752,7 @@ class Academy extends Model
     ];
 
     
+    public function getAcademyIDAttribute($value) {
+        return trim($value);
+    }
 }
