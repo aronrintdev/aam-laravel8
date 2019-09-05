@@ -44,7 +44,7 @@ function should_decrypt($v) {
     $v = trim($v);
 
     $matches = [];
-    preg_match('/(.+?)\ #.?decrypt\ me$/', $v, $matches);
+    preg_match('/(.+?)\ #.?decrypt\ me.*$/', $v, $matches);
     return $matches[1];
 }
 
@@ -54,7 +54,7 @@ function should_encrypt($v) {
         return false;
     }
     $matches = [];
-    preg_match('/(.+?)\ #.?encrypt\ me$/', $v, $matches);
+    $q = preg_match('/(.+?)\ #.?encrypt\ me.*$/', $v, $matches);
     return $matches[1];
 }
 
