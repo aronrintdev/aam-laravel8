@@ -14,6 +14,8 @@ class TestUser extends Seeder
     {
         DB::statement('TRUNCATE TABLE [Accounts]');
         DB::statement('TRUNCATE TABLE [AcademyInstructors]');
+        DB::statement('TRUNCATE TABLE [AcademyStudents]');
+        DB::statement('TRUNCATE TABLE [Instructors]');
         $faker = Faker::create();
         $faker->seed(4321);
         $paulineId = DB::table('Accounts')->insertGetId([
@@ -21,7 +23,6 @@ class TestUser extends Seeder
             'FirstName'          => 'Pauline',
             'LastName'           => 'Pro',
             'Email'              => 'pauline@example.com',
-            'InstructorID'       => 2,
             'PasswordHash'       => \Hash::make('password'),
         ]);
         $carlId = DB::table('Accounts')->insertGetId([
@@ -49,11 +50,15 @@ class TestUser extends Seeder
         DB::table('Instructors')->insert([
             'AcademyID'    => '',
             'InstructorID' => $paulineId,
+            'Title'        => 'Sr. Pro Teacher',
+            'HeadShot'     => 'https://i.telegraph.co.uk/multimedia/archive/01933/bucket-head_1933424i.jpg',
         ]);
 
         DB::table('Instructors')->insert([
             'AcademyID'    => '',
             'InstructorID' => $shyId,
+            'Title'        => 'common enemy in the Mario series',
+            'HeadShot'     => 'https://cdn.fstoppers.com/styles/large-16-9/s3/lead/2014/12/fstoppers-dylan-patrick-setting-up-a-successful-headshot-session-8.jpg',
         ]);
 
 
