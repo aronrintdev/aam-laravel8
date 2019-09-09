@@ -103,6 +103,7 @@ class InstructorRepository extends BaseRepository
                 }
             }
         }
+        $query->where('AcademyInstructors.IsEnabled', '1');
 
         $query->join('Accounts',           'Instructors.InstructorID', 'Accounts.AccountID');
         $query->join('AcademyInstructors', 'Accounts.AccountID', 'AcademyInstructors.InstructorID');
