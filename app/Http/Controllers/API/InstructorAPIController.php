@@ -354,7 +354,11 @@ class InstructorAPIController extends AppBaseController
         if (\Auth::user()->AccountID != $id) {
             return response()->json(['error'=>'Unauthorized.'], 403);
         }
-        $input = $request->all();
+        $filterIds = $request->post('ids');
+        if (!is_array($filterIds)) {
+            $filterIds = array();
+        }
+
         /** @var Instructor $instructor */
         $instructor = $this->instructorRepository->find($id);
 
@@ -366,14 +370,17 @@ class InstructorAPIController extends AppBaseController
         $accountList = $this->instructorRepository->students(
             $instructor->InstructorID,
             true,
+            $filterIds,
             $request->get('skip'),
             $limit,
         );
         //get full total if more rows than limit were returned
+        $total = $accountList->count();
         if ($total >= $limit) {
             $total = $this->instructorRepository->totalStudents(
                 $instructor->InstructorID,
                 true,
+                $filterIds,
             );
         }
 

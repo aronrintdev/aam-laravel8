@@ -116,11 +116,14 @@ class InstructorRepository extends BaseRepository
      * inner join [InstructorStudents] on [Accounts].[AccountID] = [InstructorStudents].[AccountID]
      * where [Instructors].[InstructorID] = '$instructorId'
      */
-    public function students($instructorId, $includeAcademy=true, $skip = null, $limit = null, $columns = ['*'])
+    public function students($instructorId, $includeAcademy=true, $filterStudentIds=[], $skip = null, $limit = null, $columns = ['*'])
     {
         $columns = ['Accounts.AccountID', 'Accounts.FirstName', 'Accounts.LastName', 'Accounts.Email'];
         $query = (new \App\Models\Account())->newQuery();
         $query->where('InstructorStudents.InstructorID', '=', $instructorId);
+        if (!empty($filterStudentIds)) {
+            $query->whereIn('Accounts.AccountID', $filterStudentIds);
+        }
         $query->leftjoin('InstructorStudents',           function($j) use($instructorId) {
             $j->on('InstructorStudents.AccountID', '=', 'Accounts.AccountID');
             $j->on('InstructorStudents.InstructorID', '=', \DB::raw($instructorId));
@@ -150,12 +153,15 @@ class InstructorRepository extends BaseRepository
         return $query->get($columns);
     }
 
-    public function totalStudents($instructorId, $includeAcademy=true)
+    public function totalStudents($instructorId, $includeAcademy=true, $filterStudentIds=[])
     {
         $columns = [DB::raw('COUNT( DISTINCT Accounts.AccountID) as total_count')];
         //$query = $this->model->newQuery();
         $query = (new \App\Models\Account())->newQuery();
         $query->where('InstructorStudents.InstructorID', '=', $instructorId);
+        if (!empty($filterStudentIds)) {
+            $query->whereIn('Accounts.AccountID', $filterStudentIds);
+        }
         $query->leftjoin('InstructorStudents',           function($j) use($instructorId) {
             $j->on('InstructorStudents.AccountID', '=', 'Accounts.AccountID');
             $j->on('InstructorStudents.InstructorID', '=', DB::raw($instructorId));
