@@ -361,17 +361,21 @@ class InstructorAPIController extends AppBaseController
         if (empty($instructor)) {
             return $this->sendError('Instructor not found');
         }
+        $limit = $request->get('limit') ? $request->get('limit') : 10;
 
         $accountList = $this->instructorRepository->students(
             $instructor->InstructorID,
             true,
             $request->get('skip'),
-            $request->get('limit') ? $request->get('limit') : 10,
+            $limit,
         );
-        $total = $this->instructorRepository->totalStudents(
-            $instructor->InstructorID,
-            true,
-        );
+        //get full total if more rows than limit were returned
+        if ($total >= $limit) {
+            $total = $this->instructorRepository->totalStudents(
+                $instructor->InstructorID,
+                true,
+            );
+        }
 
         $manager = new Manager();
         $manager->setSerializer(new JsonApiSerializer());

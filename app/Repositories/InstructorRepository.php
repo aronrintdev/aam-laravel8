@@ -131,8 +131,8 @@ class InstructorRepository extends BaseRepository
             });
 
             $query->leftjoin('AcademyInstructors',              function($j) use ($instructorId){
-                $j->on('AcademyInstructors.InstructorID', '=', \DB::raw($instructorId));
                 $j->on('AcademyStudents.AcademyID', '=', 'AcademyInstructors.AcademyID');
+                $j->on('AcademyInstructors.InstructorID', '=', \DB::raw($instructorId));
             });
 
             $query->orWhere('AcademyInstructors.InstructorID', '=', $instructorId);
@@ -167,8 +167,8 @@ class InstructorRepository extends BaseRepository
             });
 
             $query->leftjoin('AcademyInstructors',              function($j) use ($instructorId){
-                $j->on('AcademyInstructors.InstructorID', '=', DB::raw($instructorId));
                 $j->on('AcademyStudents.AcademyID', '=', 'AcademyInstructors.AcademyID');
+                $j->on('AcademyInstructors.InstructorID', '=', DB::raw($instructorId));
             });
 
             $query->orWhere('AcademyInstructors.InstructorID', '=', $instructorId);
