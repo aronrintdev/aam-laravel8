@@ -133,7 +133,7 @@ class InstructorRepository extends BaseRepository
                 $j->on('AcademyStudents.AccountID', '=', 'Accounts.AccountID');
             });
 
-            $query->leftjoin('AcademyInstructors',              function($j) use ($instructorId){
+            $query->join('AcademyInstructors',          function($j) use ($instructorId){
                 $j->on('AcademyStudents.AcademyID', '=', 'AcademyInstructors.AcademyID');
                 $j->on('AcademyInstructors.InstructorID', '=', \DB::raw($instructorId));
             });
@@ -172,7 +172,7 @@ class InstructorRepository extends BaseRepository
                 $j->on('AcademyStudents.AccountID', '=', 'Accounts.AccountID');
             });
 
-            $query->leftjoin('AcademyInstructors',              function($j) use ($instructorId){
+            $query->join('AcademyInstructors',          function($j) use ($instructorId){
                 $j->on('AcademyStudents.AcademyID', '=', 'AcademyInstructors.AcademyID');
                 $j->on('AcademyInstructors.InstructorID', '=', DB::raw($instructorId));
             });
