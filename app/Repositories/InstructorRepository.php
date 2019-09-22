@@ -157,7 +157,8 @@ class InstructorRepository extends BaseRepository
     {
         $columns = [DB::raw('COUNT( DISTINCT Accounts.AccountID) as total_count')];
         //$query = $this->model->newQuery();
-        $query = (new \App\Models\Account())->newQuery();
+        //$query = (new \App\Models\Account())->newQuery();
+        $query = DB::table('Accounts');
         $query->where('InstructorStudents.InstructorID', '=', $instructorId);
         if (!empty($filterStudentIds)) {
             $query->whereIn('Accounts.AccountID', $filterStudentIds);
@@ -179,7 +180,7 @@ class InstructorRepository extends BaseRepository
 
             $query->orWhere('AcademyInstructors.InstructorID', '=', $instructorId);
         }
-        $query->groupBy(['Accounts.AccountID']);
+        //$query->groupBy(['Accounts.AccountID']);
 
         //get is different than select
         $results = $query->select($columns);
