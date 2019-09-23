@@ -69,7 +69,7 @@ host('134.209.42.80')
 ->identityFile('~/.ssh/id_rsa')
 ->multiplexing(false)
     ->addSshOption('StrictHostKeyChecking', 'no')
-    ->set('deploy_path', '/home/ubuntu/aam');
+    ->set('deploy_path', '/home/ubuntu/prod/aam');
 
 
 host('167.71.185.13')
@@ -78,7 +78,7 @@ host('167.71.185.13')
 ->identityFile('~/.ssh/id_rsa')
 ->multiplexing(false)
     ->addSshOption('StrictHostKeyChecking', 'no')
-    ->set('deploy_path', '/home/ubuntu/aam');
+    ->set('deploy_path', '/home/ubuntu/test/aam');
     
 host('159.65.180.227')
 ->stage('stage')
@@ -86,7 +86,7 @@ host('159.65.180.227')
 ->identityFile('~/.ssh/id_rsa')
 ->multiplexing(false)
     ->addSshOption('StrictHostKeyChecking', 'no')
-    ->set('deploy_path', '/home/ubuntu/aam');
+    ->set('deploy_path', '/home/ubuntu/stage/aam');
 
 // Tasks
 task('build', [
@@ -125,6 +125,7 @@ task('deploy:update_code', function () use ($packageName) {
     run("cd {{release_path}} && tar -C . -zxf {$packageName}");
 });
 
+/*
 task('deploy:restart', function () {
     //if we don't set the project name it will always change
     //and be the numeric folder name from deployer like 1, 2, 3
@@ -133,14 +134,13 @@ task('deploy:restart', function () {
     $dockerProjectName = 'vos'.$stage;
     run("cd {{deploy_path}} && cd current && docker-compose -f docker-compose.yml -f docker-compose.$stage.yml -p $dockerProjectName up -d aam-webapp");
 });
+*/
 
 // Migrate database before symlink new release.
 after('deploy:writable', 'artisan:migrate');
 desc('Execute artisan migrate');
 task('artisan:migrate', function () use ($dockerProjectName) {
-    $stage = input()->hasArgument('stage') ? ''.input()->getArgument('stage') : 'test';
-    $dockerProjectName = 'vos'.$stage;
-    run("cd {{release_path}} && SOURCE={{release_path}} docker-compose -f docker-compose.yml -f docker-compose.$stage.yml -p $dockerProjectName run --rm -T aam-webapp php artisan migrate --database=backendmysql --force");
+    run("cd {{release_path}} && docker-compose -f ci/compose-migrate.yml run migrate php artisan migrate --database=backendmysql --force");
 })->once();
 
 
@@ -153,7 +153,7 @@ task('deploy', [
     'deploy:shared',
     'deploy:writable',
     'deploy:symlink',
-    'deploy:restart',
+//    'deploy:restart',
     'deploy:unlock',
 //    'cleanup',
     'success'

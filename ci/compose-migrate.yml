@@ -1,17 +1,38 @@
-version: '3'
+version: '3.4'
+
+networks:
+  db:
+    external: true
+  zto:
+    driver: bridge 
 
 services:
-  migrate-mysql:
+  migrate:
+    tty: true
     build:
       context: ./
       dockerfile: dockerfile-phpfpm
     networks:
-      - zto
+        - db
+        - zto
     command:
-        sh -c 'cd /app && php artisan key:generate && php artisan migrate -f --database=backendmysql'
+        'php artisan migrate --step --force --database=backendmysql'
+    working_dir: '/app'
     volumes:
-      - ${SOURCE}:/app
+      - ${SOURCE:-../}:/app
+      - ${STORAGE:-../../../shared/storage}:/app/storage
 
-networks:
-  zto:
-    driver: bridge
+  migrate-status:
+    tty: true
+    build:
+      context: ./
+      dockerfile: dockerfile-phpfpm
+    networks:
+        - db
+        - zto
+    command:
+        'php artisan migrate:status'
+    working_dir: '/app'
+    volumes:
+      - ${SOURCE:-../}:/app
+      - ${STORAGE:-../../../shared/storage}:/app/storage

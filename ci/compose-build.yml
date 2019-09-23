@@ -6,11 +6,11 @@ services:
     image: composer:1.8
     command: sh -c "export TERM=dumb && cd /app && ls -al && pwd && which composer && composer --no-ansi install --no-progress"
     volumes:
-      - ${SOURCE}:/app
+      - ${SOURCE:-../}:/app
 
   node-yarn:
     tty: true
     image: node:8-jessie-slim
     command: sh -c 'cd /app && yarn install && yarn mendy && yarn dev'
     volumes:
-      - ${SOURCE}:/app
+      - ${SOURCE:-../}:/app
