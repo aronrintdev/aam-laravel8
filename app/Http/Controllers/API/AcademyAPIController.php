@@ -8,14 +8,18 @@ use App\Models\Academy;
 use App\Repositories\AcademyRepository;
 use App\Repositories\AccountRepository;
 use App\Repositories\InstructorRepository;
+use App\Repositories\BrandingRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Auth\Access\AuthorizationException;
 use App\Http\Controllers\AppBaseController;
 use Response;
 
 use App\Transformers\InstructorTransformer;
+use App\Transformers\BrandingTransformer;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
 use League\Fractal\Serializer\JsonApiSerializer;
 
 
@@ -54,23 +58,23 @@ use League\Fractal\Serializer\JsonApiSerializer;
  *     @OA\Schema(
  *        allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
  *        @OA\Property(
- *         property="data",
- *         type="array",
- *         @OA\Items(
- *        allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/resource")},
-
- *        @OA\Property(
-		property="attributes",
-		type="array",
- *         @OA\Items(
-		ref="#/components/schemas/Academy")
+ *          property="data",
+ *          type="array",
+ *          @OA\Items(
+ *           allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/resource")},
+ *           @OA\Property(
+ *             property="attributes",
+ *             type="array",
+ *           @OA\Items(
+ *             ref="#/components/schemas/Academy")
+ *           )
+ *         )
  *       )
- *       )
- *       )
-
  *     )
  *   )
  * )
+ *
+ *
  */
 
 class AcademyAPIController extends AppBaseController
@@ -403,4 +407,140 @@ class AcademyAPIController extends AppBaseController
         return response()->json([], 200);
     }
 
+    /**
+     * @param string $id
+     * @return Response
+     *
+     * @OA\GET(
+     *   path="/academies/{id}/branding",
+     *   summary="Get branding parameters for an academy",
+     *   tags={"Academy"},
+     *   @OA\MediaType(
+     *     mediaType="application/json"
+     *   ),
+     *   @OA\Parameter(
+     *     name="id",
+     *     description="Academy Code/ID",
+     *     @OA\Schema(ref="#/components/schemas/Academy/properties/AcademyID"),
+     *     required=true,
+     *     in="path"
+     *   ),
+	 *   @OA\Response(
+     *     response=200,
+	 *     description="successful operation",
+	 *     @OA\MediaType(
+	 *       mediaType="application/json",
+	 *       @OA\Schema(
+	 *          allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
+	 *          @OA\Property(
+	 *            property="data",
+	 *            type="array",
+	 *            @OA\Items(
+	 *             allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/resource")},
+	 *             @OA\Property(
+	 *               property="attributes",
+	 *               type="array",
+	 *               @OA\Items(
+	 *                 ref="#/components/schemas/Branding"
+	 *               )
+	 *             )
+	 *           )
+	 *         )
+	 *       )
+	 *     )
+	 *   ) 
+     * )
+     */
+    public function branding($id, Request $request)
+    {
+        $user = \Auth::user();
+        $academy = $this->academyRepository->find($id);
+
+        $fields = ['BaseColor', 'BaseColorLt', 'Logo', 'LogInGraphic', 'SelectedColor', 'SelectedColorLt', 'BGColor', 'AcademyID'];
+
+        $academy = $this->academyRepository->find(
+            $id,
+            $fields
+        );
+        $manager = new Manager();
+        $manager->setSerializer(new JsonApiSerializer());
+        $resource = new Item($academy, new BrandingTransformer());
+        return response()->json((new Manager)->createData($resource)->toArray());
+    }
+
+    /**
+     * @param string $id
+     * @return Response
+     *
+     * @OA\Put(
+     *   path="/academies/{id}/branding",
+     *   summary="Get branding parameters for an academy",
+     *   tags={"Academy"},
+     *   @OA\MediaType(
+     *     mediaType="application/json"
+     *   ),
+     *   @OA\RequestBody(
+     *     description="Academy that should be updated",
+     *     required=true,
+     *     @OA\JsonContent(ref="#/components/schemas/Branding"),
+     *   ),
+     *   @OA\Parameter(
+     *     name="id",
+     *     description="Academy Code/ID",
+     *     @OA\Schema(ref="#/components/schemas/Academy/properties/AcademyID"),
+     *     required=true,
+     *     in="path"
+     *   ),
+     *  @OA\Response(
+     *     response=200,
+	 *     description="successful operation",
+	 *     @OA\MediaType(
+	 *       mediaType="application/json",
+	 *       @OA\Schema(
+	 *          allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
+     *       )
+     *     )
+     *   )
+     * )
+     */
+    public function brandingUpdate($id, Request $request)
+    {
+        $user = \Auth::user();
+        $academy = $this->academyRepository->find($id);
+
+        $fields = ['BaseColor', 'BaseColorLt', 'Logo', 'LogInGraphic', 'SelectedColor', 'SelectedColorLt', 'BGColor', 'AcademyID'];
+
+        $this->instructorRepository = new InstructorRepository(app());
+        $instructor  = $this->instructorRepository->find($user->AccountID);
+        if ($instructor) {
+            $academies = $instructor->academies()->get();
+            if (!in_array($id, $academies->pluck('AcademyID')->all())) {
+                throw new AuthorizationException();
+            }
+        } else {
+            throw new AuthorizationException();
+        }
+
+        $academy = $this->academyRepository->find(
+            $id
+        );
+
+        $input = $request->input();
+        $fill = [
+            'LogInGraphic'  => $input['banner_graphic'],
+            'Logo'          => $input['logo'],
+            'BaseColor'     => $input['base_color'],
+            'BaseColorLt'   => $input['base_color_lt'],
+            'BGColor'       => $input['btn_color'],
+            'SelectedColor' => $input['selected_color'],
+        ];
+        $academy->fill($fill);
+        $academy->save();
+
+        $manager = new Manager();
+        $manager->setSerializer(new JsonApiSerializer());
+//        $resource = new Collection($academy, new BrandingTransformer());
+        $resource = new Item($academy, new BrandingTransformer());
+        return response()->json((new Manager)->createData($resource)->toArray());
+    }
 }
