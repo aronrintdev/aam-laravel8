@@ -4,6 +4,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
 require 'recipe/laravel.php';
+require 'recipe/slack.php';
 
 
 
@@ -140,8 +141,16 @@ task('deploy:restart', function () {
 after('deploy:writable', 'artisan:migrate');
 desc('Execute artisan migrate');
 task('artisan:migrate', function () use ($dockerProjectName) {
-    run("cd {{release_path}} && docker-compose -f ci/compose-migrate.yml run migrate php artisan migrate --database=backendmysql --force");
+    run("cd {{release_path}} && docker-compose -f ci/compose-migrate.yml run --rm migrate php artisan migrate --database=backendmysql --force");
 })->once();
+
+$gitlog = '';
+if (strlen(getenv('GITLOG'))) {
+	$gitlog = "\n```".getenv('GITLOG')."```";
+}
+set('slack_success_text', "Deploy to *{{target}}* successful".$gitlog);
+set('slack_webhook', 'https://hooks.slack.com/services/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');
+after('success', 'slack:notify:success');
 
 
 task('deploy', [

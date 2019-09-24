@@ -4,4 +4,7 @@ then
 else
     TASK=$@
 fi
-SOURCE=../ SSH_KEY=/home/mark/.ssh/id_v1deployer.pem  TASK="$TASK" docker-compose -f ci/compose-deploy.yml run --rm deployer
+
+GITLOG="$(git log -3 --pretty=%s)"
+
+SOURCE=../ SSH_KEY=/home/mark/.ssh/id_v1deployer.pem  TASK="$TASK" docker-compose -f ci/compose-deploy.yml run -e GITLOG="$GITLOG" --rm deployer
