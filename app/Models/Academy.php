@@ -524,6 +524,7 @@ class Academy extends Model
     protected $dates = ['deleted_at'];
 
     protected $primaryKey = 'AcademyID';
+    public $incrementing = false;
 
     public $fillable = [
         'BaseColor',
