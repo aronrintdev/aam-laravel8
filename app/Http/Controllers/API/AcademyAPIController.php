@@ -462,6 +462,10 @@ class AcademyAPIController extends AppBaseController
             $id,
             $fields
         );
+        if (!$academy) {
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
+        }
+
         $manager = new Manager();
         $manager->setSerializer(new JsonApiSerializer());
         $resource = new Item($academy, new BrandingTransformer());
