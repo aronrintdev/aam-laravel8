@@ -19,6 +19,7 @@ Route::group(['middleware' => 'guest'], function () {
     Route::any('/register/activate/{code}', 'RegisterController@activate')->name('registration.activate');
     Route::any('/register/resend', 'RegisterController@resend', 'resend')->name('registration.resend');
     Route::get('/academies/{id}/branding', 'AcademyAPIController@branding')->name('academies.branding');
+    Route::get('/academies/{id}/instructors', 'AcademyAPIController@showInstructors')->name('academies.instructors');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
@@ -30,7 +31,6 @@ Route::group(['middleware' => 'auth:backend,api'], function () {
     Route::get('/search-accounts/', 'AccountAPIController@search');
     Route::post('/update-password/', 'AccountAPIController@updatePassword');
     Route::get('/academies/{id}', 'AcademyAPIController@show')->name('academies.show');
-    Route::get('/academies/{id}/instructors', 'AcademyAPIController@showInstructors')->name('academies.instructors');
     Route::put('/academies/{id}/branding', 'AcademyAPIController@brandingUpdate')->name('academies.branding.update');
     Route::post('/accounts/{id}/follow/{instructorId}', 'AccountAPIController@follow')->name('accounts.follow');
 });
