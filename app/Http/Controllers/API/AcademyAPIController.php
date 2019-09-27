@@ -333,15 +333,17 @@ class AcademyAPIController extends AppBaseController
         $fields = ['FirstName', 'LastName', 'Title', 'HeadShot'];
         //if the user is not an instructor then don't query the emails
         //because we shouldn't allow straight up email harvesting
-        if($user->isApiAgent()) {
+        if($user && $user->isApiAgent()) {
             $fields[] = 'Email';
         } else {
+            /*
             $instructor  = $this->instructorRepository->find($user->AccountID);
             if ($instructor) {
                 $academies = $instructor->academies()->get();
                 if (in_array($id, $academies->pluck('AcademyID')->all())) {
                 }
             }
+             */
         }
 
         $accountList = $this->instructorRepository->forAcademy(
