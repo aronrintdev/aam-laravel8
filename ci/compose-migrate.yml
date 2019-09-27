@@ -31,7 +31,7 @@ services:
         - db
         - zto
     command:
-        'php artisan migrate:status'
+        'php artisan migrate:status --database=backendmysql'
     working_dir: '/app'
     volumes:
       - ${SOURCE:-../}:/app
