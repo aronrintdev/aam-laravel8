@@ -51,7 +51,7 @@ class TestUser extends Seeder
             'AcademyID'    => '',
             'InstructorID' => $paulineId,
             'Title'        => 'Sr. Pro Teacher',
-            'HeadShot'     => 'https://i.telegraph.co.uk/multimedia/archive/01933/bucket-head_1933424i.jpg',
+            'HeadShot'     => 'https://vos-media.nyc3.digitaloceanspaces.com/profile/Screenshot%20from%202019-09-27%2017-22-38.png',
         ]);
 
         DB::table('Instructors')->insert([
@@ -86,5 +86,35 @@ class TestUser extends Seeder
             'AcademyID'    => 'SHYG',
             'AccountID'    => $carlId,
         ]);
+
+        foreach (range(1,25) as $index) {
+            $studentId = DB::table('Accounts')->insertGetId([
+                'FirstName'          => $faker->firstName(),
+                'LastName'           => $faker->lastName(),
+                'Email'              => $faker->safeEmail(),
+                'PasswordHash'       => \Hash::make('password'),
+            ]);
+
+            DB::table('AcademyStudents')->insert([
+                'AcademyID'    => 'SHYG',
+                'AccountID'    => $studentId,
+            ]);
+        }
+
+        #$fakerJa = Faker::create('ja_JP');
+        foreach (range(1,11) as $index) {
+
+            $studentId = DB::table('Accounts')->insertGetId([
+                'FirstName'          => $faker->firstName(),
+                'LastName'           => $faker->lastName(),
+                'Email'              => $faker->safeEmail(),
+                'PasswordHash'       => \Hash::make('password'),
+            ]);
+
+            DB::table('AcademyStudents')->insert([
+                'AcademyID'    => 'V1AC',
+                'AccountID'    => $studentId,
+            ]);
+        }
     }
 }
