@@ -36,6 +36,11 @@ use League\Fractal;
  *         property="email",
  *         description="Email",
  *         type="boolean"
+ *       ),
+ *       @OA\Property(
+ *         property="joined_at",
+ *         description="Date joined academy",
+ *         type="datetime"
  *       )
  *     )
  *   )
@@ -52,6 +57,7 @@ class StudentTransformer extends Fractal\TransformerAbstract
                 'first_name'   =>  $acct->FirstName,
                 'last_name'    =>  $acct->LastName,
                 'email'        =>  $acct->Email,
+                'joined_at'    =>  @$acct->CreatedAt,
             ]
 	    ];
 	}

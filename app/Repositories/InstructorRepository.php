@@ -129,6 +129,7 @@ class InstructorRepository extends BaseRepository
             $j->on('InstructorStudents.InstructorID', '=', \DB::raw($instructorId));
         });
         if ($includeAcademy) {
+            $columns[] = 'AcademyStudents.CreatedAt';
             $query->leftjoin('AcademyStudents',              function($j) {
                 $j->on('AcademyStudents.AccountID', '=', 'Accounts.AccountID');
             });
@@ -140,7 +141,7 @@ class InstructorRepository extends BaseRepository
 
             $query->orWhere('AcademyInstructors.InstructorID', '=', $instructorId);
         }
-        $query->groupBy(['Accounts.AccountID', 'Accounts.Email', 'Accounts.FirstName', 'Accounts.LastName']);
+        $query->groupBy($columns);
 
         if (!is_null($skip)) {
             $query->skip($skip);
