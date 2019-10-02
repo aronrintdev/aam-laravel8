@@ -46,16 +46,28 @@ class InstructorTransformer extends Fractal\TransformerAbstract
 {
 	public function transform(Instructor $acct)
 	{
+        $extraFields = [];
+        if ($acct->Biography != '') {
+            $extraFields['bio'] = $acct->Biography;
+        }
+        if ($acct->Philosophy != '') {
+            $extraFields['philo'] = $acct->Philosophy;
+        }
+        if ($acct->Accomplishments != '') {
+            $extraFields['accolades'] = $acct->Accomplishments;
+        }
+
 	    return [
 	        'id'         => (int) $acct->AccountID,
-	        'type'       => 'account',
-            'attributes' => [
+	        'type'       => 'instructor',
+            'attributes' => array_merge([
                 'first_name'   =>  $acct->FirstName,
                 'last_name'    =>  $acct->LastName,
                 'title'        =>  $acct->Title,
                 'profile_pic'  =>  $acct->HeadShot,
                 'email'        =>  $acct->Email,
-            ]
+                'bio'          =>  $acct->Biography,
+            ], $extraFields)
 	    ];
 	}
 }

@@ -331,6 +331,15 @@ class AcademyAPIController extends AppBaseController
         $this->instructorRepository = new InstructorRepository(app());
 
         $fields = ['FirstName', 'LastName', 'Title', 'HeadShot'];
+        $extraFieldsReq = $request->input('fields');
+        $extraFieldsReq = explode(',', $extraFieldsReq['instructor']);
+        $extraFieldsMap = [
+            'Biography'       => 'bio',
+            'Philosophy'      => 'philo',
+            'Accomplishments' => 'accolades',
+        ];
+
+        $extraFields = array_keys(array_intersect($extraFieldsMap, $extraFieldsReq));
         //if the user is not an instructor then don't query the emails
         //because we shouldn't allow straight up email harvesting
         if($user && $user->isApiAgent()) {
@@ -351,7 +360,7 @@ class AcademyAPIController extends AppBaseController
             [],
             $request->get('skip'),
             $request->get('limit') ? $request->get('limit') : 10,
-            $fields
+            array_merge($fields, $extraFields)
         );
         $manager = new Manager();
         $manager->setSerializer(new JsonApiSerializer());
