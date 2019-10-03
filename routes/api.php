@@ -33,6 +33,7 @@ Route::group(['middleware' => 'auth:backend,api'], function () {
     Route::get('/academies/{id}', 'AcademyAPIController@show')->name('academies.show');
     Route::put('/academies/{id}/branding', 'AcademyAPIController@brandingUpdate')->name('academies.branding.update');
     Route::post('/accounts/{id}/follow/{instructorId}', 'AccountAPIController@follow')->name('accounts.follow');
+    Route::post('/academies/{id}/enroll/{userid}', 'AcademyAPIController@enrollAcademyUser');
 });
 
 Route::group(['middleware' => 'auth:api'], function () {

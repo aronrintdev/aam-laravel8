@@ -419,6 +419,61 @@ class AcademyAPIController extends AppBaseController
     }
 
     /**
+     * @param String $id academyID 
+     * @param String $userid accountID 
+     * @param Request $request
+     * @return Response
+     *
+     * @OA\Post(
+     *   path="/academies/{id}/enroll/{userid}",
+     *   summary="Join an academy as a student",
+     *   tags={"Academy"},
+     *   description="Join an Academy",
+     *   @OA\Parameter(
+     *     name="id",
+     *     description="id of Academy",
+     *     @OA\Schema(ref="#/components/schemas/Academy/properties/AcademyID"),
+     *     required=true,
+     *     in="path"
+     *   ),
+     *   @OA\Parameter(
+     *     name="userid",
+     *     description="id of Account",
+     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID"),
+     *     required=true,
+     *     in="path"
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *   )
+     * )
+     */
+    public function enrollAcademyUser($id, $userid, Request $request)
+    {
+        $user = \Auth::user();
+        $academy = $this->academyRepository->find($id);
+
+        //if the user is NOT an API agent do not allow
+        if(!$user->isApiAgent()) {
+            throw new AuthorizationException();
+        }
+
+        try {
+            DB::table('AcademyStudents')->insert([
+                'AcademyID'=>trim($academy->AcademyID),
+                'AccountID'=>$userid,
+            ]);
+        } catch (\Exception $e) {
+            //unique key prevents duplicates
+        }
+
+        return response()->json([], 200);
+    }
+
+
+
+    /**
      * @param string $id
      * @return Response
      *
