@@ -18,6 +18,9 @@ Route::group(['middleware' => 'guest'], function () {
     Route::post('register', 'RegisterController@register', 'register');
     Route::any('/register/activate/{code}', 'RegisterController@activate')->name('registration.activate');
     Route::any('/register/resend', 'RegisterController@resend', 'resend')->name('registration.resend');
+});
+
+Route::group(['middleware' => 'permissive'], function () {
     Route::get('/academies/{id}/branding', 'AcademyAPIController@branding')->name('academies.branding');
     Route::get('/academies/{id}/instructors', 'AcademyAPIController@showInstructors')->name('academies.instructors');
 });
