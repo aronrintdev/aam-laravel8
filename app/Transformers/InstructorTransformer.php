@@ -66,7 +66,6 @@ class InstructorTransformer extends Fractal\TransformerAbstract
                 'title'        =>  $acct->Title,
                 'profile_pic'  =>  $acct->HeadShot,
                 'email'        =>  $acct->Email,
-                'bio'          =>  $acct->Biography,
             ], $extraFields)
 	    ];
 	}
