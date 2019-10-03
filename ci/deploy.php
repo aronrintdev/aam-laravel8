@@ -56,6 +56,8 @@ set('shared_dirs', [
 set('shared_files', [
 ]);
 
+set('keep_releases', 10);
+
 // Writable dirs by web server 
 //add('writable_dirs', []);
 set('allow_anonymous_stats', false);
@@ -164,6 +166,6 @@ task('deploy', [
     'deploy:symlink',
 //    'deploy:restart',
     'deploy:unlock',
-//    'cleanup',
+    'cleanup',
     'success'
 ]);
