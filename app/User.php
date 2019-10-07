@@ -41,7 +41,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function getJWTCustomClaims() {
-        return ['aid'=>$this->AccountID, 'fn'=>$this->FirstName, 'ln'=>$this->LastName, 'inst'=> ($this->IsInstructor > 0 ? 1:0), 'accid'=>$this->AcademyID];
+        return ['aid'=>(int)$this->AccountID, 'fn'=>$this->FirstName, 'ln'=>$this->LastName, 'inst'=> ($this->IsInstructor > 0 ? 1:0), 'accid'=>$this->AcademyID];
     }
 
     /**
