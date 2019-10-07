@@ -124,11 +124,12 @@ class InstructorRepository extends BaseRepository
         if (!empty($filterStudentIds)) {
             $query->whereIn('Accounts.AccountID', $filterStudentIds);
         }
-        $query->leftjoin('InstructorStudents',           function($j) use($instructorId) {
-            $j->on('InstructorStudents.AccountID', '=', 'Accounts.AccountID');
-            $j->on('InstructorStudents.InstructorID', '=', \DB::raw($instructorId));
-        });
         if ($includeAcademy) {
+            $query->leftjoin('InstructorStudents',           function($j) use($instructorId) {
+                $j->on('InstructorStudents.AccountID', '=', 'Accounts.AccountID');
+                $j->on('InstructorStudents.InstructorID', '=', \DB::raw($instructorId));
+            });
+
             $columns[] = 'AcademyStudents.CreatedAt';
             $query->leftjoin('AcademyStudents',              function($j) {
                 $j->on('AcademyStudents.AccountID', '=', 'Accounts.AccountID');
@@ -140,7 +141,13 @@ class InstructorRepository extends BaseRepository
             });
 
             $query->orWhere('AcademyInstructors.InstructorID', '=', $instructorId);
+        } else {
+            $query->join('InstructorStudents',           function($j) use($instructorId) {
+                $j->on('InstructorStudents.AccountID', '=', 'Accounts.AccountID');
+                $j->on('InstructorStudents.InstructorID', '=', \DB::raw($instructorId));
+            });
         }
+
         $query->groupBy($columns);
 
         if (!is_null($skip)) {
