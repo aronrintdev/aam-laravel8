@@ -520,7 +520,6 @@ class AcademyAPIController extends AppBaseController
     public function branding($id, Request $request)
     {
         $user = \Auth::user();
-        $academy = $this->academyRepository->find($id);
 
         $fields = ['BaseColor', 'BaseColorLt', 'Logo', 'LogInGraphic', 'SelectedColor', 'SelectedColorLt', 'BGColor', 'AcademyID'];
 
