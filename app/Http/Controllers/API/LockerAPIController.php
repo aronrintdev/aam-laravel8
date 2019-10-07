@@ -159,11 +159,24 @@ class LockerAPIController extends AppBaseController
             $request->input('instructor_id')
         );
         if (!$instructor) {
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
+        }
+        //allow instructor assign to self,
+        //allow user assign to instructor if connection
+        //is already made between the two accounts.
+
+        $user = \Auth::user();
+        if ($user->isApiAgent()
+            ||
+            $user->hasInstructorConnection($instructor->InstructorID)
+            ||
+            $user->AccountID == $instructor->InstructorID
+        ) {
+            //authorized
+        } else {
             return response()->json('Unauthorized', 403);
         }
-        if (\Auth::user()->AccountID != $instructor->InstructorID) {
-            return response()->json('Unauthorized', 403);
-        }
+
         $swingIdList = $request->input('swing_ids');
 
         //TODO: ensure the AccountIDs are related to the instructor or academy

@@ -64,6 +64,19 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
+     * This DB access needs to hit the legacy
+     * DB, but we have to shift the connection to
+     * mysql for laravel registration.
+     */
+    public function hasInstructorConnection($instructorId)
+    {
+        $repo = new \App\Repositories\InstructorRepository(app());
+        $student = $repo->students($instructorId, true, [$this->AccountID]);
+        return ($student->count() > 0);
+    }
+
+
+    /**
      * MS Capitalization issue with email / Email
      */
     public function routeNotificationForMail($notification = null) {
