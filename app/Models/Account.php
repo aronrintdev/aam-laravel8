@@ -400,6 +400,7 @@ class Account extends Model
      * @var array
      */
     protected $casts = [
+        'DateOpened'   => 'datetime',
         'OldAccountID' => 'integer',
         'CardExpires' => 'string',
         'BillPhone' => 'string',
