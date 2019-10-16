@@ -48,6 +48,10 @@ use League\Fractal;
  */
 class StudentTransformer extends Fractal\TransformerAbstract
 {
+    /**
+     * JoinedAt is the join date from the InstructorRepository query
+     * PickedAt is the selected date from the InstructorRepository query
+     */
 	public function transform(Account $acct)
 	{
 	    return [
@@ -57,7 +61,7 @@ class StudentTransformer extends Fractal\TransformerAbstract
                 'first_name'   =>  $acct->FirstName,
                 'last_name'    =>  $acct->LastName,
                 'email'        =>  $acct->Email,
-                'joined_at'    =>  @$acct->CreatedAt,
+                'joined_at'    =>  \Carbon\Carbon::parse(@$acct->PickedAt ?? @$acct->JoinedAt),
             ]
 	    ];
 	}

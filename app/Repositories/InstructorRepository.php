@@ -112,25 +112,30 @@ class InstructorRepository extends BaseRepository
 
 
     /**
+     * @param bool $includeAcademy  Include students connected only to the academy
+     *
      * select * FROM [Accounts]
-     * inner join [InstructorStudents] on [Accounts].[AccountID] = [InstructorStudents].[AccountID]
+     * inner join [InstructorStudentsMulti] on [Accounts].[AccountID] = [InstructorStudentsMulti].[AccountID]
      * where [Instructors].[InstructorID] = '$instructorId'
      */
     public function students($instructorId, $includeAcademy=true, $filterStudentIds=[], $skip = null, $limit = null, $columns = ['*'])
     {
-        $columns = ['Accounts.AccountID', 'Accounts.FirstName', 'Accounts.LastName', 'Accounts.Email'];
+        $columns = ['Accounts.AccountID', 'Accounts.FirstName', 'Accounts.LastName', 'Accounts.Email', 'Accounts.DateOpened', 'InstructorStudentsMulti.CreatedAt as PickedAt'];
+        $groups  = ['Accounts.AccountID', 'Accounts.FirstName', 'Accounts.LastName', 'Accounts.Email', 'Accounts.DateOpened', 'InstructorStudentsMulti.CreatedAt'];
         $query = (new \App\Models\Account())->newQuery();
-        $query->where('InstructorStudents.InstructorID', '=', $instructorId);
+        $query->where('InstructorStudentsMulti.InstructorID', '=', $instructorId);
+        $query->where('InstructorStudentsMulti.IsVerified', '=', '1');
         if (!empty($filterStudentIds)) {
             $query->whereIn('Accounts.AccountID', $filterStudentIds);
         }
         if ($includeAcademy) {
-            $query->leftjoin('InstructorStudents',           function($j) use($instructorId) {
-                $j->on('InstructorStudents.AccountID', '=', 'Accounts.AccountID');
-                $j->on('InstructorStudents.InstructorID', '=', \DB::raw($instructorId));
+            $query->leftjoin('InstructorStudentsMulti',           function($j) use($instructorId) {
+                $j->on('InstructorStudentsMulti.AccountID', '=', 'Accounts.AccountID');
+                $j->on('InstructorStudentsMulti.InstructorID', '=', \DB::raw($instructorId));
             });
 
-            $columns[] = 'AcademyStudents.CreatedAt';
+            $columns[] = 'AcademyStudents.CreatedAt as JoinedAt';
+            $groups[]  = 'AcademyStudents.CreatedAt';
             $query->leftjoin('AcademyStudents',              function($j) {
                 $j->on('AcademyStudents.AccountID', '=', 'Accounts.AccountID');
             });
@@ -142,13 +147,13 @@ class InstructorRepository extends BaseRepository
 
             $query->orWhere('AcademyInstructors.InstructorID', '=', $instructorId);
         } else {
-            $query->join('InstructorStudents',           function($j) use($instructorId) {
-                $j->on('InstructorStudents.AccountID', '=', 'Accounts.AccountID');
-                $j->on('InstructorStudents.InstructorID', '=', \DB::raw($instructorId));
+            $query->join('InstructorStudentsMulti',           function($j) use($instructorId) {
+                $j->on('InstructorStudentsMulti.AccountID', '=', 'Accounts.AccountID');
+                $j->on('InstructorStudentsMulti.InstructorID', '=', \DB::raw($instructorId));
             });
         }
 
-        $query->groupBy($columns);
+        $query->groupBy($groups);
 
         if (!is_null($skip)) {
             $query->skip($skip);
@@ -161,19 +166,22 @@ class InstructorRepository extends BaseRepository
         return $query->get($columns);
     }
 
+    /**
+     * @param bool $includeAcademy  Count students connected only to the academy
+     */
     public function totalStudents($instructorId, $includeAcademy=true, $filterStudentIds=[])
     {
         $columns = [DB::raw('COUNT( DISTINCT Accounts.AccountID) as total_count')];
         //$query = $this->model->newQuery();
         //$query = (new \App\Models\Account())->newQuery();
         $query = DB::table('Accounts');
-        $query->where('InstructorStudents.InstructorID', '=', $instructorId);
+        $query->where('InstructorStudentsMulti.InstructorID', '=', $instructorId);
         if (!empty($filterStudentIds)) {
             $query->whereIn('Accounts.AccountID', $filterStudentIds);
         }
-        $query->leftjoin('InstructorStudents',           function($j) use($instructorId) {
-            $j->on('InstructorStudents.AccountID', '=', 'Accounts.AccountID');
-            $j->on('InstructorStudents.InstructorID', '=', DB::raw($instructorId));
+        $query->leftjoin('InstructorStudentsMulti',           function($j) use($instructorId) {
+            $j->on('InstructorStudentsMulti.AccountID', '=', 'Accounts.AccountID');
+            $j->on('InstructorStudentsMulti.InstructorID', '=', DB::raw($instructorId));
         });
 
         if ($includeAcademy) {
