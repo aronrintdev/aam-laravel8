@@ -126,8 +126,9 @@ after('deploy:failed', 'deploy:unlock');
 //those up after a while and we don't run out of disk space
 task('deploy:update_code', function () use ($packageName) {
     $packageName = get('package_name');
+    $realHostname = Task\Context::get()->getHost()->getRealHostname();
     writeln("transfering  build/$packageName");
-    runLocally("scp -oStrictHostKeyChecking=no -rC build/$packageName {{user}}@{{hostname}}:{{release_path}}/{$packageName}");
+    runLocally("scp -oStrictHostKeyChecking=no -rC build/$packageName {{user}}@$realHostname:{{release_path}}/{$packageName}");
     run("cd {{release_path}} && tar -C . -zxf {$packageName}");
 });
 
