@@ -35,7 +35,7 @@ Route::group(['middleware' => 'auth:backend,api'], function () {
     Route::post('/update-password/', 'AccountAPIController@updatePassword');
     Route::get('/academies/{id}', 'AcademyAPIController@show')->name('academies.show');
     Route::put('/academies/{id}/branding', 'AcademyAPIController@brandingUpdate')->name('academies.branding.update');
-    Route::post('/accounts/{id}/follow/{instructorId}', 'AccountAPIController@follow')->name('accounts.follow');
+    Route::post('/accounts/{id}/pick/{instructorId}', 'AccountAPIController@pick')->name('accounts.pick.instructor');
     Route::post('/academies/{id}/enroll/{userid}', 'AcademyAPIController@enrollAcademyUser');
 });
 
@@ -48,6 +48,8 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::resource('locker', 'LockerAPIController');
     Route::post('locker/assignSwings', 'LockerAPIController@assignSwings');
+
+    Route::post('/accounts/{id}/follow/{instructorId}', 'AccountAPIController@follow')->name('accounts.follow.instructor');
 
     Route::get('/accounts/{id}/academies', 'AccountAPIController@showAcademies');
     Route::get('/instructors/{id}/students', 'InstructorAPIController@showStudents', 'instructors.students.get');

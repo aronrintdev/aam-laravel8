@@ -10,6 +10,7 @@ use App\Repositories\AcademyRepository;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use App\Http\Controllers\AppBaseController;
+use App\Models\InstructorStudentsMulti;
 use Response;
 
 use League\Fractal\Manager;
@@ -431,6 +432,15 @@ class AccountAPIController extends AppBaseController
      *     required=true,
      *     in="path"
      *   ),
+     *   @OA\Parameter(
+     *     name="channel",
+     *     description="name of device used to make this request",
+     *     required=false,
+     *     @OA\Schema(
+     *       type="string",
+     *     ),
+     *     in="query"
+     *   ),
      *   @OA\Response(
      *     response=200,
      *     description="successful operation",
@@ -453,11 +463,104 @@ class AccountAPIController extends AppBaseController
             }
         }
         try {
-            \DB::table('InstructorStudents')->insert([
+            \DB::table('InstructorStudentsFollow')->insert([
                 'InstructorID'  => $instructorId,
                 'AccountID'     => $id,
-                'StudentCharge' => 0,
+                'SourceChannel' => $channel,
             ]);
+        } catch (QueryException $ex) {
+            //just ignore, it's probably duplicate key and we're fine with that
+        }
+
+        return $this->sendResponse([], 'Account saved successfully');
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     *
+     * @OA\Post(
+     *   path="/accounts/{id}/pick/{instructorId}",
+     *   summary="Select an instructor",
+     *   tags={"Account"},
+     *   description="Create a connection to an instructor",
+     *   @OA\MediaType(
+     *      mediaType="application/json"
+     *   ),
+     *   @OA\Parameter(
+     *     name="id",
+     *     description="id of user Account",
+     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID"),
+     *     required=true,
+     *     in="path"
+     *   ),
+     *   @OA\Parameter(
+     *     name="instructorId",
+     *     description="id of instructor Account",
+     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID"),
+     *     required=true,
+     *     in="path"
+     *   ),
+     *   @OA\Parameter(
+     *     name="channel",
+     *     description="name of device used to make this request",
+     *     required=false,
+     *     @OA\Schema(
+     *       type="string",
+     *     ),
+     *     in="query"
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *   )
+     * )
+     */
+
+    public function pick(Request $request, $id, $instructorId)
+    {
+        $user = \Auth::user();
+        $account = $this->accountRepository->find($id);
+        $channel = $request->input('channel');
+
+        if ($user->AccountID != $id &&
+            $user->AccountID != $instructorId &&
+            ! $user->isApiAgent()) {
+                return response()->json(['errors'=>['status'=>403]], 403);
+        }
+        //table unique constraints ensure only 1 row per account/instrcutor combo
+        $result = InstructorStudentsMulti::find([
+            'AccountID' => $id,
+            'InstructorID' => $instructorId
+        ]);
+        if (!$result) {
+            $result = new InstructorStudentsMulti([
+                'AccountID' => $id,
+                'InstructorID' => $instructorId
+            ]);
+        }
+
+
+        if ($user->isApiAgent() ) {
+            //create complete connection
+            $result['StudentVerifiedAt'] = $result['StudentVerifiedAt'] ?? \Carbon\Carbon::now();
+            $result['InstructorVerifiedAt'] = $result['InstructorVerifiedAt'] ?? \Carbon\Carbon::now();
+            $result['IsVerified'] = 1;
+        } else {
+            if ($user->AccountID == $id) {
+                //the requestor is the student
+                $result['StudentVerifiedAt'] = \Carbon\Carbon::now();
+            } else {
+                //the requestor is the instructor
+                $result['InstructorVerifiedAt'] = \Carbon\Carbon::now();
+            }
+        }
+        if ($result['InstructorVerifiedAt'] != '' && $result['StudentVerifiedAt'] != '') {
+            $result['IsVerified'] = 1;
+        }
+
+        try {
+            $result->save();
         } catch (QueryException $ex) {
             //just ignore, it's probably duplicate key and we're fine with that
         }
