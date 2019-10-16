@@ -66,7 +66,8 @@ set('http_user', 'www-data');
 set('deploy_path', '/home/ubuntu/aam');
 
 // Hosts
-host('134.209.42.80')
+host('aam.v1sports.com')
+->hostname('134.209.42.80')
 ->stage('prod')
 ->user('ubuntu')
 ->identityFile('~/.ssh/id_rsa')
@@ -75,7 +76,8 @@ host('134.209.42.80')
     ->set('deploy_path', '/home/ubuntu/prod/aam');
 
 
-host('167.71.185.13')
+host('test.aam.v1sports.com')
+->hostname('167.71.185.13')
 ->stage('test')
 ->user('ubuntu')
 ->identityFile('~/.ssh/id_rsa')
@@ -83,7 +85,8 @@ host('167.71.185.13')
     ->addSshOption('StrictHostKeyChecking', 'no')
     ->set('deploy_path', '/home/ubuntu/test/aam');
     
-host('159.65.180.227')
+host('stage.aam.v1sports.com')
+->hostname('159.65.180.227')
 ->stage('stage')
 ->user('ubuntu')
 ->identityFile('~/.ssh/id_rsa')
