@@ -150,9 +150,12 @@ $gitlog = '';
 if (strlen(getenv('GITLOG'))) {
 	$gitlog = "\n".getenv('GITLOG')."";
 }
-set('slack_success_text', "Deploy to *{{target}}* successful".$gitlog);
-set('slack_webhook', 'https://hooks.slack.com/services/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');
-after('success', 'slack:notify:success');
+$stage = get('stage');
+if ($stage != 'test') {
+    set('slack_success_text', "Deploy to *{{target}}* successful".$gitlog);
+    set('slack_webhook', 'https://hooks.slack.com/services/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');
+    after('success', 'slack:notify:success');
+}
 
 
 task('deploy', [
