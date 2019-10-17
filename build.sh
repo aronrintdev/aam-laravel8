@@ -7,18 +7,21 @@ fi
 
 echo 'building for env' $ENV '...'
 
-if [ $ENV = "prod" ];then
+if [ $ENV = "prod" ] || [ $ENV = "stage" ];then
     BRANCH='master'
-	echo 'checking out master branch '
-    git clean -X
+    echo 'checking out master branch '
+    git clean -f
     git checkout master
+    git fetch origin
+    git reset --hard origin/master
 else
     BRANCH='develop'
-	echo 'checking out develop branch '
-    git clean -X
+    echo 'checking out develop branch '
+    git clean -f
     git checkout develop
+    git fetch origin
+    git reset --hard origin/develop
 fi;
-
 
 echo 'decrypting env.'$ENV '...'
 if [ -z $KEY ];then
@@ -30,7 +33,7 @@ SOURCE=../ docker-compose -f ci/compose-build.yml run --rm -T -w "/app" -e KEY=$
 
 echo "generate version from $BRANCH ... "
 #set a version number
-VERSION_TAG=$(git describe --abbrev=0 --tags 2&>/dev/null)
+VERSION_TAG=$(git describe --abbrev=0 --tags)
 VERSION_SHA=$(git rev-parse --short $BRANCH)
 echo "setting APP_VERSION to  $VERSION_TAG#$VERSION_SHA ... "
 echo 'APP_VERSION="'$VERSION_TAG#$VERSION_SHA'"' >> .env
