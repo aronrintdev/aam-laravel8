@@ -7,6 +7,7 @@ namespace App\Http\Controllers\API;
 use App\Models\Swing;
 use App\Models\Instructor;
 use App\Repositories\SwingRepository;
+use App\Repositories\InstructorRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use Response;
@@ -67,11 +68,27 @@ class LockerAPIController extends AppBaseController
      * @return Response
      *
      * @OA\Get(
-     *   path="/locker",
+     *   path="/locker/{accountId}/",
      *   summary="Get a listing of your Videos.",
      *   description="Get all your videos",
      *   @OA\MediaType(
      *     mediaType="application/json"
+     *   ),
+     *   @OA\Parameter(
+     *     name="accountId",
+     *     description="id of Account",
+     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID"),
+     *     required=false,
+     *     in="path"
+     *   ),
+     *   @OA\Parameter(
+     *     name="ids",
+     *     description="Comma separated list of specific video ids",
+     *     required=false,
+     *     @OA\Schema(
+     *       type="string",
+     *     ),
+     *     in="query"
      *   ),
      *   @OA\Response(
      *     response=200,
@@ -79,29 +96,44 @@ class LockerAPIController extends AppBaseController
      *     @OA\MediaType(
      *     mediaType="application/json",
      *
-     *     @OA\Schema(
-     *      allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
-     *      @OA\Property(
-     *         property="data",
-     *         type="array",
-     *         @OA\Items(ref="#/components/schemas/swing_record")
-     *       )
-     *       )
+     *       @OA\Schema(
+     *        allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
+     *        @OA\Property(
+     *           property="data",
+     *           type="array",
+     *           @OA\Items(ref="#/components/schemas/swing_record")
+     *         )
      *       )
      *     )
      *   )
      * )
      */
-    public function index(Request $request)
+    public function index(Request $request, $accountId=false)
     {
         $user = $request->user();
         $limit = $request->get('limit') ? intval($request->get('limit')) : 20;
 
+        //only read the accountId if the user is an instructor
+        if ($user->IsInstructor) {
+            $instructorRepositry = new InstructorRepository(app());
+            $list = $instructorRepositry->students($user->AccountID, false, [$accountId]);
+            if (! count($list)) {
+                throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
+            }
+        } else {
+            $accountId = $user->AccountID;
+        }
+
+        $searchParams = ['AccountID'=>$accountId, 'Deleted'=>false];
+
+        if ($ids = $request->input('ids')) {
+            $searchParams['SwingID'] = explode(',', $ids);
+        }
         $swings = $this->swingRepository->all(
-                ['AccountID'=>$user->AccountID, 'Deleted'=>false],
+                $searchParams,
                 $request->get('skip'),
                 $limit
-                );
+        );
 
         $resource = new Collection($swings->toArray(), [$this, 'swingRecordTranslate']);
 
@@ -265,6 +297,8 @@ class LockerAPIController extends AppBaseController
         }
         return [
             'id'            => (int) $swing['SwingID'],
+            'type'          => 'video',
+            'attributes'    => [
             'account_id'    => (int) $swing['AccountID'],
             'title'         => $swing['Description'],
             'video_url'     => $videoUrl,
@@ -273,6 +307,7 @@ class LockerAPIController extends AppBaseController
             'status_id'     => $swing['SwingStatusID'],
             //'thumb_url'    => 'https://v1sports.com/SwingStore/190424231844IP9M2449503.jpg',
             'date_uploaded' => $swing['DateUploaded'],
+            ],
         ];
     }
 }

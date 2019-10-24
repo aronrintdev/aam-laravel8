@@ -46,7 +46,8 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::resource('instructors', 'InstructorAPIController');
 
-    Route::resource('locker', 'LockerAPIController');
+    #Route::resource('locker', 'LockerAPIController');
+    Route::get('locker/{accountId?}', 'LockerAPIController@index');
     Route::post('locker/assignSwings', 'LockerAPIController@assignSwings');
 
     Route::post('/accounts/{id}/follow/{instructorId}', 'AccountAPIController@follow')->name('accounts.follow.instructor');
