@@ -34,7 +34,20 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
-        if (app()->bound('sentry') && $this->shouldReport($exception) && config('app.debug') == false){
+        if (app()->bound('sentry') && $this->shouldReport($exception) && config('app.debug') == true){
+            //sentry people are django people, so they
+            //don't get Laravel
+            //the IP Address is not taken from Laravel / Symfony
+            //after it has done the trusted proxy check, it's only
+            //taken from  $_SERVER
+            \Sentry\Laravel\Integration::configureScope(function (\Sentry\State\Scope $scope): void {
+                $u = \Auth()->user();
+                $scope->setUser([
+                    'email' => optional($u)->Email,
+                    'id' => optional($u)->AccountID,
+                    'ip_address' => Request()->ip(),
+                ]);
+            });
             app('sentry')->captureException($exception);
         }
         parent::report($exception);
