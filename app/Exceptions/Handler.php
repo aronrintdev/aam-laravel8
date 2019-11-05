@@ -34,6 +34,7 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
+        /*
         if (app()->bound('sentry') && $this->shouldReport($exception) && config('app.debug') == true){
             //sentry people are django people, so they
             //don't get Laravel
@@ -50,6 +51,7 @@ class Handler extends ExceptionHandler
             });
             app('sentry')->captureException($exception);
         }
+        */
         parent::report($exception);
     }
 

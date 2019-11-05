@@ -36,11 +36,20 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['daily', 'bugsnag'],
+            'channels' => ['daily', 'bugsnag', 'sentry'],
         ],
 
         'bugsnag' => [
             'driver' => 'bugsnag',
+        ],
+
+        'sentry' => [
+            'driver' => 'sentry',
+            'level'  => 'warning',
+            'formatter' => \Monolog\Formatter\LineFormatter::class,
+            'formatter_with' => [
+                'format' => "%message% %context%\n",
+            ],
         ],
 
         'single' => [
