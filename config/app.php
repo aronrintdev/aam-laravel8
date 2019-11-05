@@ -172,15 +172,15 @@ return [
         \InfyOm\Generator\InfyOmGeneratorServiceProvider::class,
         \InfyOm\AdminLTETemplates\AdminLTETemplatesServiceProvider::class, 
         \Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
-        Sentry\Laravel\ServiceProvider::class,
-        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
+        \Sentry\Laravel\ServiceProvider::class,
+        \Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
 
 
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
+        App\Providers\AppServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
