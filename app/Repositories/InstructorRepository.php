@@ -82,6 +82,24 @@ class InstructorRepository extends BaseRepository
     }
 
     /**
+     * Find model record for given id
+     *
+     * @param int $id
+     * @param array $columns
+     *
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|Model|null
+     */
+    public function find($id, $columns = ['*'])
+    {
+        $query = $this->model->newQuery();
+
+        $query->join('Accounts',           'Instructors.InstructorID', 'Accounts.AccountID');
+        return $query->find($id, $columns);
+    }
+
+
+
+    /**
      * select * FROM [Instructors]
      * inner join [Accounts] on [Instructors].[InstructorID] = [Accounts].[AccountID]
      * inner join [AcademyInstructors] on [Accounts].[AccountID] = [AcademyInstructors].[InstructorID]

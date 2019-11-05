@@ -11,9 +11,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use Response;
 
+use App\Transformers\InstructorTransformer;
 use App\Transformers\StudentTransformer;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
 use League\Fractal\Serializer\JsonApiSerializer;
 
 
@@ -174,14 +176,37 @@ class InstructorAPIController extends AppBaseController
 
     public function show($id)
     {
+
+        $fields = [
+            'AccountID',
+            'FirstName',
+            'LastName',
+            'Title',
+            'HeadShot',
+            'Biography',
+            'Philosophy',
+            'Accomplishments',
+        ];
+
+        $user = \Auth::user();
+        //if we are using the robot token to access, give back email as well
+        if($user && $user->isApiAgent()) {
+            $fields[] = 'Email';
+        }
+
+
         /** @var Instructor $instructor */
-        $instructor = $this->instructorRepository->find($id);
+        $instructor = $this->instructorRepository->find($id, $fields);
 
         if (empty($instructor)) {
             return $this->sendError('Instructor not found');
         }
 
-        return $this->sendResponse($instructor->toArray(), 'Instructor retrieved successfully');
+
+        $manager = new Manager();
+        $manager->setSerializer(new JsonApiSerializer());
+        $resource = new Item($instructor, new InstructorTransformer);
+        return response()->json((new Manager)->createData($resource)->toArray());
     }
 
     /**

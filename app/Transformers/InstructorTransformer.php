@@ -57,9 +57,12 @@ class InstructorTransformer extends Fractal\TransformerAbstract
             $extraFields['accolades'] = $acct->Accomplishments;
         }
 
-	    return [
-	        'id'         => (int) $acct->AccountID,
-	        'type'       => 'instructor',
+        //depending on how the instructor is loaded, we might hit
+        //the account table and we might not.  InstructorID is a pointer
+        //to the account table's AccountID, not an auto increment
+        return [
+            'id'         => (int) $acct->AccountID ? $acct->AccountID : $acct->InstructorID,
+            'type'       => 'instructor',
             'attributes' => array_merge([
                 'first_name'   =>  $acct->FirstName,
                 'last_name'    =>  $acct->LastName,
@@ -67,6 +70,6 @@ class InstructorTransformer extends Fractal\TransformerAbstract
                 'profile_pic'  =>  $acct->HeadShot,
                 'email'        =>  $acct->Email,
             ], $extraFields)
-	    ];
-	}
+        ];
+    }
 }
