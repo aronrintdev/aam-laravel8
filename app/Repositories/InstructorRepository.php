@@ -89,7 +89,7 @@ class InstructorRepository extends BaseRepository
      *
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|Model|null
      */
-    public function find($id, $columns = ['*'])
+    public function find($id, $columns = ['Instructors.*'])
     {
         $query = $this->model->newQuery();
 
@@ -199,7 +199,7 @@ class InstructorRepository extends BaseRepository
         }
         $query->leftjoin('InstructorStudentsMulti',           function($j) use($instructorId) {
             $j->on('InstructorStudentsMulti.AccountID', '=', 'Accounts.AccountID');
-            $j->on('InstructorStudentsMulti.InstructorID', '=', DB::raw($instructorId));
+            $j->on('InstructorStudentsMulti.InstructorID', '=', \DB::raw($instructorId));
         });
 
         if ($includeAcademy) {
@@ -209,10 +209,10 @@ class InstructorRepository extends BaseRepository
 
             $query->join('AcademyInstructors',          function($j) use ($instructorId){
                 $j->on('AcademyStudents.AcademyID', '=', 'AcademyInstructors.AcademyID');
-                $j->on('AcademyInstructors.InstructorID', '=', DB::raw($instructorId));
+                $j->on('AcademyInstructors.InstructorID', '=', \DB::raw($instructorId));
             });
 
-            $query->orWhere('AcademyInstructors.InstructorID', '=', $instructorId);
+            $query->orWhere('AcademyInstructors.InstructorID', '=', \DB::raw($instructorId));
         }
         //$query->groupBy(['Accounts.AccountID']);
 
