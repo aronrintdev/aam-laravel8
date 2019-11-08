@@ -101,10 +101,15 @@ class InstructorAPIController extends AppBaseController
 
     public function index(Request $request)
     {
+        $limit = $request->get('limit') ? (int)$request->get('limit') : 100;
+        if ($limit > 500) {
+            $limit = 500;
+        }
+
         $instructors = $this->instructorRepository->all(
                 $request->except(['skip', 'limit']),
                 $request->get('skip'),
-                $request->get('limit')
+                $limit
                 );
 
         return $this->sendResponse($instructors->toArray(), 'Instructors retrieved successfully');
@@ -390,7 +395,10 @@ class InstructorAPIController extends AppBaseController
         if (empty($instructor)) {
             return $this->sendError('Instructor not found');
         }
-        $limit = $request->get('limit') ? $request->get('limit') : 10;
+        $limit = $request->get('limit') ? (int)$request->get('limit') : 100;
+        if ($limit > 500) {
+            $limit = 500;
+        }
 
         $accountList = $this->instructorRepository->students(
             $instructor->InstructorID,
