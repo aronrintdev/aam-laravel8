@@ -61,7 +61,7 @@ class InstructorTransformer extends Fractal\TransformerAbstract
         //the account table and we might not.  InstructorID is a pointer
         //to the account table's AccountID, not an auto increment
         return [
-            'id'         => (int) $acct->AccountID ? $acct->AccountID : $acct->InstructorID,
+            'id'         => (int) $acct->AccountID ? (int)$acct->AccountID : (int)$acct->InstructorID,
             'type'       => 'instructor',
             'attributes' => array_merge([
                 'first_name'   =>  $acct->FirstName,

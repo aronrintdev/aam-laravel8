@@ -106,11 +106,30 @@ class InstructorAPIController extends AppBaseController
             $limit = 500;
         }
 
+       $fields = [
+            'Instructors.InstructorID',
+            'AccountID',
+            'FirstName',
+            'LastName',
+            'Title',
+            'HeadShot',
+            'Biography',
+            'Philosophy',
+            'Accomplishments',
+        ];
+
+
         $instructors = $this->instructorRepository->all(
                 $request->except(['skip', 'limit']),
                 $request->get('skip'),
-                $limit
+                $limit,
+                $fields
                 );
+
+        $manager = new Manager();
+        $manager->setSerializer(new JsonApiSerializer());
+        $resource = new Collection($instructors, new InstructorTransformer);
+        return response()->json((new Manager)->createData($resource)->toArray());
 
         return $this->sendResponse($instructors->toArray(), 'Instructors retrieved successfully');
     }
@@ -183,6 +202,7 @@ class InstructorAPIController extends AppBaseController
     {
 
         $fields = [
+            'Instructors.InstructorID',
             'AccountID',
             'FirstName',
             'LastName',

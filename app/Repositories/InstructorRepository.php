@@ -98,6 +98,35 @@ class InstructorRepository extends BaseRepository
     }
 
 
+    public function all($search = [], $skip = null, $limit = null, $columns = ['Instructors.*'])
+    {
+        $query = $this->model->newQuery();
+        $query->join('Accounts',           'Instructors.InstructorID', 'Accounts.AccountID');
+
+        if (count($search)) {
+            foreach($search as $key => $value) {
+                if (in_array($key, $this->getFieldsSearchable())) {
+                    if (is_array($value)) {
+                        $query->whereIn($key, $value);
+                    } else {
+                        $query->where($key, $value);
+                    }
+                }
+            }
+        }
+
+        if (!is_null($skip)) {
+            $query->skip($skip);
+        }
+
+        if (!is_null($limit)) {
+            $query->limit($limit);
+        }
+
+        return $query->get($columns);
+    }
+
+
 
     /**
      * select * FROM [Instructors]
