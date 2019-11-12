@@ -116,7 +116,12 @@ class RegisterController extends Controller
      */
     public function register(Request $request)
     {
-        $this->validator($request->all())->validate();
+        $v = $this->validator($request->all());
+        if ($v->fails()) {
+            throw new \Illuminate\Validation\ValidationException($v);
+            $errors = $v->errors();
+            return response()->json(['errors'=>$errors], 422);
+        }
         //check email is unique in API
         $this->checkEmailUnique($request->input('email'));
 
