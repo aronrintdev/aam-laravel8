@@ -12,10 +12,11 @@ class TestUser extends Seeder
      */
     public function run()
     {
-        DB::statement('TRUNCATE TABLE [Accounts]');
-        DB::statement('TRUNCATE TABLE [AcademyInstructors]');
-        DB::statement('TRUNCATE TABLE [AcademyStudents]');
-        DB::statement('TRUNCATE TABLE [Instructors]');
+        DB::statement('DELETE FROM [Accounts]');
+        DB::statement('DELETE FROM [AcademyInstructors]');
+        DB::statement('DELETE FROM [AcademyStudents]');
+        DB::statement('DELETE FROM [Instructors]');
+        DB::statement('DELETE FROM [InstructorStudentsMulti]');
         $faker = Faker::create();
         $faker->seed(4321);
         $paulineId = DB::table('Accounts')->insertGetId([
@@ -82,10 +83,26 @@ class TestUser extends Seeder
             'AcademyID'    => 'V1AC',
             'AccountID'    => $carlId,
         ]);
+        DB::table('InstructorStudentsMulti')->insert([
+            'InstructorID'         => $paulineId,
+            'AccountID'            => $carlId,
+            'IsVerified'           => 1,
+            'StudentVerifiedAt'    => \Carbon\Carbon::now(),
+            'InstructorVerifiedAt' => \Carbon\Carbon::now(),
+        ]);
+
         DB::table('AcademyStudents')->insert([
             'AcademyID'    => 'SHYG',
             'AccountID'    => $carlId,
         ]);
+        DB::table('InstructorStudentsMulti')->insert([
+            'InstructorID'         => $shyId,
+            'AccountID'            => $carlId,
+            'IsVerified'           => 1,
+            'StudentVerifiedAt'    => \Carbon\Carbon::now(),
+            'InstructorVerifiedAt' => \Carbon\Carbon::now(),
+        ]);
+
 
         foreach (range(1,25) as $index) {
             $studentId = DB::table('Accounts')->insertGetId([
@@ -98,6 +115,13 @@ class TestUser extends Seeder
             DB::table('AcademyStudents')->insert([
                 'AcademyID'    => 'SHYG',
                 'AccountID'    => $studentId,
+            ]);
+            DB::table('InstructorStudentsMulti')->insert([
+                'InstructorID'         => $shyId,
+                'AccountID'            => $studentId,
+                'IsVerified'           => 1,
+                'StudentVerifiedAt'    => \Carbon\Carbon::now(),
+                'InstructorVerifiedAt' => \Carbon\Carbon::now(),
             ]);
         }
 
@@ -114,6 +138,13 @@ class TestUser extends Seeder
             DB::table('AcademyStudents')->insert([
                 'AcademyID'    => 'V1AC',
                 'AccountID'    => $studentId,
+            ]);
+            DB::table('InstructorStudentsMulti')->insert([
+                'InstructorID'         => $paulineId,
+                'AccountID'            => $studentId,
+                'IsVerified'           => 1,
+                'StudentVerifiedAt'    => \Carbon\Carbon::now(),
+                'InstructorVerifiedAt' => \Carbon\Carbon::now(),
             ]);
         }
     }
