@@ -5,7 +5,6 @@ namespace App\Http\Requests\API;
 use App\Models\Account;
 use InfyOm\Generator\Request\APIRequest;
 
-$DOCS$
 class CreateAccountAPIRequest extends APIRequest
 {
     /**

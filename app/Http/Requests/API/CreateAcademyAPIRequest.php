@@ -5,7 +5,6 @@ namespace App\Http\Requests\API;
 use App\Models\Academy;
 use InfyOm\Generator\Request\APIRequest;
 
-$DOCS$
 class CreateAcademyAPIRequest extends APIRequest
 {
     /**
