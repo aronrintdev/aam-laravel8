@@ -103,13 +103,15 @@ class AccountAvatarAPIController extends AppBaseController
      */
     public function store($id, CreateAccountAvatarAPIRequest $request)
     {
-//        $input = $request->all();
-
         $file = $request->file('avatar');
+
+        $prefix = config('filesystems.disks.do-vos-media.root');
+        $url = $file->storeAs('profile', $id.'-'.$file->hashName(), 'do-vos-media');
+        $url = $prefix.$url;
 
         $accountAvatar = $this->accountAvatarRepository->create([
           'AccountID'=>(int)$id,
-          'AvatarURL'=>'http://test.test/'.$file->hashName(),
+          'AvatarURL'=>'https://vos-media.nyc3.digitaloceanspaces.com/'.$url,
         ]);
 
         $manager = new Manager();
