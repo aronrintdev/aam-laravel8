@@ -7,6 +7,7 @@ use App\Http\Requests\API\UpdateAccountAvatarAPIRequest;
 use App\Models\AccountAvatar;
 use App\Repositories\AccountAvatarRepository;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use App\Http\Controllers\AppBaseController;
 use Response;
 
@@ -75,10 +76,14 @@ class AccountAvatarAPIController extends AppBaseController
      *   @OA\RequestBody(
      *     description="Upload images request body",
      *     @OA\MediaType(
-     *       mediaType="application/octet-stream",
+     *       mediaType="multipart/form-data",
      *       @OA\Schema(
-     *         type="string",
-     *         format="binary"
+     *         type="object",
+     *           @OA\Property(
+     *            property="avatar",
+     *            type="string",
+     *            format="binary",
+     *          )
      *       )
      *     )
      *   ),
@@ -100,12 +105,11 @@ class AccountAvatarAPIController extends AppBaseController
     {
 //        $input = $request->all();
 
-//        $file = $request->file('avatar');
-        $file = $request->getContent();
+        $file = $request->file('avatar');
 
         $accountAvatar = $this->accountAvatarRepository->create([
           'AccountID'=>(int)$id,
-          'AvatarURL'=>'http://test.test/foo.png',
+          'AvatarURL'=>'http://test.test/'.$file->hashName(),
         ]);
 
         $manager = new Manager();
