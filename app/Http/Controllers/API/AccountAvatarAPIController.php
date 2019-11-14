@@ -120,10 +120,14 @@ class AccountAvatarAPIController extends AppBaseController
         $url = $file->storeAs($filepath, $hash, 'do-vos-media');
         $prefix = config('filesystems.disks.do-vos-media.root');
 
-        $accountAvatar = $this->accountAvatarRepository->create([
-          'AccountID'=>(int)$id,
-          'AvatarURL'=>'https://vos-media.nyc3.digitaloceanspaces.com/'.$prefix.$url,
-        ]);
+        try {
+            $accountAvatar = $this->accountAvatarRepository->create([
+              'AccountID'=>(int)$id,
+              'AvatarURL'=>'https://vos-media.nyc3.digitaloceanspaces.com/'.$prefix.$url,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['errors'=>[['title'=>'Internal server error', 'status'=>500]]], 500);
+        }
 
         $manager = new Manager();
         $manager->setSerializer(new JsonApiSerializer());
