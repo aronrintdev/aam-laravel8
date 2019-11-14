@@ -40,15 +40,46 @@ class AccountAvatarApiTest extends TestCase
     }
 
     /**
-     * @ test
+     * @test
      */
-    public function off__read_account_avatar()
+    public function test_read_account_avatar()
     {
         $accountAvatar = $this->makeAccountAvatar();
-        $this->response = $this->json('GET', '/api201902/avatar/'.$accountAvatar['AccountID']);
+        $this->response = $this->json('GET', '/api201902/avatar/'.$accountAvatar->AccountID);
 
-        $this->assertApiResponse($accountAvatar->toArray());
+        $this->response->assertJson([
+            'data' => [
+                'type'=>'avatar',
+                'attributes'=> [
+                    'account_id' => $accountAvatar->AccountID,
+                    'url'        => $accountAvatar->AvatarURL,
+                ]
+            ]
+        ]);
     }
+
+    /**
+     * @test
+     */
+    public function test_dont_allow_control_other_accounts()
+    {
+        $file = UploadedFile::fake()->image('avatar.jpg');
+        $accountAvatar = $this->fakeAccountAvatarData();
+        $accountAvatar['AccountID'] = 3;
+        $user = \App\AccountUser::find(4);
+        $this->response = $this->actingAs($user)
+            ->call('POST', '/api201902/avatar/'.$accountAvatar['AccountID'],
+            [
+                'avatar' => UploadedFile::fake()->image('avatar.jpg'),
+            ],
+        );
+
+        $this->response
+            ->assertStatus(\Illuminate\Http\Response::HTTP_FORBIDDEN);
+        //this doesn't work for JSON responses
+        //$this->response->assertUnauthorized();
+    }
+
 
     /**
      * @ test
