@@ -1,4 +1,6 @@
-<?php namespace Tests\Repositories;
+<?php
+
+namespace Tests\Feature\Avatars;
 
 use App\Models\AccountAvatar;
 use App\Repositories\AccountAvatarRepository;

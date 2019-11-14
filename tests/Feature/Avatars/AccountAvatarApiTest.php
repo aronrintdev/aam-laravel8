@@ -1,4 +1,6 @@
-<?php namespace Tests\APIs;
+<?php 
+
+namespace Tests\Feature\Avatars;
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
