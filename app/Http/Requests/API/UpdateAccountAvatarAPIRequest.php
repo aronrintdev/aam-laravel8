@@ -14,7 +14,10 @@ class UpdateAccountAvatarAPIRequest extends APIRequest
      */
     public function authorize()
     {
-        return true;
+        if ($this->user()->isApiAgent()) {
+            return true;
+        }
+        return $this->user()->AccountID == $this->id;
     }
 
     /**

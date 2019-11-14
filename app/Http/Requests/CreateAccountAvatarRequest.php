@@ -18,7 +18,7 @@ class CreateAccountAvatarRequest extends FormRequest
         if ($this->user()->isApiAgent()) {
             return true;
         }
-        return $this->user()->AccountID == $this->input('id');
+        return $this->user()->AccountID == $this->id;
     }
 
     /**
