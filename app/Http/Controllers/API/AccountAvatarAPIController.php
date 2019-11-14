@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Requests\API\CreateAccountAvatarAPIRequest;
 use App\Http\Requests\API\UpdateAccountAvatarAPIRequest;
 use App\Models\AccountAvatar;
+use App\Repositories\AccountRepository;
 use App\Repositories\AccountAvatarRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -58,9 +59,10 @@ class AccountAvatarAPIController extends AppBaseController
     /** @var  AccountAvatarRepository */
     private $accountAvatarRepository;
 
-    public function __construct(AccountAvatarRepository $accountAvatarRepo)
+    public function __construct(AccountAvatarRepository $accountAvatarRepo, AccountRepository $accountRepo)
     {
         $this->accountAvatarRepository = $accountAvatarRepo;
+        $this->accountRepository = $accountRepo;
     }
 
 
@@ -104,14 +106,23 @@ class AccountAvatarAPIController extends AppBaseController
     public function store($id, CreateAccountAvatarAPIRequest $request)
     {
         $file = $request->file('avatar');
+        $account = $this->accountRepository->find($id);
+        if (!$account) {
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
+        }
 
+        $hash = sha1($account->Email). '-'.$id;
+        $filepath = 'profile/'.substr($hash, 0, 2);
+        if ($extension = $file->guessExtension()) {
+            $hash .= '.'.$extension;
+        }
+
+        $url = $file->storeAs($filepath, $hash, 'do-vos-media');
         $prefix = config('filesystems.disks.do-vos-media.root');
-        $url = $file->storeAs('profile', $id.'-'.$file->hashName(), 'do-vos-media');
-        $url = $prefix.$url;
 
         $accountAvatar = $this->accountAvatarRepository->create([
           'AccountID'=>(int)$id,
-          'AvatarURL'=>'https://vos-media.nyc3.digitaloceanspaces.com/'.$url,
+          'AvatarURL'=>'https://vos-media.nyc3.digitaloceanspaces.com/'.$prefix.$url,
         ]);
 
         $manager = new Manager();
