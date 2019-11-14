@@ -44,7 +44,7 @@ class AccountAvatarRepository extends BaseRepository
         $query = $this->model->newQuery();
 
         return $query->select($columns)
-          ->where('AccountID', $id)
+          ->where('AccountID', (int)$id)
           ->first();
     }
 }
