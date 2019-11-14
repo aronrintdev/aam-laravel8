@@ -49,6 +49,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     #Route::resource('avatar', 'AvatarAPIController');
     Route::resource('avatar', 'AccountAvatarAPIController');
     Route::post('/avatar/{id}', 'AccountAvatarAPIController@store');
+    Route::get('/avatar/{id}/defaultimage.png', 'AccountAvatarAPIController@defaultImage')->name('avatar.default.image');
 
     #Route::resource('locker', 'LockerAPIController');
     Route::get('locker/{accountId?}', 'LockerAPIController@index');
