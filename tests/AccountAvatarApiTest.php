@@ -18,9 +18,12 @@ class AccountAvatarApiTest extends TestCase
     {
         $file = UploadedFile::fake()->image('avatar.jpg');
         $accountAvatar = $this->fakeAccountAvatarData();
-        $this->response = $this->call('POST', '/api201902/avatar/'.$accountAvatar['AccountID'],
+        $accountAvatar['AccountID'] = 3;
+        $user = \App\AccountUser::find(3);
+        $this->response = $this->actingAs($user)
+            ->call('POST', '/api201902/avatar/'.$user->AccountID,
             [
-              'avatar' => UploadedFile::fake()->image('avatar.jpg')
+                'avatar' => UploadedFile::fake()->image('avatar.jpg'),
             ],
         );
 
