@@ -111,16 +111,17 @@ class AccountAvatarApiTest extends TestCase
     }
 
     /**
-     * @ test
+     * @test
      */
-    public function off_delete_account_avatar()
+    public function test_delete_account_avatar()
     {
         $accountAvatar = $this->makeAccountAvatar();
-        $this->response = $this->json('DELETE', '/api201902/avatar/'.$accountAvatar->AccountID);
 
-        $this->assertApiSuccess();
-        $this->response = $this->json('GET', '/api201902/avatar/'.$accountAvatar->AccountID);
+        $user = \App\AccountUser::find($accountAvatar['AccountID']);
+        $this->response = $this->actingAs($user)
+            ->call('DELETE', '/api201902/avatar/'.$accountAvatar['AccountID']);
 
-        $this->response->assertStatus(404);
+        $this->response
+            ->assertStatus(\Illuminate\Http\Response::HTTP_OK);
     }
 }

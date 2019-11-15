@@ -52,6 +52,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::put('/avatar/{id}/update', 'AccountAvatarAPIController@update');
     Route::put('/avatar/{id}', 'AccountAvatarAPIController@update');
     Route::patch('/avatar/{id}', 'AccountAvatarAPIController@update');
+    Route::delete('/avatar/{id}', 'AccountAvatarAPIController@destroy');
     Route::resource('avatar', 'AccountAvatarAPIController');
 
     #Route::resource('locker', 'LockerAPIController');

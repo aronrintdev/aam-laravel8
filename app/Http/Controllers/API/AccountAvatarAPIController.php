@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\API\CreateAccountAvatarAPIRequest;
 use App\Http\Requests\API\UpdateAccountAvatarAPIRequest;
+use App\Http\Requests\API\DeleteAccountAvatarAPIRequest;
 use App\Models\AccountAvatar;
 use App\Repositories\AccountRepository;
 use App\Repositories\AccountAvatarRepository;
@@ -284,6 +285,7 @@ class AccountAvatarAPIController extends AppBaseController
 
     /**
      * @param int $id
+     * @param DeleteAccountAvatarAPIRequest $request
      * @return Response
      *
      * @OA\Delete(
@@ -308,20 +310,24 @@ class AccountAvatarAPIController extends AppBaseController
      *   )
      * )
      */
-    public function delete($id, UpdateAccountAvatarAPIRequest $request)
+    public function destroy($id, DeleteAccountAvatarAPIRequest $request)
     {
         /** @var AccountAvatar $accountAvatar */
-        /*
-        $accountAvatar = $this->accountAvatarRepository->find($id);
+        $accountAvatar = $this->accountAvatarRepository->findByAccountID($id);
 
         if (empty($accountAvatar)) {
-            return $this->sendError('Account Avatar not found');
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
         }
 
-        $accountAvatar->delete();
+        $prefix = config('filesystems.disks.do-vos-media.root');
+        $url    = parse_url($accountAvatar['AvatarURL']);
+        $filepath = str_replace($prefix, '', $url['path']);
 
+        $result = \Storage::disk('do-vos-media')->delete($filepath);
+        if ($result) {
+            $accountAvatar->delete();
+        }
         return $this->sendResponse($id, 'Account Avatar deleted successfully');
-         */
     }
 
     public function createNewImage($account) {
