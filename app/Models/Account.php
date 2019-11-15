@@ -477,4 +477,17 @@ class Account extends Model
         'Gender' => 'required'
          */
     ];
+
+    public function avatar() {
+        return $this->hasOne(AccountAvatar::class, 'AccountID');
+    }
+
+    public function getAvatarURLAttribute() {
+
+        $avatar = $this->avatar;
+        if ($avatar && $avatar->exists()) {
+            return $avatar->AvatarURL;
+        }
+        return route('api.avatar.default.image', (int)$this->AccountID);
+    }
 }

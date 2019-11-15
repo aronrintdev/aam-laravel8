@@ -38,6 +38,11 @@ use League\Fractal;
  *         type="boolean"
  *       ),
  *       @OA\Property(
+ *         property="pic_url",
+ *         description="Profile Picture URL",
+ *         type="string"
+ *       )
+ *       @OA\Property(
  *         property="joined_at",
  *         description="Date joined academy",
  *         type="datetime"
@@ -61,6 +66,7 @@ class StudentTransformer extends Fractal\TransformerAbstract
                 'first_name'   =>  $acct->FirstName,
                 'last_name'    =>  $acct->LastName,
                 'email'        =>  $acct->Email,
+                'pic_url'      =>  $acct->AvatarURL,
                 'joined_at'    =>  \Carbon\Carbon::parse(@$acct->PickedAt ?? @$acct->JoinedAt),
             ]
 	    ];
