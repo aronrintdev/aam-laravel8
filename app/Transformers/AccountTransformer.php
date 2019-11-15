@@ -6,7 +6,7 @@ use League\Fractal;
 
 /**
  * @OA\Schema(
- *   schema="Student",
+ *   schema="account",
  *   required={""},
  *   @OA\Property(
  *     property="id",
@@ -33,25 +33,15 @@ use League\Fractal;
  *         type="string"
  *       ),
  *       @OA\Property(
- *         property="email",
- *         description="Email",
- *         type="string"
- *       ),
- *       @OA\Property(
  *         property="pic_url",
  *         description="Profile Picture URL",
  *         type="string"
- *       ),
- *       @OA\Property(
- *         property="joined_at",
- *         description="Date joined academy",
- *         type="datetime"
  *       )
  *     )
  *   )
  * )
  */
-class StudentTransformer extends Fractal\TransformerAbstract
+class AccountTransformer extends Fractal\TransformerAbstract
 {
     /**
      * JoinedAt is the join date from the InstructorRepository query
@@ -65,9 +55,7 @@ class StudentTransformer extends Fractal\TransformerAbstract
             'attributes' => [
                 'first_name'   =>  $acct->FirstName,
                 'last_name'    =>  $acct->LastName,
-                'email'        =>  $acct->Email,
                 'pic_url'      =>  $acct->AvatarURL,
-                'joined_at'    =>  \Carbon\Carbon::parse(@$acct->PickedAt ?? @$acct->JoinedAt),
             ]
 	    ];
 	}
