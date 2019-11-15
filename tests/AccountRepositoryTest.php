@@ -4,6 +4,10 @@ use App\Models\Account;
 use App\Repositories\AccountRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
+use Tests\TestCase;
+use Tests\ApiTestTrait;
+use Tests\Traits\MakeAccountTrait;
+
 class AccountRepositoryTest extends TestCase
 {
     use MakeAccountTrait, ApiTestTrait, DatabaseTransactions;
@@ -13,7 +17,7 @@ class AccountRepositoryTest extends TestCase
      */
     protected $accountRepo;
 
-    public function setUp()
+    public function setUp() :void
     {
         parent::setUp();
         $this->accountRepo = App::make(AccountRepository::class);

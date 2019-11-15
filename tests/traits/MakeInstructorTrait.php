@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Traits;
+
 use Faker\Factory as Faker;
 use App\Models\Instructor;
 use App\Repositories\InstructorRepository;
@@ -15,7 +17,7 @@ trait MakeInstructorTrait
     public function makeInstructor($instructorFields = [])
     {
         /** @var InstructorRepository $instructorRepo */
-        $instructorRepo = App::make(InstructorRepository::class);
+        $instructorRepo = \App::make(InstructorRepository::class);
         $theme = $this->fakeInstructorData($instructorFields);
         return $instructorRepo->create($theme);
     }
@@ -42,25 +44,26 @@ trait MakeInstructorTrait
         $fake = Faker::create();
 
         return array_merge([
-            'SalesPerson' => $fake->word,
+            'InstructorID' => $fake->numberBetween(6, 20),
+            'SalesPerson' => substr($fake->word, 0, 4),
             'NotableStudents' => $fake->word,
             'ProCode' => $fake->randomDigitNotNull,
             'CourseAddress' => $fake->word,
             'FB_URL' => $fake->word,
             'HeadShot' => $fake->word,
-            'TurnaroundDays' => $fake->word,
+            'TurnaroundDays' => $fake->randomDigitNotNull,
             'CourseWeb' => $fake->word,
-            'PlayingLevel' => $fake->word,
+            'PlayingLevel' => $fake->randomDigitNotNull,
             'Fee' => $fake->randomDigitNotNull,
             'SampleLesson' => $fake->word,
             'Philosophy' => $fake->word,
-            'Founder' => $fake->word,
+            'Founder' => $fake->randomDigitNotNull,
             'CourseProvince' => $fake->word,
-            'PrivateFlag' => $fake->word,
+            'PrivateFlag' => $fake->randomDigitNotNull,
             'FacultyEmail' => $fake->word,
             'PersonalWebImage' => $fake->word,
-            'PGAMember' => $fake->word,
-            'Available' => $fake->word,
+            'PGAMember' => $fake->randomDigitNotNull,
+            'Available' => $fake->randomDigitNotNull,
             'CourseName' => $fake->word,
             'CourseCity' => $fake->word,
             'DiscountRate' => $fake->randomDigitNotNull,
@@ -70,21 +73,21 @@ trait MakeInstructorTrait
             'FreeLessons' => $fake->randomDigitNotNull,
             'DiscountFee' => $fake->randomDigitNotNull,
             'Biography' => $fake->word,
-            'CourseZip' => $fake->word,
+            'CourseZip' => substr($fake->word, 0, 5),
             'ActionShot' => $fake->word,
             'SerialNo' => $fake->randomDigitNotNull,
-            'AcademyID' => $fake->word,
+            'AcademyID' => substr($fake->word, 0,4),
             'PersonalWebLink' => $fake->word,
-            'StartedTeaching' => $fake->date('Y-m-d H:i:s'),
-            'CourseState' => $fake->word,
-            'V1ProVersion' => $fake->word,
-            'SetStudentCharge' => $fake->word,
+            'StartedTeaching' => $fake->date('Y-m-d'),
+            'CourseState' => substr($fake->word, 0, 2),
+            'V1ProVersion' => substr($fake->word, 0, 4),
+            'SetStudentCharge' => $fake->randomDigitNotNull,
             'Accomplishments' => $fake->word,
-            'StartDate' => $fake->word,
+            'StartDate' => substr($fake->word, 0, 6),
             'SpecialtyCode' => $fake->randomDigitNotNull,
             'CourseCountry' => $fake->word,
-            'SportID' => $fake->word,
-            'V1GAProCode' => $fake->word
+            'SportID' => substr($fake->word, 0, 4),
+            'V1GAProCode' => substr($fake->word, 0, 4)
         ], $instructorFields);
     }
 }

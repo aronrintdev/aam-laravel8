@@ -2,6 +2,10 @@
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
+use Tests\Traits\MakeAccountTrait;
+use Tests\ApiTestTrait;
+
 
 class AccountApiTest extends TestCase
 {

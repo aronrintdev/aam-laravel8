@@ -4,6 +4,10 @@ use App\Models\Instructor;
 use App\Repositories\InstructorRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
+use Tests\TestCase;
+use Tests\Traits\MakeInstructorTrait;
+use Tests\ApiTestTrait;
+
 class InstructorRepositoryTest extends TestCase
 {
     use MakeInstructorTrait, ApiTestTrait, DatabaseTransactions;
@@ -13,10 +17,10 @@ class InstructorRepositoryTest extends TestCase
      */
     protected $instructorRepo;
 
-    public function setUp()
+    public function setUp() :void
     {
         parent::setUp();
-        $this->instructorRepo = App::make(InstructorRepository::class);
+        $this->instructorRepo = \App::make(InstructorRepository::class);
     }
 
     /**

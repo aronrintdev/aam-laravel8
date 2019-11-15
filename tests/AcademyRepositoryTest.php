@@ -4,6 +4,11 @@ use App\Models\Academy;
 use App\Repositories\AcademyRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
+use Tests\TestCase;
+use Tests\Traits\MakeAcademyTrait;
+use Tests\ApiTestTrait;
+
+
 class AcademyRepositoryTest extends TestCase
 {
     use MakeAcademyTrait, ApiTestTrait, DatabaseTransactions;
@@ -13,7 +18,7 @@ class AcademyRepositoryTest extends TestCase
      */
     protected $academyRepo;
 
-    public function setUp()
+    public function setUp() :void
     {
         parent::setUp();
         $this->academyRepo = App::make(AcademyRepository::class);

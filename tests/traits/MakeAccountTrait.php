@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Traits;
+
 use Faker\Factory as Faker;
 use App\Models\Account;
 use App\Repositories\AccountRepository;

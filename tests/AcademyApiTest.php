@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use Tests\Traits\MakeAcademyTrait;
+use Tests\ApiTestTrait;
 
 class AcademyApiTest extends TestCase
 {

@@ -3,6 +3,10 @@
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
+use Tests\TestCase;
+use Tests\Traits\MakeInstructorTrait;
+use Tests\ApiTestTrait;
+
 class InstructorApiTest extends TestCase
 {
     use MakeInstructorTrait, ApiTestTrait, WithoutMiddleware, DatabaseTransactions;
