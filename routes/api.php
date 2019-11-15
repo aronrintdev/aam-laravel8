@@ -46,14 +46,25 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::resource('instructors', 'InstructorAPIController');
 
+    #Route::resource('avatar', 'AvatarAPIController');
+    Route::post('/avatar/{id}', 'AccountAvatarAPIController@store');
+    Route::get('/avatar/{id}/defaultimage.png', 'AccountAvatarAPIController@defaultImage')->name('avatar.default.image');
+    Route::put('/avatar/{id}/update', 'AccountAvatarAPIController@update');
+    Route::put('/avatar/{id}', 'AccountAvatarAPIController@update');
+    Route::patch('/avatar/{id}', 'AccountAvatarAPIController@update');
+    Route::delete('/avatar/{id}', 'AccountAvatarAPIController@destroy');
+    Route::resource('avatar', 'AccountAvatarAPIController');
+
     #Route::resource('locker', 'LockerAPIController');
     Route::get('locker/{accountId?}', 'LockerAPIController@index');
     Route::post('locker/assignSwings', 'LockerAPIController@assignSwings');
 
+    Route::get('/accounts/{id}/academies', 'AccountAPIController@showAcademies');
     Route::post('/accounts/{id}/follow/{instructorId}', 'AccountAPIController@follow')->name('accounts.follow.instructor');
 
-    Route::get('/accounts/{id}/academies', 'AccountAPIController@showAcademies');
     Route::get('/instructors/{id}/students', 'InstructorAPIController@showStudents', 'instructors.students.get');
     Route::post('/instructors/{id}/students', 'InstructorAPIController@showStudents', 'instructors.students.filter');
+
     Route::post('/academies/{id}/enroll', 'AcademyAPIController@enrollAcademy');
 });
+

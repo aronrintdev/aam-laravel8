@@ -170,6 +170,7 @@ class InstructorRepository extends BaseRepository
         $columns = ['Accounts.AccountID', 'Accounts.FirstName', 'Accounts.LastName', 'Accounts.Email', 'Accounts.DateOpened', 'InstructorStudentsMulti.CreatedAt as PickedAt'];
         $groups  = ['Accounts.AccountID', 'Accounts.FirstName', 'Accounts.LastName', 'Accounts.Email', 'Accounts.DateOpened', 'InstructorStudentsMulti.CreatedAt'];
         $query = (new \App\Models\Account())->newQuery();
+        $query->with('avatar');
         $query->where('InstructorStudentsMulti.InstructorID', '=', $instructorId);
         $query->where('InstructorStudentsMulti.IsVerified', '=', '1');
         if (!empty($filterStudentIds)) {

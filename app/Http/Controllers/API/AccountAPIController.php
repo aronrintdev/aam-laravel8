@@ -13,8 +13,10 @@ use App\Http\Controllers\AppBaseController;
 use App\Models\InstructorStudentsMulti;
 use Response;
 
+use App\Transformers\AccountTransformer;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
 use League\Fractal\Serializer\JsonApiSerializer;
 
 /**
@@ -30,7 +32,7 @@ use League\Fractal\Serializer\JsonApiSerializer;
  *        allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
  *        @OA\Property(
  *         property="data",
- *         ref="#/components/schemas/Account"
+ *         ref="#/components/schemas/account"
  *       )
  *     )
  *   )
@@ -46,7 +48,7 @@ use League\Fractal\Serializer\JsonApiSerializer;
  *         property="data",
  *         type="array",
  *            @OA\Items(
- *              ref="#/components/schemas/Account"
+ *              ref="#/components/schemas/account"
  *            )
  *       )
  *     )
@@ -167,8 +169,10 @@ class AccountAPIController extends AppBaseController
             return $this->sendError('Account not found');
         }
 
-        return $this->sendJsonApiResponse('account', 'AccountID', $account->toArray());
-        return $this->sendResponse($account->toArray(), 'Account retrieved successfully');
+        $manager = new Manager();
+        $manager->setSerializer(new JsonApiSerializer());
+        $resource = (new Item($account, new AccountTransformer));
+        return response()->json((new Manager)->createData($resource)->toArray());
     }
 
     /**

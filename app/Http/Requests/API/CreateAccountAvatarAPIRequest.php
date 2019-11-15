@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests\API;
 
-use App\Models\Account;
+use App\Models\AccountAvatar;
 use InfyOm\Generator\Request\APIRequest;
 
-class CreateAccountAPIRequest extends APIRequest
+/**
+ */
+class CreateAccountAvatarAPIRequest extends APIRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +16,11 @@ class CreateAccountAPIRequest extends APIRequest
      */
     public function authorize()
     {
-        return true;
+        if ($this->user()->isApiAgent()) {
+            return true;
+        }
+
+        return $this->user()->AccountID == $this->id;
     }
 
     /**
@@ -24,6 +30,7 @@ class CreateAccountAPIRequest extends APIRequest
      */
     public function rules()
     {
-        return Account::$rules;
+      return [];
+        //return AccountAvatar::$rules;
     }
 }
