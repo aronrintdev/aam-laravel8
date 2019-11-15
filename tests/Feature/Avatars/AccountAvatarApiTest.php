@@ -18,6 +18,7 @@ class AccountAvatarApiTest extends TestCase
      */
     public function test_create_account_avatar()
     {
+	\Storage::fake('do-vos-media');
         $file = UploadedFile::fake()->image('avatar.jpg');
         $accountAvatar = $this->fakeAccountAvatarData();
         $accountAvatar['AccountID'] = 3;
@@ -65,6 +66,7 @@ class AccountAvatarApiTest extends TestCase
      */
     public function test_dont_allow_control_other_accounts()
     {
+	\Storage::fake('do-vos-media');
         $file = UploadedFile::fake()->image('avatar.jpg');
         $accountAvatar = $this->fakeAccountAvatarData();
         $accountAvatar['AccountID'] = 3;
@@ -88,6 +90,7 @@ class AccountAvatarApiTest extends TestCase
      */
     public function test_update_account_avatar()
     {
+	\Storage::fake('do-vos-media');
         $file = UploadedFile::fake()->image('avatar.jpg');
         #$accountAvatar = $this->fakeAccountAvatarData();
         $accountAvatar = $this->makeAccountAvatar();
@@ -115,6 +118,7 @@ class AccountAvatarApiTest extends TestCase
      */
     public function test_delete_account_avatar()
     {
+	\Storage::fake('do-vos-media');
         $accountAvatar = $this->makeAccountAvatar();
 
         $user = \App\AccountUser::find($accountAvatar['AccountID']);
