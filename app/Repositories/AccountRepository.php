@@ -105,7 +105,7 @@ class AccountRepository extends BaseRepository
      *
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|Model|null
      */
-    public function find($id, $columns = ['Accounts.FirstName', 'Accounts.LastName', 'Accounts.AccountID'])
+    public function find($id, $columns = ['Accounts.FirstName', 'Accounts.LastName', 'Accounts.AccountID', 'Accounts.Email', 'Accounts.DateOpened'])
     {
         $query = $this->model->newQuery();
 
