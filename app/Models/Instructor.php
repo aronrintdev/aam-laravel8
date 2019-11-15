@@ -244,15 +244,18 @@ class Instructor extends Model
 
     public $table = 'Instructors';
     
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
+    public $timestamps = false;
 
+    #const CREATED_AT = 'created_at';
+    #const UPDATED_AT = 'updated_at';
 
     protected $dates = ['deleted_at'];
 
     protected $primaryKey = 'InstructorID';
+    public $incrementing = false;
 
     public $fillable = [
+        'InstructorID',
         'SalesPerson',
         'NotableStudents',
         'ProCode',
