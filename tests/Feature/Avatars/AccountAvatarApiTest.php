@@ -84,16 +84,30 @@ class AccountAvatarApiTest extends TestCase
 
 
     /**
-     * @ test
+     * @test
      */
-    public function off_update_account_avatar()
+    public function test_update_account_avatar()
     {
+        $file = UploadedFile::fake()->image('avatar.jpg');
+        #$accountAvatar = $this->fakeAccountAvatarData();
         $accountAvatar = $this->makeAccountAvatar();
-        $editedAccountAvatar = $this->fakeAccountAvatarData();
+        #$accountAvatar['AccountID'] = 3;
+        $user = \App\AccountUser::find($accountAvatar['AccountID']);
+        $this->response = $this->actingAs($user)
+            ->call('PATCH', '/api201902/avatar/'.$accountAvatar['AccountID'],
+            [
+                'avatar' => UploadedFile::fake()->image('avatar.jpg'),
+            ],
+        );
 
-        $this->response = $this->json('PUT', '/api201902/avatar/'.$accountAvatar->AccountID, $editedAccountAvatar);
-
-        $this->assertApiResponse($editedAccountAvatar);
+        $this->response->assertJson([
+            'data' => [
+                'type'=>'avatar',
+                'attributes'=> [
+                    'account_id' => $accountAvatar['AccountID'],
+                ]
+            ]
+        ]);
     }
 
     /**

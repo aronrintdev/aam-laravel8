@@ -27,6 +27,8 @@ class UpdateAccountAvatarAPIRequest extends APIRequest
      */
     public function rules()
     {
-        return AccountAvatar::$rules;
+        return [
+            'avatar' => 'required',
+        ];
     }
 }

@@ -47,9 +47,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('instructors', 'InstructorAPIController');
 
     #Route::resource('avatar', 'AvatarAPIController');
-    Route::resource('avatar', 'AccountAvatarAPIController');
     Route::post('/avatar/{id}', 'AccountAvatarAPIController@store');
     Route::get('/avatar/{id}/defaultimage.png', 'AccountAvatarAPIController@defaultImage')->name('avatar.default.image');
+    Route::put('/avatar/{id}/update', 'AccountAvatarAPIController@update');
+    Route::put('/avatar/{id}', 'AccountAvatarAPIController@update');
+    Route::patch('/avatar/{id}', 'AccountAvatarAPIController@update');
+    Route::resource('avatar', 'AccountAvatarAPIController');
 
     #Route::resource('locker', 'LockerAPIController');
     Route::get('locker/{accountId?}', 'LockerAPIController@index');

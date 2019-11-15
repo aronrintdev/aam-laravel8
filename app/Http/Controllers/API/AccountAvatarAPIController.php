@@ -104,7 +104,7 @@ class AccountAvatarAPIController extends AppBaseController
      *   )
      * )
      */
-    public function store($id, CreateAccountAvatarAPIRequest $request)
+    public function store(CreateAccountAvatarAPIRequest $request, $id)
     {
         $file = $request->file('avatar');
         $account = $this->accountRepository->find($id);
@@ -243,7 +243,7 @@ class AccountAvatarAPIController extends AppBaseController
      * @return Response
      *
      * @OA\Patch(
-     *   path="/avatar/{id}",
+     *   path="/avatar/{id}/update",
      *   summary="Update the avatar specified by the AccountID",
      *   tags={"Avatar"},
      *   description="Update Avatar",
@@ -276,8 +276,10 @@ class AccountAvatarAPIController extends AppBaseController
         }
 
         //$accountAvatar = $this->accountAvatarRepository->update($input, $id);
-
-        return $this->sendResponse($accountAvatar->toArray(), 'AccountAvatar updated successfully');
+        $manager = new Manager();
+        $manager->setSerializer(new JsonApiSerializer());
+        $resource = new Item($accountAvatar, new AccountAvatarTransformer);
+        return response()->json((new Manager)->createData($resource)->toArray());
     }
 
     /**
@@ -285,7 +287,7 @@ class AccountAvatarAPIController extends AppBaseController
      * @return Response
      *
      * @OA\Delete(
-     *   path="/avatar/{account_id}",
+     *   path="/avatar/{id}",
      *   summary="Remove the avatar specified by the AccountID",
      *   tags={"Avatar"},
      *   description="Delete AccountAvatar",
