@@ -331,7 +331,9 @@ class AccountAvatarAPIController extends AppBaseController
     }
 
     public function createNewImage($account) {
-        return Avatar::create($account->FirstName.' '.$account->LastName)->getImageObject();
+        $io = Avatar::create($account->FirstName.' '.$account->LastName)->getImageObject();
+        $io->resize(128, 128);
+        return $io;
     }
 
     public function createNewAvatar($account, $io) {
