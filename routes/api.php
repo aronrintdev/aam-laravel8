@@ -23,6 +23,8 @@ Route::group(['middleware' => 'guest'], function () {
 Route::group(['middleware' => 'permissive'], function () {
     Route::get('/academies/{id}/branding', 'AcademyAPIController@branding')->name('academies.branding');
     Route::get('/academies/{id}/instructors', 'AcademyAPIController@showInstructors')->name('academies.instructors');
+    Route::get('/avatar/{id}/defaultimage.png', 'AccountAvatarAPIController@defaultImage')->name('avatar.default.image');
+    Route::get('/avatar/{id}', 'AccountAvatarAPIController@show');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
@@ -48,7 +50,6 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     #Route::resource('avatar', 'AvatarAPIController');
     Route::post('/avatar/{id}', 'AccountAvatarAPIController@store');
-    Route::get('/avatar/{id}/defaultimage.png', 'AccountAvatarAPIController@defaultImage')->name('avatar.default.image');
     Route::put('/avatar/{id}/update', 'AccountAvatarAPIController@update');
     Route::put('/avatar/{id}', 'AccountAvatarAPIController@update');
     Route::patch('/avatar/{id}', 'AccountAvatarAPIController@update');
