@@ -26,6 +26,7 @@ class TestAcademyTableSeeder extends Seeder
             'BaseColor'          => 'CC9900',
             'BannerText'         => 'Powered By Docker SQL Server',
             'SampleLesson'       => 999,
+            'PrivateFlag'        => 0,
             'Logo'               => 'https://images-na.ssl-images-amazon.com/images/I/91-2xY0B3WL._SX679_.jpg',
         ]);
 
@@ -38,6 +39,7 @@ class TestAcademyTableSeeder extends Seeder
             'BaseColor'          => 'CC0099',
             'BannerText'         => 'Powered By Docker SQL Server',
             'SampleLesson'       => 999,
+            'PrivateFlag'        => 0,
             'Logo'               => 'http://img4.wikia.nocookie.net/__cb20140424011935/fantendo/images/0/02/Shy_Guy_MGGT.png',
         ]);
 
