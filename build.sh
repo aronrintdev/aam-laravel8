@@ -42,6 +42,11 @@ echo 'MIX_APP_VERSION="'$VERSION_TAG#$VERSION_SHA'"' >> .env
 echo 'publish vendor resources ...'
 SOURCE=../ docker-compose -f ci/compose-build.yml run --rm -w "/app" php-composer php artisan vendor:publish --tag=datatables-buttons --force
 
-echo 'composer dependencies (no dev) ...'
-SOURCE=../ docker-compose -f ci/compose-build.yml run --rm php-composer composer --no-ansi install --no-dev --no-progress --ignore-platform-reqs
+if [ $ENV = "test" ];then
+    echo 'composer dependencies (with dev) ...'
+    SOURCE=../ docker-compose -f ci/compose-build.yml run --rm php-composer composer --no-ansi install --no-progress --ignore-platform-reqs
+else
+    echo 'composer dependencies (no dev) ...'
+    SOURCE=../ docker-compose -f ci/compose-build.yml run --rm php-composer composer --no-ansi install --no-dev --no-progress --ignore-platform-reqs
+fi;
 #SOURCE=../ docker-compose -f ci/compose-build.yml run --rm node-yarn   sh -c "cd /app && yarn install && yarn $ENV"
