@@ -7,7 +7,7 @@ use League\Fractal;
 
 /**
  * @OA\Schema(
- *   schema="Instructor",
+ *   schema="instructor",
  *   required={""},
  *   @OA\Property(
  *     property="id",
@@ -21,8 +21,7 @@ use League\Fractal;
  *   ),
  *   @OA\Property(
  *     property="attributes",
- *     type="array",
- *     @OA\Items(
+ *     type="object",
  *       @OA\Property(
  *         property="first_name",
  *         description="First Name",
@@ -34,11 +33,35 @@ use League\Fractal;
  *         type="string"
  *       ),
  *       @OA\Property(
+ *         property="title",
+ *         description="Title",
+ *         type="string"
+ *       ),
+ *       @OA\Property(
+ *         property="profile_pic",
+ *         description="Headshot Pic URL",
+ *         type="string"
+ *       ),
+ *       @OA\Property(
+ *         property="bio",
+ *         description="Optional Paragraph",
+ *         type="string"
+ *       ),
+ *       @OA\Property(
+ *         property="philo",
+ *         description="Optional Paragraph",
+ *         type="string"
+ *       ),
+ *       @OA\Property(
+ *         property="accolades",
+ *         description="Optional Paragraph",
+ *         type="string"
+ *       ),
+ *       @OA\Property(
  *         property="email",
  *         description="Email",
- *         type="boolean"
+ *         type="string"
  *       )
- *     )
  *   )
  * )
  */

@@ -31,11 +31,10 @@ use Laravolt\Avatar\Facade as Avatar;
  *   @OA\MediaType(
  *     mediaType="application/json",
  *     @OA\Schema(
- *        allOf={@OA\Schema(ref="/jsonapi.org-schema.json#/components/schemas/success")},
  *        @OA\Property(
  *         property="data",
  *         type="object",
- *         ref="#/components/schemas/account_avatar"
+ *         ref="#/components/schemas/avatar"
  *       )
  *     )
  *   )
@@ -46,11 +45,10 @@ use Laravolt\Avatar\Facade as Avatar;
  *   @OA\MediaType(
  *     mediaType="application/json",
  *     @OA\Schema(
- *        allOf={@OA\Schema(ref="/jsonapi.org-schema.json#/components/schemas/success")},
  *        @OA\Property(
  *         property="data",
  *         type="array",
- *         @OA\Items(ref="#/components/schemas/AccountAvatar")
+ *         @OA\Items(ref="#/components/schemas/avatar")
  *       )
  *     )
  *   )
@@ -94,7 +92,7 @@ class AccountAvatarAPIController extends AppBaseController
      *   @OA\Parameter(
      *     name="id",
      *     description="ID of Account",
-     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID"),
+     *     @OA\Schema(ref="#/components/schemas/account/properties/id"),
      *     required=true,
      *     in="path"
      *   ),
@@ -152,7 +150,7 @@ class AccountAvatarAPIController extends AppBaseController
      *   @OA\Parameter(
      *     name="id",
      *     description="ID of Account",
-     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID"),
+     *     @OA\Schema(ref="#/components/schemas/account/properties/id"),
      *     required=true,
      *     in="path"
      *   ),
@@ -199,7 +197,7 @@ class AccountAvatarAPIController extends AppBaseController
      *   @OA\Parameter(
      *     name="id",
      *     description="ID of Account",
-     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID"),
+     *     @OA\Schema(ref="#/components/schemas/account/properties/id"),
      *     required=true,
      *     in="path"
      *   ),
@@ -256,7 +254,7 @@ class AccountAvatarAPIController extends AppBaseController
      *     in="path",
      *     description="ID of Account",
      *     required=true,
-     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID")
+     *     @OA\Schema(ref="#/components/schemas/account/properties/id")
      *   ),
      *   @OA\Response(
      *     response=200,
@@ -299,14 +297,14 @@ class AccountAvatarAPIController extends AppBaseController
      *   @OA\Parameter(
      *     name="id",
      *     description="ID of Account",
-     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID"),
+     *     @OA\Schema(ref="#/components/schemas/account/properties/id"),
      *     required=true,
      *     in="path"
      *   ),
      *   @OA\Response(
      *     response="200",
      *     description="success",
-     *     @OA\Schema(ref="/jsonapi.org-schema.json#/components/schemas/success"),
+     *     @OA\Schema(ref="/jsonapi.org-schema.json#/definitions/success"),
      *   )
      * )
      */

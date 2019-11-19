@@ -7,33 +7,35 @@ use League\Fractal;
 
 /**
  * @OA\Schema(
- *   schema="account_avatar",
+ *   schema="avatar",
  *   required={""},
  *   @OA\Property(
  *     property="id",
  *     description="AccountAvatarID",
+ *     example="123",
  *     type="integer"
  *   ),
  *   @OA\Property(
  *     property="type",
  *     description="data type (avatar)",
+ *     default="avatar",
+ *     example="avatar",
  *     type="string"
  *   ),
  *   @OA\Property(
  *     property="attributes",
- *     type="array",
- *     @OA\Items(
+ *     type="object",
  *       @OA\Property(
  *         property="url",
  *         description="",
+ *         example="https://vos-media.nyc3.digitaloceanspaces.com/profile/ab/abcdefg-123.png",
  *         type="string"
  *       ),
  *       @OA\Property(
  *         property="account_id",
- *         description="",
+ *         example="123",
  *         type="string"
  *       ),
- *     )
  *   )
  * )
  */

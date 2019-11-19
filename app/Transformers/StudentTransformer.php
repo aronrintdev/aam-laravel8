@@ -6,7 +6,7 @@ use League\Fractal;
 
 /**
  * @OA\Schema(
- *   schema="Student",
+ *   schema="student",
  *   required={""},
  *   @OA\Property(
  *     property="id",
@@ -20,8 +20,7 @@ use League\Fractal;
  *   ),
  *   @OA\Property(
  *     property="attributes",
- *     type="array",
- *     @OA\Items(
+ *     type="object",
  *       @OA\Property(
  *         property="first_name",
  *         description="First Name",
@@ -47,7 +46,6 @@ use League\Fractal;
  *         description="Date joined academy",
  *         type="datetime"
  *       )
- *     )
  *   )
  * )
  */

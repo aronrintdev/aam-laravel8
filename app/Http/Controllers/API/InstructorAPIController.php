@@ -33,7 +33,7 @@ use League\Fractal\Serializer\JsonApiSerializer;
  *        @OA\Property(
  *         property="data",
  *         type="object",
- *         ref="#/components/schemas/Instructor"
+ *         ref="#/components/schemas/instructor"
  *       )
  *     )
  *   )
@@ -48,7 +48,7 @@ use League\Fractal\Serializer\JsonApiSerializer;
  *        @OA\Property(
  *         property="data",
  *         type="array",
- *         @OA\Items(ref="#/components/schemas/Instructor")
+ *         @OA\Items(ref="#/components/schemas/instructor")
  *       )
  *     )
  *   )
@@ -63,7 +63,7 @@ use League\Fractal\Serializer\JsonApiSerializer;
  *        @OA\Property(
  *         property="data",
  *         type="array",
- *         @OA\Items(ref="#/components/schemas/Student")
+ *         @OA\Items(ref="#/components/schemas/student")
  *       )
  *     )
  *   )
@@ -151,7 +151,7 @@ class InstructorAPIController extends AppBaseController
      *     required=true,
      *     @OA\MediaType(
      *       mediaType="application/json",
-     *       @OA\Schema(ref="#/components/schemas/Instructor")
+     *       @OA\Schema(ref="#/components/schemas/instructor")
      *     )
      *   ),
      *   @OA\Response(
@@ -186,7 +186,7 @@ class InstructorAPIController extends AppBaseController
      *   @OA\Parameter(
      *     name="id",
      *     description="id of Instructor",
-     *     @OA\Schema(ref="#/components/schemas/InstructorRaw/properties/InstructorID"),
+     *     @OA\Schema(ref="#/components/schemas/LegacyInstructor/properties/InstructorID"),
      *     required=true,
      *     in="path"
      *   ),
@@ -252,14 +252,14 @@ class InstructorAPIController extends AppBaseController
      *     in="path",
      *     description="id of Instructor that should be updated",
      *     required=true,
-     *     @OA\Schema(ref="#/components/schemas/InstructorRaw/properties/InstructorID")
+     *     @OA\Schema(ref="#/components/schemas/LegacyInstructor/properties/InstructorID")
      *   ),
      *   @OA\RequestBody(
      *     description="Instructor that should be updated",
      *     required=true,
      *     @OA\MediaType(
      *       mediaType="application/json",
-     *       @OA\Schema(ref="#/components/schemas/Instructor")
+     *       @OA\Schema(ref="#/components/schemas/instructor")
      *     )
      *   ),
      *   @OA\Response(
@@ -301,7 +301,7 @@ class InstructorAPIController extends AppBaseController
      *   @OA\Parameter(
      *     name="id",
      *     description="id of Instructor",
-     *     @OA\Schema(ref="#/components/schemas/InstructorRaw/properties/InstructorID"),
+     *     @OA\Schema(ref="#/components/schemas/LegacyInstructor/properties/InstructorID"),
      *     required=true,
      *     in="path"
      *   ),
@@ -355,7 +355,7 @@ class InstructorAPIController extends AppBaseController
      *   @OA\Parameter(
      *     name="id",
      *     description="id of Instructor",
-     *     @OA\Schema(ref="#/components/schemas/InstructorRaw/properties/InstructorID"),
+     *     @OA\Schema(ref="#/components/schemas/LegacyInstructor/properties/InstructorID"),
      *     required=true,
      *     in="path"
      *   ),
@@ -388,7 +388,7 @@ class InstructorAPIController extends AppBaseController
      *   @OA\Parameter(
      *     name="id",
      *     description="id of Instructor",
-     *     @OA\Schema(ref="#/components/schemas/InstructorRaw/properties/InstructorID"),
+     *     @OA\Schema(ref="#/components/schemas/LegacyInstructor/properties/InstructorID"),
      *     required=true,
      *     in="path"
      *   ),

@@ -113,7 +113,7 @@ class AccountAPIController extends AppBaseController
      *     required=true,
      *     @OA\MediaType(
      *       mediaType="application/json",
-     *       @OA\Schema(ref="#/components/schemas/Account")
+     *       @OA\Schema(ref="#/components/schemas/account")
      *     )
      *   ),
      *   @OA\Response(
@@ -148,7 +148,7 @@ class AccountAPIController extends AppBaseController
      *   @OA\Parameter(
      *     name="id",
      *     description="id of Account",
-     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID"),
+     *     @OA\Schema(ref="#/components/schemas/account/properties/id"),
      *     required=true,
      *     in="path"
      *   ),
@@ -193,14 +193,14 @@ class AccountAPIController extends AppBaseController
      *     in="path",
      *     description="id of Account that should be updated",
      *     required=true,
-     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID")
+     *     @OA\Schema(ref="#/components/schemas/account/properties/id")
      *   ),
      *   @OA\RequestBody(
      *     description="Account that should be updated",
      *     required=true,
      *     @OA\MediaType(
      *       mediaType="application/json",
-     *       @OA\Schema(ref="#/components/schemas/Account")
+     *       @OA\Schema(ref="#/components/schemas/account")
      *     )
      *   ),
      *   @OA\Response(
@@ -242,7 +242,7 @@ class AccountAPIController extends AppBaseController
      *   @OA\Parameter(
      *     name="id",
      *     description="id of Account",
-     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID"),
+     *     @OA\Schema(ref="#/components/schemas/account/properties/id"),
      *     required=true,
      *     in="path"
      *   ),
@@ -364,7 +364,7 @@ class AccountAPIController extends AppBaseController
      *   @OA\Parameter(
      *     name="user_id",
      *     description="id of Account",
-     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID"),
+     *     @OA\Schema(ref="#/components/schemas/account/properties/id"),
      *     required=true,
      *     in="path"
      *   ),
@@ -425,14 +425,14 @@ class AccountAPIController extends AppBaseController
      *   @OA\Parameter(
      *     name="id",
      *     description="id of user Account",
-     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID"),
+     *     @OA\Schema(ref="#/components/schemas/account/properties/id"),
      *     required=true,
      *     in="path"
      *   ),
      *   @OA\Parameter(
      *     name="instructorId",
      *     description="id of instructor Account",
-     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID"),
+     *     @OA\Schema(ref="#/components/schemas/account/properties/id"),
      *     required=true,
      *     in="path"
      *   ),
@@ -494,14 +494,14 @@ class AccountAPIController extends AppBaseController
      *   @OA\Parameter(
      *     name="id",
      *     description="id of user Account",
-     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID"),
+     *     @OA\Schema(ref="#/components/schemas/account/properties/id"),
      *     required=true,
      *     in="path"
      *   ),
      *   @OA\Parameter(
      *     name="instructorId",
      *     description="id of instructor Account",
-     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID"),
+     *     @OA\Schema(ref="#/components/schemas/account/properties/id"),
      *     required=true,
      *     in="path"
      *   ),

@@ -31,7 +31,7 @@ use League\Fractal\Resource\Collection;
  *        @OA\Property(
  *         property="data",
  *         type="object",
- *         ref="#/components/schemas/Swing"
+ *         ref="#/components/schemas/LegacySwing"
  *       )
  *     )
  *   )
@@ -46,7 +46,7 @@ use League\Fractal\Resource\Collection;
  *        @OA\Property(
  *         property="data",
  *         type="array",
- *         @OA\Items(ref="#/components/schemas/Swing")
+ *         @OA\Items(ref="#/components/schemas/LegacySwing")
  *       )
  *     )
  *   )
@@ -69,6 +69,7 @@ class LockerAPIController extends AppBaseController
      *
      * @OA\Get(
      *   path="/locker/{accountId}/",
+     *   tags={"Locker"},
      *   summary="Get a listing of your Videos.",
      *   description="Get all your videos",
      *   @OA\MediaType(
@@ -77,7 +78,7 @@ class LockerAPIController extends AppBaseController
      *   @OA\Parameter(
      *     name="accountId",
      *     description="id of Account",
-     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID"),
+     *     @OA\Schema(ref="#/components/schemas/account/properties/id"),
      *     required=false,
      *     in="path"
      *   ),
@@ -101,7 +102,7 @@ class LockerAPIController extends AppBaseController
      *        @OA\Property(
      *           property="data",
      *           type="array",
-     *           @OA\Items(ref="#/components/schemas/swing_record")
+     *           @OA\Items(ref="#/components/schemas/swing")
      *         )
      *       )
      *     )
@@ -148,6 +149,7 @@ class LockerAPIController extends AppBaseController
      * @OA\Post(
      *   path="/locker/assignSwings",
      *   summary="Assign a swing to yourself as instructor",
+     *   tags={"Locker"},
      *   @OA\RequestBody(
      *     description="list of swing IDs",
      *     required=false,
@@ -179,7 +181,7 @@ class LockerAPIController extends AppBaseController
      *      @OA\Property(
      *         property="data",
      *         type="array",
-     *         @OA\Items(ref="#/components/schemas/swing_record")
+     *         @OA\Items(ref="#/components/schemas/swing")
      *       )
      *      )
      *      )
@@ -239,7 +241,7 @@ class LockerAPIController extends AppBaseController
 
     /**
      * @OA\Schema(
-     *   schema="swing_record",
+     *   schema="swing",
      *   required={""},
      *   @OA\Property(
      *     property="id",

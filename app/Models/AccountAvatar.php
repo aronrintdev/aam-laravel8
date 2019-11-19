@@ -4,32 +4,6 @@ namespace App\Models;
 
 use Eloquent as Model;
 
-/**
- * @OA\Schema(
- *   schema="AccountAvatar",
- *   required={"AccountID", "AvatarURL"},
- *   allOf={@OA\Schema(ref="/jsonapi.org-schema.json#/components/schemas/resource")},
- *   @OA\Property(
- *     property="id",
- *     description="id",
- *     type="integer",
- *          format="int32"
- *   ),
- *   @OA\Property(
- *     property="created_at",
- *     description="created_at",
- *     type="string",
- *          format="date-time"
- *   ),
- *   @OA\Property(
- *     property="updated_at",
- *     description="updated_at",
- *     type="string",
- *          format="date-time"
- *   )
- * )
- */
-
 class AccountAvatar extends Model
 {
 

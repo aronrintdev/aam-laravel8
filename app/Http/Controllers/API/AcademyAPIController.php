@@ -33,19 +33,15 @@ use League\Fractal\Serializer\JsonApiSerializer;
  *   @OA\MediaType(
  *     mediaType="application/json",
  *     @OA\Schema(
- *        allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
  *        @OA\Property(
  *         property="data",
  *         type="object",
  *         allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/resource")},
  *         @OA\Property(
-		property="attributes",
-		type="array",
- *         @OA\Items(
-
- *         ref="#/components/schemas/Academy"
- *       )
- *       )
+ *           property="attributes",
+ *           type="object",
+ *           ref="#/components/schemas/Academy"
+ *         )
  *       )
  *     )
  *   )
@@ -64,10 +60,8 @@ use League\Fractal\Serializer\JsonApiSerializer;
  *           allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/resource")},
  *           @OA\Property(
  *             property="attributes",
- *             type="array",
- *           @OA\Items(
+ *             type="object",
  *             ref="#/components/schemas/Academy")
- *           )
  *         )
  *       )
  *     )
@@ -439,7 +433,7 @@ class AcademyAPIController extends AppBaseController
      *   @OA\Parameter(
      *     name="userid",
      *     description="id of Account",
-     *     @OA\Schema(ref="#/components/schemas/Account/properties/AccountID"),
+     *     @OA\Schema(ref="#/components/schemas/account/properties/id"),
      *     required=true,
      *     in="path"
      *   ),
@@ -497,11 +491,9 @@ class AcademyAPIController extends AppBaseController
 	 *     @OA\MediaType(
 	 *       mediaType="application/json",
 	 *       @OA\Schema(
-	 *          allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
 	 *          @OA\Property(
 	 *            property="data",
-	 *            type="array",
-	 *            @OA\Items(
+	 *            type="object",
 	 *             allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/resource")},
 	 *             @OA\Property(
 	 *               property="attributes",
@@ -510,7 +502,6 @@ class AcademyAPIController extends AppBaseController
 	 *                 ref="#/components/schemas/Branding"
 	 *               )
 	 *             )
-	 *           )
 	 *         )
 	 *       )
 	 *     )

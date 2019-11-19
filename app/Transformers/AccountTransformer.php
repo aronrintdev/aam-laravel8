@@ -20,8 +20,7 @@ use League\Fractal;
  *   ),
  *   @OA\Property(
  *     property="attributes",
- *     type="array",
- *     @OA\Items(
+ *     type="object",
  *       @OA\Property(
  *         property="first_name",
  *         description="First Name",
@@ -37,7 +36,6 @@ use League\Fractal;
  *         description="Profile Picture URL",
  *         type="string"
  *       )
- *     )
  *   )
  * )
  */

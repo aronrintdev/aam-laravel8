@@ -7,9 +7,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @OA\Schema(
- *   schema="Swing",
+ *   schema="LegacySwing",
  *   required={""},
- *   allOf={@OA\Schema(ref="http://jsonapi.org/schema#/components/schemas/resource")},
  *   @OA\Property(
  *     property="LessLogID",
  *     description="Smarter Lessons ID",

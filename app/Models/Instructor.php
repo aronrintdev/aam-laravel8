@@ -7,9 +7,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @OA\Schema(
- *   schema="InstructorRaw",
+ *   schema="LegacyInstructor",
  *   required={""},
- *   allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/resource")},
  *   @OA\Property(
  *     property="SalesPerson",
  *     description="SalesPerson",

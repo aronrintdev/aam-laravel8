@@ -7,19 +7,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @OA\Schema(
- *   schema="Account",
+ *   schema="LegacyAccount",
  *   required={""},
- *   allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/resource")},
  *   @OA\Property(
  *     property="AccountID",
  *     description="AccountID",
  *     type="integer",
  *          format="int32"
  *   ),
- *   @OA\Property(
- *     property="attributes",
- *     type="array",
- *     @OA\Items(
  *   @OA\Property(
  *     property="OldAccountID",
  *     description="OldAccountID",
@@ -66,12 +61,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *   @OA\Property(
  *     property="CardType",
  *     description="CardType",
- *     type="integer",
- *          format="int32"
- *   ),
- *   @OA\Property(
- *     property="AccountID",
- *     description="AccountID",
  *     type="integer",
  *          format="int32"
  *   ),
@@ -311,8 +300,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *     property="Gender",
  *     description="Gender",
  *     type="boolean"
- *   )
- *   )
  *   )
  * )
  */
