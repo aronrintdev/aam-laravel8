@@ -475,6 +475,9 @@ class Account extends Model
         if ($avatar && $avatar->exists()) {
             return $avatar->AvatarURL;
         }
-        return route('api.avatar.default.image', (int)$this->AccountID);
+        $r = route('api.avatar.default.image', (int)$this->AccountID);
+        //replace with front-end accessible domain
+        $parts = parse_url($r);
+        return config('app.url') . $parts['path'];
     }
 }
