@@ -156,17 +156,36 @@ class AccountAPIController extends AppBaseController
      *     response=200,
      *     description="successful operation",
      *     ref="#/components/responses/Account"
+     *   ),
+     *   @OA\Response(
+     *     response=404,
+     *     ref="#/components/responses/NotFound"
      *   )
      * )
      */
 
     public function show($id)
     {
+        $fields = [
+            'AccountID',
+            'FirstName',
+            'LastName',
+        ];
+
+        $user = \Auth::user();
+        //if we are using the robot token to access, give back email as well
+        if($user && $user->isApiAgent()) {
+            $fields[] = 'Email';
+        } else if($user && $user->AccountID == $id) {
+            //give us access to our own email.
+            $fields[] = 'Email';
+        }
+
         /** @var Account $account */
-        $account = $this->accountRepository->find($id);
+        $account = $this->accountRepository->find($id, $fields);
 
         if (empty($account)) {
-            return $this->sendError('Account not found');
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
         }
 
         $manager = new Manager();
@@ -219,7 +238,7 @@ class AccountAPIController extends AppBaseController
         $account = $this->accountRepository->find($id);
 
         if (empty($account)) {
-            return $this->sendError('Account not found');
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
         }
 
         $account = $this->accountRepository->update($input, $id);
@@ -274,7 +293,7 @@ class AccountAPIController extends AppBaseController
         $account = $this->accountRepository->find($id);
 
         if (empty($account)) {
-            return $this->sendError('Account not found');
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
         }
 
         $account->delete();

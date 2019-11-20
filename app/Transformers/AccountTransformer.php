@@ -32,6 +32,12 @@ use League\Fractal;
  *         type="string"
  *       ),
  *       @OA\Property(
+ *         property="email",
+ *         description="Optional, only provided to yourself",
+ *         example=null,
+ *         type="string"
+ *       ),
+ *       @OA\Property(
  *         property="pic_url",
  *         description="Profile Picture URL",
  *         type="string"
@@ -53,6 +59,7 @@ class AccountTransformer extends Fractal\TransformerAbstract
             'attributes' => [
                 'first_name'   =>  $acct->FirstName,
                 'last_name'    =>  $acct->LastName,
+                'email'        =>  $acct->Email,
                 'pic_url'      =>  $acct->AvatarURL,
             ]
 	    ];
