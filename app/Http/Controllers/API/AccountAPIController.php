@@ -181,6 +181,10 @@ class AccountAPIController extends AppBaseController
             $fields[] = 'Email';
         }
 
+        if ((int)$id < 1) {
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
+        }
+
         /** @var Account $account */
         $account = $this->accountRepository->find($id, $fields);
 
