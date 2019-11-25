@@ -13,6 +13,7 @@ class TestUser extends Seeder
     public function run()
     {
         DB::statement('DELETE FROM [Accounts]');
+        DB::statement('DBCC CHECKIDENT ([Accounts], RESEED, 0)');
         DB::statement('DELETE FROM [AcademyInstructors]');
         DB::statement('DELETE FROM [AcademyStudents]');
         DB::statement('DELETE FROM [Instructors]');
