@@ -78,7 +78,9 @@ abstract class BaseRepository
         if (count($search)) {
             foreach($search as $key => $value) {
                 if (in_array($key, $this->getFieldsSearchable())) {
-                    if (is_array($value)) {
+                    if (is_array($value) && $value[0] instanceof \Datetime) {
+                        $query->where($key, $value[1], $value[0]->format('Y-m-d H:i:s.v'));
+                    } elseif (is_array($value)) {
                         $query->whereIn($key, $value);
                     } else {
                         $query->where($key, $value);
