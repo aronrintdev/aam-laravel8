@@ -19,7 +19,10 @@ class SwingRepository extends BaseRepository
     protected $fieldSearchable = [
         'SwingID',
         'AccountID',
-        'DateUploaded'
+        'SwingStatusID',
+        'InstructorID',
+        'DateUploaded',
+        'DateAnalyzed',
     ];
 
     /**

@@ -194,6 +194,9 @@ class Swing extends Model
      * @var array
      */
     protected $casts = [
+        'DateAnalyzed' => 'datetime',
+        'DateUploaded' => 'datetime',
+        'DateAccepted' => 'datetime',
         'LessLogID' => 'integer',
         'AcademyID' => 'string',
         'BillError' => 'string',

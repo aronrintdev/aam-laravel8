@@ -12,8 +12,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use Response;
 
+use App\Transformers\SwingAnalysisTransformer;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
+use League\Fractal\Serializer\JsonApiSerializer;
 
 
 /**
@@ -146,6 +149,146 @@ class LockerAPIController extends AppBaseController
      * @param Request $request
      * @return Response
      *
+     * @OA\Get(
+     *   path="/locker/{swingId}/analysis",
+     *   tags={"Locker"},
+     *   summary="Get all analysis videos for instructor from past year",
+     *   @OA\MediaType(
+     *     mediaType="application/json"
+     *   ),
+     *   @OA\Parameter(
+     *     name="swingId",
+     *     description="ID of Swing",
+     *     @OA\Schema(ref="#/components/schemas/swing/properties/id"),
+     *     required=true,
+     *     in="path"
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="List of all of swing analysis videos for one swing",
+     *     @OA\MediaType(
+     *     mediaType="application/json",
+     *
+     *       @OA\Schema(
+     *        allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
+     *        @OA\Property(
+     *           property="data",
+     *           type="array",
+     *           @OA\Items(ref="#/components/schemas/lessonvideo")
+     *         )
+     *       )
+     *     )
+     *   )
+     * )
+     */
+    public function swingAnalysis(Request $request, $swingId)
+    {
+        $user = $request->user();
+        $limit = $request->get('limit') ? intval($request->get('limit')) : 20;
+
+        $searchParams = ['Deleted'=>false, 'SwingStatusID'=>3, 'SwingID' => (int)$swingId];
+        $searchParams['SwingID'] = (int)$swingId;
+        if ($user->IsInstructor) {
+            $searchParams['InstructorID'] = (int)$user->AccountID;
+        } else {
+            $accountId = $user->AccountID;
+            $searchParams['AccountID'] = (int)$user->AccountID;
+        }
+
+        $swings = $this->swingRepository->all(
+                $searchParams,
+                $request->get('skip'),
+                $limit
+        );
+
+        $manager = new Manager();
+        $manager->setSerializer(new JsonApiSerializer());
+        $resource = (new Collection($swings, new SwingAnalysisTransformer));
+        return response()->json((new Manager)->createData($resource)->toArray());
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     *
+     * @OA\Get(
+     *   path="/videolessons",
+     *   tags={"Locker"},
+     *   summary="Get an analysis for one video",
+     *   @OA\MediaType(
+     *     mediaType="application/json"
+     *   ),
+     *   @OA\Parameter(
+     *     name="daysAgo",
+     *     description="Number of days to search for analysis video uploads",
+     *     @OA\Schema(
+     *       type="string",
+     *       format="datetime",
+     *     ),
+     *     required=false,
+     *     example=30,
+     *     in="query"
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="List of all swings for one instructor for the past year",
+     *     @OA\MediaType(
+     *     mediaType="application/json",
+     *       @OA\Schema(
+     *        allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
+     *        @OA\Property(
+     *           property="data",
+     *           type="array",
+     *           @OA\Items(ref="#/components/schemas/lessonvideo")
+     *         )
+     *       )
+     *     )
+     *   )
+     * )
+     */
+    public function videoLessonIndex(Request $request)
+    {
+        $user = $request->user();
+        $limit = $request->get('limit') ? intval($request->get('limit')) : 20;
+        $daysAgo = (int)$request->query('daysAgo');
+        if ($daysAgo == 0) {
+            $daysAgo = 365;
+        }
+        $date  = \Carbon\Carbon::now()->subDays($daysAgo);
+
+        if (!$user || (!$user->IsInstructor && !$user->isApiAgent())) {
+            return response()->json('Unauthorized', 403);
+        }
+        $instructorId = (int)$user->AccountID;
+        if ($user && $user->isApiAgent()) {
+            if ($request->has('instructor_id')) {
+                $instructorId = (int)$request->query('instructor_id');
+            }
+        }
+
+        $searchParams = [
+            'InstructorID'  => $instructorId,
+            'Deleted'       => false,
+            'SwingStatusID' => 3,
+            'DateAnalyzed'  => [$date, ">="],
+        ];
+
+        $swings = $this->swingRepository->all(
+                $searchParams,
+                $request->get('skip'),
+                $limit
+        );
+
+        $manager = new Manager();
+        $manager->setSerializer(new JsonApiSerializer());
+        $resource = (new Collection($swings, new SwingAnalysisTransformer));
+        return response()->json((new Manager)->createData($resource)->toArray());
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     *
      * @OA\Post(
      *   path="/locker/assignSwings",
      *   summary="Assign a swing to yourself as instructor",
@@ -159,7 +302,7 @@ class LockerAPIController extends AppBaseController
      *         @OA\Property(
      *           property="instructor_id",
      *           type="integer",
-     *           format="int32"
+     *           format="integer"
      *         ),
      *         @OA\Property(
      *           property="swing_ids",
