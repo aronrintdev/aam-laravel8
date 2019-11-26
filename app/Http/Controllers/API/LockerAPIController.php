@@ -256,7 +256,7 @@ class LockerAPIController extends AppBaseController
         }
         $date  = \Carbon\Carbon::now()->subDays($daysAgo);
 
-        if (!$user->IsInstructor) {
+        if (!$user || !$user->IsInstructor) {
             return response()->json('Unauthorized', 403);
         }
 
