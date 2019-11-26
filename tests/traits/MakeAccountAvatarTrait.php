@@ -15,10 +15,9 @@ trait MakeAccountAvatarTrait
      */
     public function makeAccountAvatar($accountAvatarFields = [])
     {
-        /** @var AccountAvatarRepository $accountAvatarRepo */
-        $accountAvatarRepo = \App::make(AccountAvatarRepository::class);
-        $theme = $this->fakeAccountAvatarData($accountAvatarFields);
-        return $accountAvatarRepo->create($theme);
+        return tap($this->fakeAccountAvatar($accountAvatarFields), function($item) {
+            $item->save();
+        });
     }
 
     /**

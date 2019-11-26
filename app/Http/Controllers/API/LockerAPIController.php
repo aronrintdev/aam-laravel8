@@ -368,7 +368,7 @@ class LockerAPIController extends AppBaseController
         $swings->each(function($item) use ($instructor) {
             $item->SwingStatusID = 1;
             $item->InstructorID = $instructor->InstructorID;
-            $item->DateAccepted = \Carbon\Carbon::now()->format('Y-m-d H:i:s');
+            $item->DateAccepted = \Carbon\Carbon::now();
             //TODO: should we set this?  the old API did
             //$item->DateUploaded = $today->format('Y-m-d H:i:s');
             //$item->Charge = $instructor->Fee;
