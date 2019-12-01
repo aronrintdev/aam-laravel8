@@ -39,6 +39,7 @@ Route::group(['middleware' => 'auth:backend,api'], function () {
     Route::put('/academies/{id}/branding', 'AcademyAPIController@brandingUpdate')->name('academies.branding.update');
     Route::post('/accounts/{id}/pick/{instructorId}', 'AccountAPIController@pick')->name('accounts.pick.instructor');
     Route::post('/academies/{id}/enroll/{userid}', 'AcademyAPIController@enrollAcademyUser');
+    Route::get('/videolessons', 'LockerAPIController@videoLessonIndex');
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
@@ -59,7 +60,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     #Route::resource('locker', 'LockerAPIController');
     Route::get('locker/{swingId}/analysis', 'LockerAPIController@swingAnalysis');
     Route::get('locker/{accountId?}', 'LockerAPIController@index');
-    Route::get('videolessons', 'LockerAPIController@videoLessonIndex');
+    #Route::get('videolessons', 'LockerAPIController@videoLessonIndex');
     Route::post('locker/assignSwings', 'LockerAPIController@assignSwings');
 
     Route::get('/accounts/{id}/academies', 'AccountAPIController@showAcademies');

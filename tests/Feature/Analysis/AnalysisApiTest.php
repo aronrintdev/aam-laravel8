@@ -44,12 +44,9 @@ class AnalysisApiTest extends TestCase
 
     public function test_api_agent_can_query_any_instructor()
     {
-        $user = \App\User::find(1);
-        $user->IsInstructor = 0;
-        $accountAvatar = $this->makeAnalysis();
+        $user = \App\User::whereNotNull('api_token')->first();
         $this->response = $this->actingAs($user)
             ->json('GET', '/api201902/videolessons/?daysAgo=30&instructor_id=1');
-
         $jsonData = $this->response->getData()->data;
 
         $this->assertEquals(14, $jsonData[0]->attributes->source_video_id);
