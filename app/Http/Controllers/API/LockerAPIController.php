@@ -71,7 +71,7 @@ class LockerAPIController extends AppBaseController
      * @return Response
      *
      * @OA\Get(
-     *   path="/locker/{accountId}/",
+     *   path="/locker/{accountId}",
      *   tags={"Locker"},
      *   summary="Get a listing of your Videos.",
      *   description="Get all your videos",
@@ -140,9 +140,7 @@ class LockerAPIController extends AppBaseController
         );
 
         $resource = new Collection($swings->toArray(), [$this, 'swingRecordTranslate']);
-
         return response()->json((new Manager)->createData($resource)->toArray());
-        //return $this->sendResponse($swings->toArray(), 'Videos retrieved successfully');
     }
 
     /**
