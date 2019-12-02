@@ -233,7 +233,11 @@ class AccountAvatarAPIController extends AppBaseController
             throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
         }
 
-        return response((string)$avatarImage->stream('png'))->header('Content-type', 'image/png');
+        //cache for 1 month in seconds
+        return response((string)$avatarImage->stream('png'))
+            ->header('Content-Type', 'image/png')
+            ->header('Last-Modified', 'Tue, 1 Jan 2019 21:24:22 GMT')
+            ->header('Cache-Control', 'max-age=2630000, public');
     }
 
     /**
