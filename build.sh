@@ -5,23 +5,29 @@ else
     ENV=$1
 fi
 
+
 echo 'building for env' $ENV '...'
 
-if [ $ENV = "prod" ] || [ $ENV = "stage" ];then
-    BRANCH='master'
-    echo 'checking out master branch '
-    git clean -f
-    git checkout master
-    git fetch origin
-    git reset --hard origin/master
-else
-    BRANCH='develop'
-    echo 'checking out develop branch '
-    git clean -f
-    git checkout develop
-    git fetch origin
-    git reset --hard origin/develop
+if [ "$ENV" == "stage" ];then
+    BRANCH=$2
+    if [ "$BRANCH" == "" ];then
+        BRANCH='master'
+    fi;
 fi;
+if [ "$ENV" == "prod" ];then
+    BRANCH='master'
+fi;
+if [ "$ENV" == "test" ];then
+    BRANCH='develop'
+fi;
+    echo 'checking out branch ' $BRANCH
+    git fetch origin
+    git checkout $BRANCH
+    git reset --hard origin/$BRANCH
+    if [ $? -ne 0 ];then
+        echo "no such branch " $BRANCH;
+        exit -1;
+    fi;
 
 echo 'decrypting env.'$ENV '...'
 if [ -z $KEY ];then
@@ -33,7 +39,11 @@ SOURCE=../ docker-compose -f ci/compose-build.yml run --rm -T -w "/app" -e KEY=$
 
 echo "generate version from $BRANCH ... "
 #set a version number
-VERSION_TAG=$(git describe --abbrev=0 --tags)
+if [[ $BRANCH == release/* ]];then
+    VERSION_TAG=$(git branch | grep \* | cut -d '/' -f2)
+else
+    VERSION_TAG=$(git describe --abbrev=0 --tags)
+fi;
 VERSION_SHA=$(git rev-parse --short $BRANCH)
 echo "setting APP_VERSION to  $VERSION_TAG#$VERSION_SHA ... "
 echo 'APP_VERSION="'$VERSION_TAG#$VERSION_SHA'"' >> .env
