@@ -81,7 +81,7 @@ class SwingAnalysisTransformer extends Fractal\TransformerAbstract
                 'video_url'        => $videoPrefix.$item->AnalysisPath,
                 'thumb_url'        => $thumbUrl,
                 'source_video_url' => $videoPrefix.$item->VideoPath,
-                'source_video_id'  => $videoPrefix.$item->SwingID,
+                'source_video_id'  => $item->SwingID,
                 'date_uploaded'    => $item->DateAnalyzed,
                 'instructor_id'    => $item->InstructorID,
                 'account_id'       => $item->AccountID,

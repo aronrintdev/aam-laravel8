@@ -18,7 +18,7 @@ class AccountAvatarApiTest extends TestCase
      */
     public function test_create_account_avatar()
     {
-	\Storage::fake('do-vos-media');
+    	\Storage::fake('do-vos-media');
         $file = UploadedFile::fake()->image('avatar.jpg');
         $accountAvatar = $this->fakeAccountAvatarData();
         $accountAvatar['AccountID'] = 3;
