@@ -91,10 +91,10 @@ class V1UserProvider implements UserProvider, JWTContract {
 
     public function validateCredentials(Authenticatable $user, array $credentials) {
         if (trim($user->PasswordHash) === '' && trim($user->PasswordEx) === '') { return false; }
-        if (env('APP_ENV') == 'testing' ||
-            env('APP_ENV') == 'stage' ||
-            env('APP_ENV') == 'local') {
-            if ($credentials['password'] === env('TESTING_PASSWORD', false)) {
+        if (config('app.env') == 'testing' ||
+            config('app.env') == 'stage' ||
+            config('app.env') == 'local') {
+            if ($credentials['password'] === config('auth.testing_password', false)) {
                 return true;
             }
         }
