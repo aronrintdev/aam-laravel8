@@ -26,7 +26,8 @@ class V1UserProvider implements UserProvider, JWTContract {
         $x = $this->conn->table('Accounts as a')
             ->select('a.*', 'ai.AcademyID', 'ai.IsMaster', 'ai.IsEnabled as IsInstructor', 'ai.IsHidden')
             ->leftJoin('AcademyInstructors as ai', 'a.AccountID', '=', 'ai.InstructorID')
-            ->where('Email', $identifier);
+            ->where('Email', $identifier)
+            ->where('ai.IsEnabled', '1');
         $user = $x->first();
 
         \App\User::unguard();
@@ -48,7 +49,8 @@ class V1UserProvider implements UserProvider, JWTContract {
     public function retrieveByCredentials(array $credentials) {
         $query = $this->conn->table('Accounts as a')
             ->select('a.*', 'ai.AcademyID', 'ai.IsMaster', 'ai.IsEnabled as IsInstructor', 'ai.IsHidden')
-            ->leftJoin('AcademyInstructors as ai', 'a.AccountID', '=', 'ai.InstructorID');
+            ->leftJoin('AcademyInstructors as ai', 'a.AccountID', '=', 'ai.InstructorID')
+            ->where('ai.IsEnabled', '1');
 
 
         foreach ($credentials as $key => $value) {
