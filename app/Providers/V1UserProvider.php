@@ -27,7 +27,11 @@ class V1UserProvider implements UserProvider, JWTContract {
             ->select('a.*', 'ai.AcademyID', 'ai.IsMaster', 'ai.IsEnabled as IsInstructor', 'ai.IsHidden')
             ->leftJoin('AcademyInstructors as ai', 'a.AccountID', '=', 'ai.InstructorID')
             ->where('Email', $identifier)
-            ->where('ai.IsEnabled', '1');
+            //non instructors need to be able to login too :L
+            ->where(function($query) {
+                $query->orWhere('ai.IsEnabled', '1');
+                $query->orWhereNull('ai.InstructorID');
+            });
         $user = $x->first();
 
         \App\User::unguard();
@@ -50,8 +54,11 @@ class V1UserProvider implements UserProvider, JWTContract {
         $query = $this->conn->table('Accounts as a')
             ->select('a.*', 'ai.AcademyID', 'ai.IsMaster', 'ai.IsEnabled as IsInstructor', 'ai.IsHidden')
             ->leftJoin('AcademyInstructors as ai', 'a.AccountID', '=', 'ai.InstructorID')
-            ->where('ai.IsEnabled', '1');
-
+            //non instructors need to be able to login too :L
+            ->where(function($query) {
+                $query->orWhere('ai.IsEnabled', '1');
+                $query->orWhereNull('ai.InstructorID');
+            });
 
         foreach ($credentials as $key => $value) {
             if (Str::contains($key, 'password')) {
