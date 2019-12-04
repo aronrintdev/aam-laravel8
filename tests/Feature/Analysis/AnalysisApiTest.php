@@ -2,16 +2,19 @@
 
 namespace Tests\Feature\Avatars;
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 use Tests\Traits\MakeAnalysisTrait;
+use Tests\Traits\ReSeedDatabase;
 use Tests\ApiTestTrait;
 
 class AnalysisApiTest extends TestCase
 {
-    use MakeAnalysisTrait, ApiTestTrait, WithoutMiddleware, DatabaseTransactions;
+    use ReSeedDatabase;
+    use MakeAnalysisTrait, ApiTestTrait, WithoutMiddleware;
 
     /**
      * @test
@@ -20,7 +23,6 @@ class AnalysisApiTest extends TestCase
     {
         $user = \App\AccountUser::find(1);
         $user->IsInstructor = 1;
-        $accountAvatar = $this->makeAnalysis();
         $this->response = $this->actingAs($user)
             ->json('GET', '/api201902/videolessons/?daysAgo=365');
 
