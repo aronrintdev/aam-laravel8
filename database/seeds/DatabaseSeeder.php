@@ -13,8 +13,5 @@ class DatabaseSeeder extends Seeder
     {
         // $this->call(UsersTableSeeder::class);
         $this->call(SwingStatusIDsTableSeeder::class);
-        $this->call(TestAcademyTableSeeder::class);
-        $this->call(TestUser::class);
-        $this->call(TestSwingSeeder::class);
     }
 }
