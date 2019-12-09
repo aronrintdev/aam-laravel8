@@ -21,11 +21,11 @@ class LoginTest extends TestCase
      * @test
      * @dataProvider goodLogins
      */
-    public function test_login_produces_jwt($email, $password)
+    public function test_login_produces_jwt($email, $password, $isInstructor)
     {
         $this->response = $this
             ->post('/api201902/login',[
-                'username'=>$email,
+                'email'=>$email,
                 'password'=>$password,
             ]);
 
@@ -34,6 +34,11 @@ class LoginTest extends TestCase
         $this->response->assertJsonStructure(
             ['access_token', 'token_type', 'expires_in']
         );
+
+        $jwtParts = explode('.', $jsonData->access_token);
+        $userStruct = json_decode(base64_decode($jwtParts[1]), true);
+        $this->assertEquals($email, (string)$userStruct['sub']);
+        $this->assertEquals($isInstructor, (string)$userStruct['inst']);
     }
 
     public function goodLogins() {
@@ -41,10 +46,12 @@ class LoginTest extends TestCase
             [
                 'carl@customer.test',
                 'password',
+                '0',
             ],
             [
                 'pauline@example.com',
                 'password',
+                '1',
             ]
         ];
     }
@@ -57,7 +64,7 @@ class LoginTest extends TestCase
     {
         $this->response = $this
             ->post('/api201902/login',[
-                'username'=>$email,
+                'email'=>$email,
                 'password'=>$password,
             ]);
 
