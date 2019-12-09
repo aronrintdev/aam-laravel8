@@ -18,6 +18,8 @@ class TestDatabaseSeeder extends Seeder
         \DB::statement("TRUNCATE TABLE Accounts");
         \DB::statement("TRUNCATE TABLE SwingStatusIDs");
         \DB::statement("TRUNCATE TABLE AcademyStudents");
+        \DB::statement("TRUNCATE TABLE AcademyInstructors");
+        \DB::statement("TRUNCATE TABLE Instructors");
         \DB::statement("TRUNCATE TABLE InstructorStudents");
         \DB::statement("TRUNCATE TABLE InstructorStudentsMulti");
         \DB::statement("TRUNCATE TABLE InstructorStudentsFollow");
