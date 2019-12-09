@@ -47,7 +47,10 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::resource('academies', 'AcademyAPIController');
 
-    Route::resource('instructors', 'InstructorAPIController');
+    #Route::resource('instructors', 'InstructorAPIController');
+    Route::get('instructors/{id}', 'InstructorAPIController@show');
+    //Route::put('instructors/{id}', 'InstructorAPIController@store');
+    Route::post('instructors/{id}', 'InstructorAPIController@update');
 
     #Route::resource('avatar', 'AvatarAPIController');
     Route::post('/avatar/{id}', 'AccountAvatarAPIController@store');

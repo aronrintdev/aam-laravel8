@@ -84,15 +84,15 @@ class InstructorAPIController extends AppBaseController
      * @param Request $request
      * @return Response
      *
-     * @OA\Get(
+     * @ OA\Get(
      *   path="/instructors",
      *   summary="Get a listing of the Instructors.",
      *   tags={"Instructor"},
      *   description="Get all Instructors",
-     *   @OA\MediaType(
+     *   @ OA\MediaType(
      *     mediaType="application/json"
      *   ),
-     *   @OA\Response(
+     *   @ OA\Response(
      *     response=200,
      *     ref="#/components/responses/Instructors"
      *   )
@@ -138,23 +138,23 @@ class InstructorAPIController extends AppBaseController
      * @param CreateInstructorAPIRequest $request
      * @return Response
      *
-     * @OA\Post(
+     * @ OA\Post(
      *   path="/instructors",
      *   summary="Store a newly created Instructor in storage",
      *   tags={"Instructor"},
      *   description="Store Instructor",
-     *   @OA\MediaType(
+     *   @ OA\MediaType(
      *      mediaType="application/json"
      *   ),
-     *   @OA\RequestBody(
+     *   @ OA\RequestBody(
      *     description="Instructor that should be created",
      *     required=true,
-     *     @OA\MediaType(
+     *     @ OA\MediaType(
      *       mediaType="application/json",
-     *       @OA\Schema(ref="#/components/schemas/instructor")
+     *       @ OA\Schema(ref="#/components/schemas/instructor")
      *     )
      *   ),
-     *   @OA\Response(
+     *   @ OA\Response(
      *     response=200,
      *     description="successful operation",
      *     ref="#/components/responses/Instructor"
@@ -166,9 +166,12 @@ class InstructorAPIController extends AppBaseController
     {
         $input = $request->all();
 
-        $instructors = $this->instructorRepository->create($input);
+        $instructor = $this->instructorRepository->create($input);
 
-        return $this->sendResponse($instructors->toArray(), 'Instructor saved successfully');
+        $manager = new Manager();
+        $manager->setSerializer(new JsonApiSerializer());
+        $resource = new Item($instructor, new InstructorTransformer);
+        return response()->json((new Manager)->createData($resource)->toArray());
     }
 
     /**
@@ -283,42 +286,45 @@ class InstructorAPIController extends AppBaseController
 
         $instructor = $this->instructorRepository->update($input, $id);
 
-        return $this->sendResponse($instructor->toArray(), 'Instructor updated successfully');
+        $manager = new Manager();
+        $manager->setSerializer(new JsonApiSerializer());
+        $resource = new Item($instructor, new InstructorTransformer);
+        return response()->json((new Manager)->createData($resource)->toArray());
     }
 
     /**
      * @param int $id
      * @return Response
      *
-     * @OA\Delete(
+     * @ OA\Delete(
      *   path="/instructors/{id}",
      *   summary="Remove the specified Instructor from storage",
      *   tags={"Instructor"},
      *   description="Delete Instructor",
-     *   @OA\MediaType(
+     *   @ OA\MediaType(
      *     mediaType="application/json"
      *   ),
-     *   @OA\Parameter(
+     *   @ OA\Parameter(
      *     name="id",
      *     description="id of Instructor",
-     *     @OA\Schema(ref="#/components/schemas/LegacyInstructor/properties/InstructorID"),
+     *     @ OA\Schema(ref="#/components/schemas/LegacyInstructor/properties/InstructorID"),
      *     required=true,
      *     in="path"
      *   ),
-     *   @OA\Response(
+     *   @ OA\Response(
      *     response=200,
      *     description="successful operation",
-     *     @OA\Schema(
+     *     @ OA\Schema(
      *       type="object",
-     *       @OA\Property(
+     *       @ OA\Property(
      *           property="success",
      *           type="boolean"
      *       ),
-     *       @OA\Property(
+     *       @ OA\Property(
      *           property="data",
      *           type="string"
      *       ),
-     *       @OA\Property(
+     *       @ OA\Property(
      *           property="message",
      *           type="string"
      *       )
@@ -401,7 +407,7 @@ class InstructorAPIController extends AppBaseController
      */
     public function showStudents($id, Request $request)
     {
-        if (\Auth::user()->AccountID != $id) {
+        if (optional(\Auth::user())->AccountID != $id) {
             return response()->json(['error'=>'Unauthorized.'], 403);
         }
         $filterIds = $request->post('ids');

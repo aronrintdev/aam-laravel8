@@ -15,7 +15,10 @@ class UpdateInstructorAPIRequest extends APIRequest
     public function authorize()
     {
         $user = \Auth::user();
-        if ($user->isApiAgent()) {
+        if (!$user) {
+            return false;
+        }
+        if ($user && $user->isApiAgent()) {
             return true;
         }
         return ($user->AccountID == $this->route('account'));

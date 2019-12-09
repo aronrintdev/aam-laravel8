@@ -14,7 +14,7 @@ class UpdateAcademyAPIRequest extends APIRequest
      */
     public function authorize()
     {
-        if ($this->user()->isApiAgent()) {
+        if ($this->user() && $this->user()->isApiAgent()) {
             return true;
         }
         $academy = Academy::find($this->route('academy'));
