@@ -366,7 +366,7 @@ class Instructor extends Model
 
     
     public function academies() {
-        return $this->belongsToMany('App\Models\Academy', 'AcademyInstructors', 'InstructorID', 'AcademyID');
+        return $this->belongsToMany('App\Models\Academy', 'AcademyInstructors', 'InstructorID', 'AcademyID')->wherePivot('IsEnabled', 1);
         //return $this->belongsToMany('App\Models\Academy')->user('App\Models\AcademyInstructors');
     }
 }

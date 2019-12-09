@@ -527,6 +527,7 @@ class Academy extends Model
     public $incrementing = false;
 
     public $fillable = [
+        'AcademyID',
         'BaseColor',
         'AdamPaid',
         'BaseColorLt',
@@ -755,5 +756,9 @@ class Academy extends Model
     
     public function getAcademyIDAttribute($value) {
         return trim($value);
+    }
+
+    public function students() {
+        return $this->belongsToMany('App\Models\Account', 'AcademyStudents', 'AcademyID', 'AccountID');
     }
 }
