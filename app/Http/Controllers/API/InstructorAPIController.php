@@ -365,6 +365,15 @@ class InstructorAPIController extends AppBaseController
      *     required=true,
      *     in="path"
      *   ),
+     *   @OA\Parameter(
+     *     name="withAcademy",
+     *     description="include students of active academies",
+     *     @OA\Schema(
+     *       type="boolean"
+     *     ),
+     *     required=false,
+     *     in="query"
+     *   ),
      *   @OA\RequestBody(
      *     description="list of student IDs to include in response",
      *     required=false,
@@ -398,6 +407,15 @@ class InstructorAPIController extends AppBaseController
      *     required=true,
      *     in="path"
      *   ),
+     *   @OA\Parameter(
+     *     name="withAcademy",
+     *     description="include students of active academies",
+     *     @OA\Schema(
+     *       type="boolean"
+     *     ),
+     *     required=false,
+     *     in="query"
+     *   ),
      *   @OA\Response(
      *     response=200,
      *     description="successful operation",
@@ -414,6 +432,7 @@ class InstructorAPIController extends AppBaseController
         if (!is_array($filterIds)) {
             $filterIds = array();
         }
+        $withAcademyStudents = ($request->query('withAcademy') === 'true') ? true : false;
 
         /** @var Instructor $instructor */
         $instructor = $this->instructorRepository->find($id);
@@ -428,7 +447,7 @@ class InstructorAPIController extends AppBaseController
 
         $accountList = $this->instructorRepository->students(
             $instructor->InstructorID,
-            true,
+            $withAcademyStudents,
             $filterIds,
             $request->get('skip'),
             $limit,
@@ -438,7 +457,7 @@ class InstructorAPIController extends AppBaseController
         if ($total >= $limit) {
             $total = $this->instructorRepository->totalStudents(
                 $instructor->InstructorID,
-                true,
+                $withAcademyStudents,
                 $filterIds,
             );
         }

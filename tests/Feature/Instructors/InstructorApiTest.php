@@ -89,6 +89,35 @@ class InstructorApiTest extends TestCase
         $user->InstructorID = $instructor->InstructorID;
 
         $this->response = $this->actingAs($user)
+            ->json('GET', '/api201902/instructors/'.$instructor->InstructorID.'/students/?withAcademy=true');
+
+        $this->assertEquals(12, $this->response->getData()->meta->total);
+    }
+
+
+    /**
+     * @test
+     */
+    public function test_read_only_personal_students()
+    {
+        //add student to disabled academy,
+        //attach academy to instructor as not enabled
+        //ensure only 12 students come back.
+        //new student would be 13
+        $instructor = Instructor::find(1);
+        $academy    = $this->makeAcademy();
+        $student    = $this->makeAccount();
+        $academy->students()->attach($student);
+
+        $student    = $this->makeAccount();
+        $academy->students()->attach($student);
+
+        $instructor->academies()->attach($academy->AcademyID, ['IsEnabled'=>1]);
+
+        $user = \App\AccountUser::find(1);
+        $user->InstructorID = $instructor->InstructorID;
+
+        $this->response = $this->actingAs($user)
             ->json('GET', '/api201902/instructors/'.$instructor->InstructorID.'/students/');
 
         $this->assertEquals(12, $this->response->getData()->meta->total);
