@@ -73,5 +73,5 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/instructors/{id}/students', 'InstructorAPIController@showStudents', 'instructors.students.filter');
 
     Route::post('/academies/{id}/enroll', 'AcademyAPIController@enrollAcademy');
+    Route::post('/session/{id}/switch', 'SessionAPIController@switchAcademy');
 });
-

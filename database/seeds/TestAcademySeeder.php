@@ -41,6 +41,19 @@ class TestAcademyTableSeeder extends Seeder
             'Logo'               => 'http://img4.wikia.nocookie.net/__cb20140424011935/fantendo/images/0/02/Shy_Guy_MGGT.png',
         ]);
 
+        DB::table('Academies')->insert([
+            'AcademyID'          => 'BOWG',
+            'AdminAccountID'     => 5,
+            'Name'               => 'Bowser Golf',
+            'Description'        => 'Main Baddie',
+            'SportID'            => 1,
+            'BaseColor'          => 'CC0099',
+            'BannerText'         => 'Golf with the best',
+            'SampleLesson'       => 999,
+            'PrivateFlag'        => 0,
+            'Logo'               => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test.academy/bowg/Bowser_golf.png',
+        ]);
+
 /**
 CREATE TABLE `Academies` (
  `AcademyID` char(8) NOT NULL,
