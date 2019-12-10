@@ -66,7 +66,11 @@ class Handler extends ExceptionHandler
     {
         if ($request->expectsJson() || $request->acceptsAnyContentType()) {
             if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
-                return response()->json(['errors'=>[ ['status'=>403, 'title'=>'Forbidden'] ]], 403);
+                $err = ['status'=>403, 'title'=>'Forbidden'];
+                if ( $exception->getMessage() != '' ) {
+                    $err['detail'] = $exception->getMessage();
+                }
+                return response()->json(['errors'=>[ $err ]], 403);
             }
             if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
                 return response()->json(['errors'=>[ ['status'=>404, 'title'=>'Not Found'] ]], 404);
