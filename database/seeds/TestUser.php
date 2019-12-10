@@ -43,6 +43,13 @@ class TestUser extends Seeder
             'PasswordHash'       => \Hash::make('password'),
         ]);
 
+        $billId = DB::table('Accounts')->insertGetId([
+            'FirstName'          => 'Bill',
+            'LastName'           => 'Bullet',
+            'Email'              => 'bill@example.com',
+            'PasswordHash'       => \Hash::make('password'),
+        ]);
+
         DB::table('Instructors')->insert([
             'AcademyID'    => '',
             'InstructorID' => $paulineId,
@@ -53,8 +60,15 @@ class TestUser extends Seeder
         DB::table('Instructors')->insert([
             'AcademyID'    => '',
             'InstructorID' => $shyId,
-            'Title'        => 'common enemy in the Mario series',
-            'HeadShot'     => 'https://cdn.fstoppers.com/styles/large-16-9/s3/lead/2014/12/fstoppers-dylan-patrick-setting-up-a-successful-headshot-session-8.jpg',
+            'Title'        => 'Common enemy in the Mario series',
+            'HeadShot'     => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test.profile/fstoppers-dylan-patrick-setting-up-a-successful-headshot-session-8.jpg',
+        ]);
+
+        DB::table('Instructors')->insert([
+            'AcademyID'    => '',
+            'InstructorID' => $billId,
+            'Title'        => 'Usually under Bowser\'s control',
+            'HeadShot'     => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test.profile/200px-BulletBillMK8.png',
         ]);
 
 
@@ -73,6 +87,23 @@ class TestUser extends Seeder
             'IsEnabled'    => 1,
             'IsHidden'     => 0
         ]);
+
+        DB::table('AcademyInstructors')->insert([
+            'AcademyID'    => 'SHYG',
+            'InstructorID' => $billId,
+            'IsMaster'     => 0,
+            'IsEnabled'    => 1,
+            'IsHidden'     => 0
+        ]);
+
+        DB::table('AcademyInstructors')->insert([
+            'AcademyID'    => 'BOWG',
+            'InstructorID' => $billId,
+            'IsMaster'     => 1,
+            'IsEnabled'    => 1,
+            'IsHidden'     => 0
+        ]);
+
 
         DB::table('AcademyStudents')->insert([
             'AcademyID'    => 'V1AC',
