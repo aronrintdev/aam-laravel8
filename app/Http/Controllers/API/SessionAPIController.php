@@ -10,6 +10,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Validation\UnauthorizedException;
 use App\Http\Controllers\AppBaseController;
 use Response;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class SessionAPIController {
 
@@ -66,7 +67,7 @@ class SessionAPIController {
         if (!$auth->authenticate()) { // Check user not found. Check token has expired.
             \Log::info('no auth in refresh token');
             throw new UnauthorizedHttpException('jwt-auth', 'User not found');
-        } 
+        }
 
         $auth->customClaims(['accid' => $id]);
         $newtoken = $auth->refresh(false, true);
@@ -82,5 +83,62 @@ class SessionAPIController {
             'expires_in' => $exp
         ])
         ->withCookie( cookie('token', $newtoken, $exp));
+    }
+
+    /**
+     * @param string $id
+     * @return Response
+     *
+     * @OA\POST(
+     *   path="/session/check",
+     *   summary="Check the validity of the JWT token",
+     *   tags={"session"},
+     *   @OA\MediaType(
+     *     mediaType="application/json"
+     *   ),
+     *  @OA\Response(
+     *     response=200,
+	 *     description="valid session",
+	 *     @OA\MediaType(
+	 *       mediaType="application/json",
+	 *       @OA\Schema(
+     *       )
+     *     )
+     *   ),
+     *  @OA\Response(
+     *     response=401,
+	 *     description="invalid token",
+	 *     @OA\MediaType(
+	 *       mediaType="application/json",
+	 *       @OA\Schema(
+     *       )
+     *     )
+     *   )
+     * )
+     */
+    public function checkJwt(Request $request)
+    {
+        $user = \Auth::user();
+        $auth = auth();
+        $token = $auth->parseToken();
+
+        if (!$auth->authenticate()) { // Check user not found. Check token has expired.
+            throw new UnauthorizedHttpException('jwt-auth', 'User not found');
+        }
+
+        try {
+            $payload = $token->getPayload();
+            $expires = $payload->getClaims()->getByClaimName('exp');
+            $exp = $expires->getValue() - time();
+
+            return response()->json([
+                'access_token' => $token->getToken()->get(),
+                'token_type' => 'bearer',
+                'expires_in' => $exp
+            ]);
+        } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+            $errors = [['status'=>401, 'source'=>'token', 'title'=>'Invalid Token', 'detail'=>$e->getMessage()]];
+            return response()->json(['errors'=> $errors ], 401);
+        }
     }
 }

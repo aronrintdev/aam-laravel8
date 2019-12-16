@@ -34,7 +34,7 @@ class SessionApiTest extends TestCase
             ->call('POST', '/api201902/session/'.$academyId.'/switch', [],
                 [
                     'token' => $token
-                ], 
+                ],
                 [],
                 $headers
             );
@@ -67,7 +67,7 @@ class SessionApiTest extends TestCase
             ->call('POST', '/api201902/session/'.$academyId.'/switch', [],
                 [
                     'token' => $token
-                ], 
+                ],
                 [],
                 $headers
             );
@@ -95,7 +95,7 @@ class SessionApiTest extends TestCase
             ->call('POST', '/api201902/session/'.$academyId.'/switch', [],
                 [
                     'token' => $token
-                ], 
+                ],
                 [],
                 $headers
             );
@@ -104,5 +104,67 @@ class SessionApiTest extends TestCase
         $blob = explode('.', $this->response->getData()->access_token);
         $jwt = json_decode( base64_decode($blob[1]), true);
         $this->assertEquals($academyId, $jwt['accid']);
+    }
+
+
+    /**
+     * @test
+     */
+    public function test_check_jwt_signature()
+    {
+        $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
+        $this->withoutMiddleware(\App\Http\Middleware\EnableCors::class);
+
+        $academyId = 'SHYG';
+        $bill = AccountUser::find(5);
+        //can't do json call with cookies in 5.8
+        $headers = [
+            'CONTENT_LENGTH' => mb_strlen('', '8bit'),
+            'CONTENT_TYPE' => 'application/json',
+            'Accept' => 'application/json',
+        ];
+        $token = \JWTAuth::fromUser($bill);
+        $this->response = $this->actingAs($bill, 'api')
+            ->call('POST', '/api201902/session/check', [],
+                [
+                    'token' => $token
+                ],
+                [],
+                $headers
+            );
+        $this->response->assertStatus(200);
+        $this->response->assertJsonStructure(['access_token', 'token_type', 'expires_in']);
+        $this->assertEquals(7200, $this->response->getData()->expires_in);
+    }
+
+
+    /**
+     * @test
+     */
+    public function test_bad_jwt_signature_throws_error()
+    {
+        $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
+        $this->withoutMiddleware(\App\Http\Middleware\EnableCors::class);
+
+        $academyId = 'SHYG';
+        $bill = AccountUser::find(5);
+        //can't do json call with cookies in 5.8
+        $headers = [
+            'CONTENT_LENGTH' => mb_strlen('', '8bit'),
+            'CONTENT_TYPE' => 'application/json',
+            'Accept' => 'application/json',
+        ];
+        $token = \JWTAuth::fromUser($bill);
+        $token .= 'qqqqq';
+        $this->response = $this->actingAs($bill, 'api')
+            ->call('POST', '/api201902/session/check', [],
+                [
+                    'token' => $token
+                ],
+                [],
+                $headers
+            );
+        $this->response->assertStatus(401);
+        $this->response->assertJsonStructure(['errors']);
     }
 }
