@@ -105,7 +105,8 @@ class AcademyAPIController extends AppBaseController
                 $request->get('limit')
                 );
 
-        return $this->sendResponse($academies->toArray(), 'Academies retrieved successfully');
+        //public function sendJsonApiResponse($type, $idName, $objects)
+        return $this->sendJsonApiResponse('academy', 'AcademyID', $academies->toArray());
     }
 
     /**
@@ -131,11 +132,13 @@ class AcademyAPIController extends AppBaseController
 
     public function store(CreateAcademyAPIRequest $request)
     {
+        throw new AuthorizationException();
         $input = $request->all();
 
         $academies = $this->academyRepository->create($input);
 
-        return $this->sendResponse($academies->toArray(), 'Academy saved successfully');
+        return $this->sendJsonApiResponse('academy', 'AcademyID', $academies->toArray());
+        //return $this->sendResponse($academies->toArray(), 'Academy saved successfully');
     }
 
     /**
@@ -184,7 +187,8 @@ class AcademyAPIController extends AppBaseController
             $academy->Logo = sprintf('https://www.v1sports.com/Academy/%s/images/%s_logo.jpg',
                 $academy->AcademyID, $academy->AcademyID);
         }
-        return $this->sendResponse($academy->toArray(), 'Academy retrieved successfully');
+        return $this->sendJsonApiResponse('academy', 'AcademyID', $academy->toArray());
+        //return $this->sendResponse($academy->toArray(), 'Academy retrieved successfully');
     }
 
     /**
@@ -233,7 +237,7 @@ class AcademyAPIController extends AppBaseController
 
         $academy = $this->academyRepository->update($input, $id);
 
-        return $this->sendResponse($academy->toArray(), 'Academy updated successfully');
+        return $this->sendJsonApiResponse('academy', 'AcademyID', $academy->toArray());
     }
 
     /**
@@ -279,6 +283,7 @@ class AcademyAPIController extends AppBaseController
 
     public function destroy($id)
     {
+        throw new AuthorizationException();
         /** @var Academy $academy */
         $academy = $this->academyRepository->find($id);
 
@@ -485,27 +490,27 @@ class AcademyAPIController extends AppBaseController
      *     required=true,
      *     in="path"
      *   ),
-	 *   @OA\Response(
+     *   @OA\Response(
      *     response=200,
-	 *     description="successful operation",
-	 *     @OA\MediaType(
-	 *       mediaType="application/json",
-	 *       @OA\Schema(
-	 *          @OA\Property(
-	 *            property="data",
-	 *            type="object",
-	 *             allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/resource")},
-	 *             @OA\Property(
-	 *               property="attributes",
-	 *               type="array",
-	 *               @OA\Items(
-	 *                 ref="#/components/schemas/Branding"
-	 *               )
-	 *             )
-	 *         )
-	 *       )
-	 *     )
-	 *   ) 
+     *     description="successful operation",
+     *     @OA\MediaType(
+     *       mediaType="application/json",
+     *       @OA\Schema(
+     *          @OA\Property(
+     *            property="data",
+     *            type="object",
+     *             allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/resource")},
+     *             @OA\Property(
+     *               property="attributes",
+     *               type="array",
+     *               @OA\Items(
+     *                 ref="#/components/schemas/Branding"
+     *               )
+     *             )
+     *         )
+     *       )
+     *     )
+     *   )
      * )
      */
     public function branding($id, Request $request)
@@ -553,11 +558,11 @@ class AcademyAPIController extends AppBaseController
      *   ),
      *  @OA\Response(
      *     response=200,
-	 *     description="successful operation",
-	 *     @OA\MediaType(
-	 *       mediaType="application/json",
-	 *       @OA\Schema(
-	 *          allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
+     *     description="successful operation",
+     *     @OA\MediaType(
+     *       mediaType="application/json",
+     *       @OA\Schema(
+     *          allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
      *       )
      *     )
      *   )

@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\AppBaseController;
 use App\Http\Requests\API\CreateAccountAPIRequest;
 use App\Http\Requests\API\UpdateAccountAPIRequest;
 use App\Models\Account;
 use App\Repositories\AccountRepository;
 use App\Repositories\AcademyRepository;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
-use App\Http\Controllers\AppBaseController;
 use App\Models\InstructorStudentsMulti;
 use Response;
 
@@ -126,6 +127,7 @@ class AccountAPIController extends AppBaseController
 
     public function store(CreateAccountAPIRequest $request)
     {
+        throw new AuthorizationException('Please register your account');
         $input = $request->all();
 
         $accounts = $this->accountRepository->create($input);
@@ -236,6 +238,7 @@ class AccountAPIController extends AppBaseController
 
     public function update($id, UpdateAccountAPIRequest $request)
     {
+        throw new AuthorizationException('Please register your account');
         $input = $request->all();
 
         /** @var Account $account */
@@ -293,6 +296,7 @@ class AccountAPIController extends AppBaseController
 
     public function destroy($id)
     {
+        throw new AuthorizationException('Please register your account');
         /** @var Account $account */
         $account = $this->accountRepository->find($id);
 

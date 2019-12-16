@@ -46,7 +46,7 @@ trait MakeAccountTrait
         return array_merge([
             'OldAccountID' => $fake->randomDigitNotNull,
             'Email' => $fake->email,
-            'CardExpires' => '',
+            'CardExpires' => null,
             'LastName_U' => $fake->word,
             'CxnSpeed' => null,
             'LastName' => $fake->word,
@@ -62,7 +62,7 @@ trait MakeAccountTrait
             'Optout' => null,
             'Password' => $fake->word,
             'SiteID' => substr($fake->word, 0, 4),
-            'CardNumberEx' => $fake->word,
+            'CardNumberEx' => null,
             'Zip' => null,
             'OS' => null,
             'Balance' => $fake->randomDigitNotNull,

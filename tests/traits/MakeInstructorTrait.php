@@ -45,7 +45,7 @@ trait MakeInstructorTrait
 
         return array_merge([
             'InstructorID' => $fake->numberBetween(6, 20),
-            'SalesPerson' => substr($fake->word, 0, 4),
+            'SalesPerson' => null,
             'NotableStudents' => $fake->word,
             'ProCode' => $fake->randomDigitNotNull,
             'CourseAddress' => $fake->word,
@@ -78,15 +78,15 @@ trait MakeInstructorTrait
             'SerialNo' => $fake->randomDigitNotNull,
             'AcademyID' => substr($fake->word, 0, 4),
             'PersonalWebLink' => $fake->word,
-            'StartedTeaching' => $fake->date('Y-m-d'),
+            'StartedTeaching' => $fake->date('Y-m-d H:i:s.v'),
             'CourseState' => substr($fake->word, 0, 2),
-            'V1ProVersion' => substr($fake->word, 0, 4),
+            'V1ProVersion' => null,
             'SetStudentCharge' => $fake->boolean,
             'Accomplishments' => $fake->word,
-            'StartDate' => substr($fake->word, 0, 6),
+            'StartDate' => null,
             'SpecialtyCode' => $fake->randomDigitNotNull,
             'CourseCountry' => $fake->word,
-            'SportID' => substr($fake->word, 0, 4),
+            'SportID' => 'GOLF',
             'V1GAProCode' => substr($fake->word, 0, 4)
         ], $instructorFields);
     }

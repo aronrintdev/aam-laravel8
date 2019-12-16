@@ -4,11 +4,12 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Tests\Traits\MakeAcademyTrait;
+use Tests\Traits\MakeInstructorTrait;
 use Tests\ApiTestTrait;
 
 class AcademyApiTest extends TestCase
 {
-    use MakeAcademyTrait, ApiTestTrait, WithoutMiddleware, DatabaseTransactions;
+    use MakeAcademyTrait, MakeInstructorTrait, ApiTestTrait, WithoutMiddleware, DatabaseTransactions;
 
     /**
      * @test
@@ -16,9 +17,10 @@ class AcademyApiTest extends TestCase
     public function testCreateAcademy()
     {
         $academy = $this->fakeAcademyData();
-        $this->json('POST', '/api/v1/academies', $academy);
+        $this->response = $this->json('POST', '/api201902/academies', $academy);
 
-        $this->assertApiResponse($academy);
+        $this->response->assertStatus(403);
+        //$this->assertApiResponse($academy);
     }
 
     /**
@@ -27,7 +29,7 @@ class AcademyApiTest extends TestCase
     public function testReadAcademy()
     {
         $academy = $this->makeAcademy();
-        $this->json('GET', '/api/v1/academies/'.$academy->AcademyID);
+        $this->response = $this->json('GET', '/api201902/academies/'.$academy->AcademyID);
 
         $this->assertApiResponse($academy->toArray());
     }
@@ -40,7 +42,16 @@ class AcademyApiTest extends TestCase
         $academy = $this->makeAcademy();
         $editedAcademy = $this->fakeAcademyData();
 
-        $this->json('PUT', '/api/v1/academies/'.$academy->AcademyID, $editedAcademy);
+        $instructor = $this->makeInstructor();
+        $instructor->academies()->attach($academy->AcademyID, ['IsEnabled'=>1]);
+
+        $user = \App\AccountUser::find(1);
+        $user->InstructorID = $instructor->InstructorID;
+        $user->IsInstructor = true;
+        $user->AcademyID    = $academy->AcademyID;
+
+        $this->response = $this->actingAs($user)
+            ->json('PATCH', '/api201902/academies/'.$academy->AcademyID, $editedAcademy);
 
         $this->assertApiResponse($editedAcademy);
     }
@@ -51,11 +62,12 @@ class AcademyApiTest extends TestCase
     public function testDeleteAcademy()
     {
         $academy = $this->makeAcademy();
-        $this->json('DELETE', '/api/v1/academies/'.$academy->AcademyID);
+        $this->response = $this->json('DELETE', '/api201902/academies/'.$academy->AcademyID);
 
-        $this->assertApiSuccess();
-        $this->json('GET', '/api/v1/academies/'.$academy->AcademyID);
+        $this->response->assertStatus(403);
+        //$this->assertApiSuccess();
+        $this->response = $this->json('GET', '/api201902/academies/'.$academy->AcademyID);
 
-        $this->assertResponseStatus(404);
+        $this->response->assertStatus(200);
     }
 }

@@ -254,7 +254,6 @@ class Instructor extends Model
     public $incrementing = false;
 
     public $fillable = [
-        'InstructorID',
         'SalesPerson',
         'NotableStudents',
         'ProCode',

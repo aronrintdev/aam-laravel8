@@ -527,7 +527,6 @@ class Academy extends Model
     public $incrementing = false;
 
     public $fillable = [
-        'AcademyID',
         'BaseColor',
         'AdamPaid',
         'BaseColorLt',

@@ -31,9 +31,9 @@ class InstructorRepositoryTest extends TestCase
         $instructor = $this->fakeInstructorData();
         $createdInstructor = $this->instructorRepo->create($instructor);
         $createdInstructor = $createdInstructor->toArray();
-        $this->assertArrayHasKey('id', $createdInstructor);
-        $this->assertNotNull($createdInstructor['id'], 'Created Instructor must have id specified');
-        $this->assertNotNull(Instructor::find($createdInstructor['id']), 'Instructor with given id must be in DB');
+        $this->assertArrayHasKey('InstructorID', $createdInstructor);
+        $this->assertNotNull($createdInstructor['InstructorID'], 'Created Instructor must have id specified');
+        $this->assertNotNull(Instructor::find($createdInstructor['InstructorID']), 'Instructor with given id must be in DB');
         $this->assertModelData($instructor, $createdInstructor);
     }
 

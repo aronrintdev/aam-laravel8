@@ -32,9 +32,10 @@ class AcademyRepositoryTest extends TestCase
         $academy = $this->fakeAcademyData();
         $createdAcademy = $this->academyRepo->create($academy);
         $createdAcademy = $createdAcademy->toArray();
-        $this->assertArrayHasKey('id', $createdAcademy);
-        $this->assertNotNull($createdAcademy['id'], 'Created Academy must have id specified');
-        $this->assertNotNull(Academy::find($createdAcademy['id']), 'Academy with given id must be in DB');
+
+        $this->assertArrayHasKey('AcademyID', $createdAcademy);
+        $this->assertNotNull($createdAcademy['AcademyID'], 'Created Academy must have id specified');
+        $this->assertNotNull(Academy::find($createdAcademy['AcademyID']), 'Academy with given id must be in DB');
         $this->assertModelData($academy, $createdAcademy);
     }
 
@@ -58,6 +59,7 @@ class AcademyRepositoryTest extends TestCase
         $fakeAcademy = $this->fakeAcademyData();
         $updatedAcademy = $this->academyRepo->update($fakeAcademy, $academy->AcademyID);
         $this->assertModelData($fakeAcademy, $updatedAcademy->toArray());
+
         $dbAcademy = $this->academyRepo->find($academy->AcademyID);
         $this->assertModelData($fakeAcademy, $dbAcademy->toArray());
     }

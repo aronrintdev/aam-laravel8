@@ -15,10 +15,10 @@ class UpdateAccountAPIRequest extends APIRequest
     public function authorize()
     {
         $user = \Auth::user();
-        if ($user->isApiAgent()) {
+        if ($user && $user->isApiAgent()) {
             return true;
         }
-        return ($user->AccountID == $this->route('account'));
+        return $user && ($user->AccountID == $this->route('account'));
     }
 
     /**

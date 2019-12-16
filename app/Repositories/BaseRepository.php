@@ -110,6 +110,13 @@ abstract class BaseRepository
     public function create($input)
     {
         $model = $this->model->newInstance($input);
+        //handle non-auto incrementing keys
+        if (false === $model->incrementing) {
+            if (key_exists($model->getKeyName(), $input)) {
+                $model->{$model->getKeyName()} = $input[ $model->getKeyName() ];
+            }
+        }
+
 
         $model->save();
 
