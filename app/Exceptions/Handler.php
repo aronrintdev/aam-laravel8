@@ -73,7 +73,7 @@ class Handler extends ExceptionHandler
                 return response()->json(['errors'=>[ $err ]], 403);
             }
             if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
-                return response()->json(['errors'=>[ ['status'=>404, 'title'=>'Not Found'] ]], 404);
+                return response()->json(['errors'=>[ ['status'=>404, 'title'=>'Not Found', 'message'=>'Model not found'] ]], 404);
             }
             if ($exception instanceof \Illuminate\Validation\ValidationException) {
                 $errors = [];
