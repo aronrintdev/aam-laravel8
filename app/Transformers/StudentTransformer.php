@@ -16,7 +16,8 @@ use League\Fractal;
  *   @OA\Property(
  *     property="type",
  *     description="account type",
- *     type="string"
+ *     type="string",
+ *     default="student"
  *   ),
  *   @OA\Property(
  *     property="attributes",
