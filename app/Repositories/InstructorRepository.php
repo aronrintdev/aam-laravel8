@@ -171,12 +171,25 @@ class InstructorRepository extends BaseRepository
         $groups  = ['Accounts.AccountID', 'Accounts.FirstName', 'Accounts.LastName', 'Accounts.Email', 'Accounts.DateOpened', 'InstructorStudentsMulti.CreatedAt'];
         $query = (new \App\Models\Account())->newQuery();
         $query->with('avatar');
-        $query->where('InstructorStudentsMulti.InstructorID', '=', $instructorId);
-        $query->where('InstructorStudentsMulti.IsVerified', '=', '1');
+
         if (!empty($filterStudentIds)) {
-            $query->whereIn('Accounts.AccountID', $filterStudentIds);
+            //$query->whereIn('Accounts.AccountID', $filterStudentIds);
+            $query->where( function($q) use($filterStudentIds) {
+                $q->whereIn('Accounts.AccountID', $filterStudentIds);
+            });
         }
+
         if ($includeAcademy) {
+            $query->where(function($query) use($instructorId) {
+                $query->orWhere(function($q) use($instructorId) {
+                    $q->where('InstructorStudentsMulti.InstructorID', '=', $instructorId);
+                    $q->where('InstructorStudentsMulti.IsVerified', '=', '1');
+                });
+                $query->orWhere(function($q) use($instructorId) {
+                    $q->where('AcademyInstructors.InstructorID', '=', $instructorId);
+                });
+            });
+
             $query->leftjoin('InstructorStudentsMulti',           function($j) use($instructorId) {
                 $j->on('InstructorStudentsMulti.AccountID', '=', 'Accounts.AccountID');
                 $j->on('InstructorStudentsMulti.InstructorID', '=', \DB::raw($instructorId));
@@ -194,7 +207,6 @@ class InstructorRepository extends BaseRepository
                 $j->on('AcademyInstructors.IsEnabled', '=', \DB::raw(1));
             });
 
-            $query->orWhere('AcademyInstructors.InstructorID', '=', $instructorId);
         } else {
             $query->join('InstructorStudentsMulti',           function($j) use($instructorId) {
                 $j->on('InstructorStudentsMulti.AccountID', '=', 'Accounts.AccountID');
@@ -225,13 +237,17 @@ class InstructorRepository extends BaseRepository
         //$query = (new \App\Models\Account())->newQuery();
         $query = DB::table('Accounts');
         $query->where('InstructorStudentsMulti.InstructorID', '=', $instructorId);
-        if (!empty($filterStudentIds)) {
-            $query->whereIn('Accounts.AccountID', $filterStudentIds);
-        }
         $query->leftjoin('InstructorStudentsMulti',           function($j) use($instructorId) {
             $j->on('InstructorStudentsMulti.AccountID', '=', 'Accounts.AccountID');
             $j->on('InstructorStudentsMulti.InstructorID', '=', \DB::raw($instructorId));
         });
+
+        if (!empty($filterStudentIds)) {
+            //$query->whereIn('Accounts.AccountID', $filterStudentIds);
+            $query->where( function($q) use($filterStudentIds) {
+                $q->whereIn('Accounts.AccountID', $filterStudentIds);
+            });
+        }
 
         if ($includeAcademy) {
             $query->leftjoin('AcademyStudents',              function($j) {
@@ -244,7 +260,7 @@ class InstructorRepository extends BaseRepository
                 $j->on('AcademyInstructors.IsEnabled', '=', \DB::raw(1));
             });
 
-            $query->orWhere('AcademyInstructors.InstructorID', '=', \DB::raw($instructorId));
+            //$query->orWhere('AcademyInstructors.InstructorID', '=', \DB::raw($instructorId));
         }
         //$query->groupBy(['Accounts.AccountID']);
 
