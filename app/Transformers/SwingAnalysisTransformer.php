@@ -65,10 +65,15 @@ class SwingAnalysisTransformer extends Fractal\TransformerAbstract
 {
 	public function transform(Swing $item)
 	{
+        $analysisPrefix = '';
         $videoPrefix = '';
         if (substr($item->AnalysisPath, 0, 4) !== 'http') {
+            $analysisPrefix = 'https://v1sports.com/SwingStore/';
+        }
+        if (substr($item->VideoPath, 0, 4) !== 'http') {
             $videoPrefix = 'https://v1sports.com/SwingStore/';
         }
+
         $thumbUrl = str_replace( ['.mp4', '.webm'], '.jpg', $item->AnalysisPath);
         if (substr($thumbUrl, 0, 4) !== 'http') {
             $thumbUrl = 'https://v1sports.com/SwingStore/'.$thumbUrl;
@@ -78,12 +83,14 @@ class SwingAnalysisTransformer extends Fractal\TransformerAbstract
             'id'         => (int) $item->SwingID,
             'type'       => 'video',
             'attributes' => [
-                'video_url'        => $videoPrefix.$item->AnalysisPath,
+                'video_url'        => $analysisPrefix.$item->AnalysisPath,
                 'thumb_url'        => $thumbUrl,
                 'source_video_url' => $videoPrefix.$item->VideoPath,
                 'source_video_id'  => $item->SwingID,
                 'date_uploaded'    => $item->DateAnalyzed,
+                'date_accepted'    => $item->DateAccepted,
                 'instructor_id'    => $item->InstructorID,
+                'status_id'        => $item->SwingStatusID,
                 'account_id'       => $item->AccountID,
             ]
         ];

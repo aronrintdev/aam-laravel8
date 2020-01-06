@@ -115,7 +115,7 @@ class LockerAPIController extends AppBaseController
     public function index(Request $request, $accountId=false)
     {
         $user = $request->user();
-        $limit = $request->get('limit') ? intval($request->get('limit')) : 20;
+        $limit = $request->get('limit') ? intval($request->get('limit')) : 100;
 
         //only read the accountId if the user is an instructor
         if ($user->IsInstructor) {
@@ -128,7 +128,8 @@ class LockerAPIController extends AppBaseController
             $accountId = $user->AccountID;
         }
 
-        $searchParams = ['AccountID'=>$accountId, 'Deleted'=>false];
+        //new or rejected statuses
+        $searchParams = ['AccountID'=>$accountId, 'Deleted'=>false, 'SwingStatusID'=>[0,4]];
 
         if ($ids = $request->input('ids')) {
             $searchParams['SwingID'] = explode(',', $ids);
@@ -150,7 +151,7 @@ class LockerAPIController extends AppBaseController
      * @OA\Get(
      *   path="/locker/{swingId}/analysis",
      *   tags={"Locker"},
-     *   summary="Get all analysis videos for instructor from past year",
+     *   summary="Get an analysis for one video",
      *   @OA\MediaType(
      *     mediaType="application/json"
      *   ),
@@ -212,7 +213,7 @@ class LockerAPIController extends AppBaseController
      * @OA\Get(
      *   path="/videolessons",
      *   tags={"Locker"},
-     *   summary="Get an analysis for one video",
+     *   summary="Get all analysis videos for instructor from past year",
      *   @OA\MediaType(
      *     mediaType="application/json"
      *   ),
@@ -267,12 +268,12 @@ class LockerAPIController extends AppBaseController
         $searchParams = [
             'InstructorID'  => $instructorId,
             'Deleted'       => false,
-            'SwingStatusID' => 3,
-            'DateAnalyzed'  => [$date, ">="],
+            'SwingStatusID' => [3,2],
         ];
 
-        $swings = $this->swingRepository->all(
+        $swings = $this->swingRepository->searchBrokenVideos(
                 $searchParams,
+                $date,
                 $request->get('skip'),
                 $limit
         );

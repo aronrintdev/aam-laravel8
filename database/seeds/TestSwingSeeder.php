@@ -73,5 +73,35 @@ class TestSwingSeeder extends Seeder
                 'AcademyID'          => 'SHYG',
             ]);
         }
+
+        //broken swing analysis
+        //
+        $dateUploaded = $faker->dateTimeBetween($startDate = '-1 week', $endDate = 'now', $timezone = 'America/New_York');
+        $id = DB::table('Swings')->insertGetId([
+            'AccountID'          => 2,
+            'SwingStatusID'      => 2,
+            'DateUploaded'       => $dateUploaded,
+            'Description'        => $faker->realText($maxNbChars=240),
+            'SportID'            => 'GOLF',
+            'VideoPath'          => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test/analysis/ex1.mp4',
+            'InstructorID'       => 3,
+            'DateAccepted'       => $dateUploaded->modify('+61 milliseconds'),
+            'DateAnalyzed'       => null,
+            'AnalysisPath'       => null,
+            'AcademyID'          => 'SHYG',
+        ]);
+        $id = DB::table('Swings')->insertGetId([
+            'AccountID'          => 2,
+            'SwingStatusID'      => 3,
+            'DateUploaded'       => $dateUploaded,
+            'Description'        => $faker->realText($maxNbChars=240),
+            'SportID'            => 'GOLF',
+            'VideoPath'          => '190422225737FJ5V2349216.mp4',
+            'InstructorID'       => 3,
+            'DateAccepted'       => $dateUploaded->modify('-6 days'),
+            'DateAnalyzed'       => $dateUploaded,
+            'AnalysisPath'       => '190422225737FJ5V2349216.mp4',
+            'AcademyID'          => 'SHYG',
+        ]);
     }
 }
