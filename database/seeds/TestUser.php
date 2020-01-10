@@ -55,6 +55,9 @@ class TestUser extends Seeder
             'InstructorID' => $paulineId,
             'Title'        => 'Sr. Pro Teacher',
             'HeadShot'     => 'https://vos-media.nyc3.digitaloceanspaces.com/profile/Screenshot%20from%202019-09-27%2017-22-38.png',
+            'Biography'       => 'Pauline\'s Bio',
+            'Philosophy'      => 'Pauline\'s Philosophy',
+            'Accomplishments' => 'Pauline\'s Accomplishments',
         ]);
 
         DB::table('Instructors')->insert([
@@ -73,11 +76,11 @@ class TestUser extends Seeder
 
 
         DB::table('AcademyInstructors')->insert([
-            'AcademyID'    => 'V1AC',
-            'InstructorID' => $paulineId,
-            'IsMaster'     => 1,
-            'IsEnabled'    => 1,
-            'IsHidden'     => 0
+            'AcademyID'       => 'V1AC',
+            'InstructorID'    => $paulineId,
+            'IsMaster'        => 1,
+            'IsEnabled'       => 1,
+            'IsHidden'        => 0,
         ]);
 
         DB::table('AcademyInstructors')->insert([
@@ -85,7 +88,7 @@ class TestUser extends Seeder
             'InstructorID' => $shyId,
             'IsMaster'     => 1,
             'IsEnabled'    => 1,
-            'IsHidden'     => 0
+            'IsHidden'     => 0,
         ]);
 
         DB::table('AcademyInstructors')->insert([
@@ -93,7 +96,7 @@ class TestUser extends Seeder
             'InstructorID' => $billId,
             'IsMaster'     => 0,
             'IsEnabled'    => 1,
-            'IsHidden'     => 0
+            'IsHidden'     => 0,
         ]);
 
         DB::table('AcademyInstructors')->insert([
@@ -101,9 +104,8 @@ class TestUser extends Seeder
             'InstructorID' => $billId,
             'IsMaster'     => 1,
             'IsEnabled'    => 1,
-            'IsHidden'     => 0
+            'IsHidden'     => 0,
         ]);
-
 
         DB::table('AcademyStudents')->insert([
             'AcademyID'    => 'V1AC',
