@@ -21,7 +21,7 @@ class UpdateInstructorAPIRequest extends APIRequest
         if ($user && $user->isApiAgent()) {
             return true;
         }
-        return ($user->AccountID == $this->route('account'));
+        return ($user->AccountID == $this->route('id'));
     }
 
     /**

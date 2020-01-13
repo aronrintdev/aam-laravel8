@@ -275,7 +275,7 @@ class InstructorAPIController extends AppBaseController
 
     public function update($id, UpdateInstructorAPIRequest $request)
     {
-        $input = $request->all();
+        $input = collect($request->all());
 
         /** @var Instructor $instructor */
         $instructor = $this->instructorRepository->find($id);
@@ -284,7 +284,49 @@ class InstructorAPIController extends AppBaseController
             return $this->sendError('Instructor not found');
         }
 
-        $instructor = $this->instructorRepository->update($input, $id);
+        //only update these fields
+        $updatable = [
+            'philo'       => 'Philosophy',
+            'bio'         => 'Biography',
+            'accolades'   => 'Accomplishments',
+            'first_name'  => 'FirstName',
+            'last_name'   => 'LastName',
+            'title'       => 'Title',
+            'profile_pic' => 'HeadShot',
+            'email'       => 'Email',
+        ];
+        $keyed = $input->mapWithKeys(function($item, $index) use($updatable) {
+            if (array_key_exists($index, $updatable)) {
+                return [$updatable[$index] => $item];
+            } else {
+                return [$index => $item];
+            }
+        })->all();
+
+        $this->instructorRepository->update($keyed, $id);
+
+        $accountRepository = new AccountRepository(app());
+        $accountRepository->update($keyed, $id);
+
+        //reselect the instructor because it's joined off account table
+        $fields = [
+            'Instructors.InstructorID',
+            'AccountID',
+            'FirstName',
+            'LastName',
+            'Title',
+            'HeadShot',
+            'Biography',
+            'Philosophy',
+            'Accomplishments',
+        ];
+
+        $user = \Auth::user();
+        //if we are using the robot token to access, give back email as well
+        if($user && $user->isApiAgent()) {
+            $fields[] = 'Email';
+        }
+        $instructor = $this->instructorRepository->find($id, $fields);
 
         $manager = new Manager();
         $manager->setSerializer(new JsonApiSerializer());

@@ -354,6 +354,7 @@ class Instructor extends Model
      * @var array
      */
     public static $rules = [
+        /*
         'Fee' => 'required',
         'Founder' => 'required',
         'Available' => 'required',
@@ -361,6 +362,7 @@ class Instructor extends Model
         'DiscountFee' => 'required',
         'InstructorID' => 'required',
         'SpecialtyCode' => 'required'
+         */
     ];
 
     
