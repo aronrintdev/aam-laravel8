@@ -17,7 +17,7 @@ class UpdateAccountAvatarAPIRequest extends APIRequest
         if ($this->user()->isApiAgent()) {
             return true;
         }
-        return $this->user()->AccountID == $this->id;
+        return $this->user()->AccountID == $this->route('id');
     }
 
     /**
@@ -28,7 +28,7 @@ class UpdateAccountAvatarAPIRequest extends APIRequest
     public function rules()
     {
         return [
-            'avatar' => 'required',
+            'avatar' => 'file',
         ];
     }
 }

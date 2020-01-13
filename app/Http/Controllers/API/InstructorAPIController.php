@@ -522,4 +522,89 @@ class InstructorAPIController extends AppBaseController
         return $this->sendJsonApiResponse('account', 'AccountID', $accounts->toArray());
     }
      */
+
+    /**
+     * @param int $id
+     * @param Request $request
+     * @return Response
+     *
+     * @OA\Post(
+     *   path="/instructors/{id}/headshot",
+     *   summary="Update the public headshot specified by the AccountID",
+     *   tags={"Instructor"},
+     *   description="Update Headshot",
+     *   @OA\RequestBody(
+     *     description="Upload images request body",
+     *     @OA\MediaType(
+     *       mediaType="multipart/form-data",
+     *       @OA\Schema(
+     *         type="object",
+     *           @OA\Property(
+     *            property="headshot",
+     *            type="string",
+     *            format="binary",
+     *          )
+     *       )
+     *     )
+     *   ),
+     *   @OA\Parameter(
+     *     name="id",
+     *     in="path",
+     *     description="ID of Account",
+     *     required=true,
+     *     @OA\Schema(ref="#/components/schemas/account/properties/id")
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     ref="#/components/responses/Instructor"
+     *   )
+     * )
+     */
+    public function headshot($id, Request $request)
+    {
+        $input = $request->all();
+
+        $fields = [
+            'Instructors.InstructorID',
+            'AccountID',
+            'FirstName',
+            'LastName',
+            'Title',
+            'HeadShot',
+            'Biography',
+            'Philosophy',
+            'Accomplishments',
+        ];
+
+        $instructor = $this->instructorRepository->find($id, $fields);
+
+        if (empty($instructor)) {
+            return $this->sendError('Account not found');
+        }
+
+        $account = \Auth::user();
+        if ($account->AccountID != $instructor->InstructorID) {
+            return $this->sendError('Not owner of account');
+        }
+        $hash = sha1($account->Email). '-hs-'.$account->AccountID;
+        $filepath = 'academy/'.substr($hash, 0, 2).'/';
+        $file = $request->file('headshot');
+        if ($extension = $file->guessExtension()) {
+            $hash .= '.'.$extension;
+        }
+
+        $q = \Storage::disk('do-vos-media')->put($filepath.$hash, (string)file_get_contents((string)$file));
+        //$url = $file->storeAs($filepath, $hash, 'do-vos-media');
+        $prefix = config('filesystems.disks.do-vos-media.root');
+
+        $instructor = $this->instructorRepository->update([
+          'HeadShot'=>'https://vos-media.nyc3.digitaloceanspaces.com/'.$prefix.$filepath.$hash,
+        ], $instructor->InstructorID);
+
+        $manager = new Manager();
+        $manager->setSerializer(new JsonApiSerializer());
+        $resource = new Item($instructor, new InstructorTransformer);
+        return response()->json((new Manager)->createData($resource)->toArray());
+    }
 }

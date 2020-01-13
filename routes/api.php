@@ -54,8 +54,8 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     #Route::resource('avatar', 'AvatarAPIController');
     Route::post('/avatar/{id}', 'AccountAvatarAPIController@store');
-    Route::put('/avatar/{id}/update', 'AccountAvatarAPIController@update');
     Route::put('/avatar/{id}', 'AccountAvatarAPIController@update');
+    Route::post('/avatar/{id}/update', 'AccountAvatarAPIController@update');
     Route::patch('/avatar/{id}', 'AccountAvatarAPIController@update');
     Route::delete('/avatar/{id}', 'AccountAvatarAPIController@destroy');
     Route::resource('avatar', 'AccountAvatarAPIController');
@@ -71,6 +71,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::get('/instructors/{id}/students', 'InstructorAPIController@showStudents', 'instructors.students.get');
     Route::post('/instructors/{id}/students', 'InstructorAPIController@showStudents', 'instructors.students.filter');
+    Route::post('/instructors/{id}/headshot', 'InstructorAPIController@headshot', 'instructors.headshot.update');
 
     Route::post('/academies/{id}/enroll', 'AcademyAPIController@enrollAcademy');
     Route::post('/session/{id}/switch', 'SessionAPIController@switchAcademy');

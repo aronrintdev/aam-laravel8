@@ -278,6 +278,23 @@ class AccountAvatarAPIController extends AppBaseController
             return $this->sendError('Account Avatar not found');
         }
 
+        $account = \Auth::user();
+        $hash = sha1($account->Email). '-'.$account->AccountID;
+        $filepath = 'profile/'.substr($hash, 0, 2).'/';
+        $file = $request->file('avatar');
+        if ($extension = $file->guessExtension()) {
+            $hash .= '.'.$extension;
+        }
+
+        $q = \Storage::disk('do-vos-media')->put($filepath.$hash, $file);
+        //$url = $file->storeAs($filepath, $hash, 'do-vos-media');
+        $prefix = config('filesystems.disks.do-vos-media.root');
+
+        $accountAvatar = $this->accountAvatarRepository->update([
+          'AccountID'=>(int)$account->AccountID,
+          'AvatarURL'=>'https://vos-media.nyc3.digitaloceanspaces.com/'.$prefix.$filepath.$hash,
+        ], $accountAvatar->AccountAvatarID);
+
         //$accountAvatar = $this->accountAvatarRepository->update($input, $id);
         $manager = new Manager();
         $manager->setSerializer(new JsonApiSerializer());
