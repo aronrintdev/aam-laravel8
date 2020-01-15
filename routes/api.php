@@ -36,7 +36,7 @@ Route::group(['middleware' => 'auth:backend,api'], function () {
     Route::get('/search-accounts/', 'AccountAPIController@search');
     Route::post('/update-password/', 'AccountAPIController@updatePassword');
     Route::get('/academies/{id}', 'AcademyAPIController@show')->name('academies.show');
-    Route::put('/academies/{id}/branding', 'AcademyAPIController@brandingUpdate')->name('academies.branding.update');
+    Route::patch('/academies/{id}/branding', 'AcademyAPIController@brandingUpdate')->name('academies.branding.update');
     Route::post('/academies/{id}/branding/logo', 'AcademyAPIController@uploadLogo')->name('academies.branding.uploadLogo');
     Route::post('/academies/{id}/branding/banner', 'AcademyAPIController@uploadBanner')->name('academies.branding.uploadBanner');
     Route::post('/accounts/{id}/pick/{instructorId}', 'AccountAPIController@pick')->name('accounts.pick.instructor');
