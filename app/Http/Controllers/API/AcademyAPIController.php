@@ -517,7 +517,7 @@ class AcademyAPIController extends AppBaseController
     {
         $user = \Auth::user();
 
-        $fields = ['BaseColor', 'BaseColorLt', 'Logo', 'LogInGraphic', 'SelectedColor', 'SelectedColorLt', 'BGColor', 'AcademyID'];
+        $fields = ['BaseColor', 'BaseColorLt', 'Logo', 'LogInGraphic', 'SelectedColor', 'SelectedColorLt', 'BGColor', 'AcademyID', 'BannerText'];
 
         $academy = $this->academyRepository->find(
             $id,
@@ -570,15 +570,7 @@ class AcademyAPIController extends AppBaseController
      */
     public function brandingUpdate($id, Request $request)
     {
-
         $user = \Auth::user();
-        $academy = $user->academiesMaster->where('AcademyID', $id)->first();
-        if (!$academy) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
-        }
-
-        $academy = $this->academyRepository->find($id);
-
         $fields = ['BaseColor', 'BaseColorLt', 'Logo', 'LogInGraphic', 'SelectedColor', 'SelectedColorLt', 'BGColor', 'AcademyID'];
 
         $this->instructorRepository = new InstructorRepository(app());
@@ -593,21 +585,32 @@ class AcademyAPIController extends AppBaseController
             throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
         }
 
-        $input = $request->input();
-        $fill = [
-            'LogInGraphic'  => $input['banner_graphic'],
-            'Logo'          => $input['logo'],
-            'BaseColor'     => $input['base_color'],
-            'BaseColorLt'   => $input['base_color_lt'],
-            'BGColor'       => $input['btn_color'],
-            'SelectedColor' => $input['selected_color'],
+        $input = collect($request->input());
+
+        //only update these fields
+        $swapKeys = [
+            'banner_graphic' => 'LogInGraphic',
+            'banner_text'    => 'BannerText',
+            'logo'           => 'Logo',
+            'base_color'     => 'BaseColor',
+            'base_color_lt'  => 'BaseColorLt',
+            'btn_color'      => 'BGColor'       ,
+            'selected_color' => 'SelectedColor' ,
         ];
-        $academy->fill($fill);
+        $keyed = $input->mapWithKeys(function($item, $index) use($swapKeys) {
+            if (array_key_exists($index, $swapKeys)) {
+                return [$swapKeys[$index] => $item];
+            } else {
+                return [$index=>null];
+            }
+        })->filter()
+          ->all();
+
+        $academy->fill($keyed);
         $academy->save();
 
         $manager = new Manager();
         $manager->setSerializer(new JsonApiSerializer());
-//        $resource = new Collection($academy, new BrandingTransformer());
         $resource = new Item($academy, new BrandingTransformer());
         return response()->json((new Manager)->createData($resource)->toArray());
     }

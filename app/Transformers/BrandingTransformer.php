@@ -127,6 +127,7 @@ class BrandingTransformer extends Fractal\TransformerAbstract
 	        'type'       => 'branding',
             'attributes' => [
                 'banner_graphic' =>  $acct->LogInGraphic,
+                'banner_text'    =>  $acct->BannerText,
                 'logo'           =>  $acct->Logo,
                 'base_color'     =>  $acct->BaseColor,
                 'base_color_lt'  =>  $acct->BaseColorLt,
