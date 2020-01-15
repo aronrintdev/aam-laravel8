@@ -570,25 +570,28 @@ class AcademyAPIController extends AppBaseController
      */
     public function brandingUpdate($id, Request $request)
     {
+
         $user = \Auth::user();
+        $academy = $user->academiesMaster->where('AcademyID', $id)->first();
+        if (!$academy) {
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
+        }
+
         $academy = $this->academyRepository->find($id);
 
         $fields = ['BaseColor', 'BaseColorLt', 'Logo', 'LogInGraphic', 'SelectedColor', 'SelectedColorLt', 'BGColor', 'AcademyID'];
 
         $this->instructorRepository = new InstructorRepository(app());
         $instructor  = $this->instructorRepository->find($user->AccountID);
-        if ($instructor) {
-            $academies = $instructor->academies()->get();
-            if (!in_array($id, $academies->pluck('AcademyID')->all())) {
-                throw new AuthorizationException();
-            }
-        } else {
+        if (!$instructor) {
             throw new AuthorizationException();
         }
-
-        $academy = $this->academyRepository->find(
-            $id
-        );
+        $academy = $instructor->academiesMaster
+            ->where('AcademyID', $id)
+            ->first();
+        if (!$academy) {
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
+        }
 
         $input = $request->input();
         $fill = [
@@ -655,9 +658,19 @@ class AcademyAPIController extends AppBaseController
      */
     public function uploadLogo($id, Request $request)
     {
-        $academy = $this->academyRepository->find($id);
-
         $account = \Auth::user();
+        $this->instructorRepository = new InstructorRepository(app());
+        $instructor  = $this->instructorRepository->find($account->AccountID);
+        if (!$instructor) {
+            throw new AuthorizationException();
+        }
+        $academy = $instructor->academiesMaster
+            ->where('AcademyID', $id)
+            ->first();
+        if (!$academy) {
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
+        }
+
         $hash = sha1($id). '-logo';
         $filepath = 'academy/'.substr($hash, 0, 2).'/';
         $file = $request->file('logo');
@@ -722,9 +735,19 @@ class AcademyAPIController extends AppBaseController
      */
     public function uploadBanner($id, Request $request)
     {
-        $academy = $this->academyRepository->find($id);
-
         $account = \Auth::user();
+        $this->instructorRepository = new InstructorRepository(app());
+        $instructor  = $this->instructorRepository->find($account->AccountID);
+        if (!$instructor) {
+            throw new AuthorizationException();
+        }
+        $academy = $instructor->academiesMaster
+            ->where('AcademyID', $id)
+            ->first();
+        if (!$academy) {
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
+        }
+
         $hash = sha1($id). '-banner';
         $filepath = 'academy/'.substr($hash, 0, 2).'/';
         $file = $request->file('banner');
