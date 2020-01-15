@@ -608,4 +608,138 @@ class AcademyAPIController extends AppBaseController
         $resource = new Item($academy, new BrandingTransformer());
         return response()->json((new Manager)->createData($resource)->toArray());
     }
+
+    /**
+     * @param string $id
+     * @return Response
+     *
+     * @OA\Post(
+     *   path="/academies/{id}/branding/logo",
+     *   summary="upload logo",
+     *   tags={"Academy"},
+     *   @OA\MediaType(
+     *     mediaType="application/json"
+     *   ),
+     *   @OA\RequestBody(
+     *     description="Upload images request body",
+     *     @OA\MediaType(
+     *       mediaType="multipart/form-data",
+     *       @OA\Schema(
+     *         type="object",
+     *           @OA\Property(
+     *            property="logo",
+     *            type="string",
+     *            format="binary",
+     *          )
+     *       )
+     *     )
+     *   ),
+     *   @OA\Parameter(
+     *     name="id",
+     *     description="Academy Code/ID",
+     *     @OA\Schema(ref="#/components/schemas/Academy/properties/AcademyID"),
+     *     required=true,
+     *     in="path"
+     *   ),
+     *  @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     @OA\MediaType(
+     *       mediaType="application/json",
+     *       @OA\Schema(
+     *          allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
+     *       )
+     *     )
+     *   )
+     * )
+     */
+    public function uploadLogo($id, Request $request)
+    {
+        $academy = $this->academyRepository->find($id);
+
+        $account = \Auth::user();
+        $hash = sha1($id). '-logo';
+        $filepath = 'academy/'.substr($hash, 0, 2).'/';
+        $file = $request->file('logo');
+
+        if ($extension = $file->guessExtension()) {
+            $hash .= '.'.$extension;
+        }
+
+        $q = \Storage::disk('do-vos-media')->put($filepath.$hash, (string)file_get_contents((string)$file));
+        $prefix = config('filesystems.disks.do-vos-media.root');
+
+        $academy = $this->academyRepository->update([
+          'Logo'=>'https://vos-media.nyc3.digitaloceanspaces.com/'.$prefix.$filepath.$hash,
+        ], $academy->AcademyID);
+
+        return $this->sendJsonApiResponse('academy', 'AcademyID', $academy->getAttributes());
+    }
+
+    /**
+     * @param string $id
+     * @return Response
+     *
+     * @OA\Post(
+     *   path="/academies/{id}/branding/banner",
+     *   summary="upload banner",
+     *   tags={"Academy"},
+     *   @OA\MediaType(
+     *     mediaType="application/json"
+     *   ),
+     *   @OA\RequestBody(
+     *     description="Upload images request body",
+     *     @OA\MediaType(
+     *       mediaType="multipart/form-data",
+     *       @OA\Schema(
+     *         type="object",
+     *           @OA\Property(
+     *            property="banner",
+     *            type="string",
+     *            format="binary",
+     *          )
+     *       )
+     *     )
+     *   ),
+     *   @OA\Parameter(
+     *     name="id",
+     *     description="Academy Code/ID",
+     *     @OA\Schema(ref="#/components/schemas/Academy/properties/AcademyID"),
+     *     required=true,
+     *     in="path"
+     *   ),
+     *  @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     @OA\MediaType(
+     *       mediaType="application/json",
+     *       @OA\Schema(
+     *          allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
+     *       )
+     *     )
+     *   )
+     * )
+     */
+    public function uploadBanner($id, Request $request)
+    {
+        $academy = $this->academyRepository->find($id);
+
+        $account = \Auth::user();
+        $hash = sha1($id). '-banner';
+        $filepath = 'academy/'.substr($hash, 0, 2).'/';
+        $file = $request->file('banner');
+
+        if ($extension = $file->guessExtension()) {
+            $hash .= '.'.$extension;
+        }
+
+        $q = \Storage::disk('do-vos-media')->put($filepath.$hash, (string)file_get_contents((string)$file));
+        $prefix = config('filesystems.disks.do-vos-media.root');
+
+        $academy = $this->academyRepository->update([
+          'LogInGraphic'=>'https://vos-media.nyc3.digitaloceanspaces.com/'.$prefix.$filepath.$hash,
+        ], $academy->AcademyID);
+
+        return $this->sendJsonApiResponse('academy', 'AcademyID', $academy->getAttributes());
+    }
 }
