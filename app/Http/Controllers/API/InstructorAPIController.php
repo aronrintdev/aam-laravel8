@@ -299,10 +299,9 @@ class InstructorAPIController extends AppBaseController
             if (array_key_exists($index, $updatable)) {
                 return [$updatable[$index] => $item];
             } else {
-                return [$index=>null];
+                return [];
             }
-        })->filter()
-          ->all();
+        })->all();
 
         $this->instructorRepository->update($keyed, $id);
 

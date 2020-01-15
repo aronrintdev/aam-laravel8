@@ -571,7 +571,6 @@ class AcademyAPIController extends AppBaseController
     public function brandingUpdate($id, Request $request)
     {
         $user = \Auth::user();
-        $fields = ['BaseColor', 'BaseColorLt', 'Logo', 'LogInGraphic', 'SelectedColor', 'SelectedColorLt', 'BGColor', 'AcademyID'];
 
         $this->instructorRepository = new InstructorRepository(app());
         $instructor  = $this->instructorRepository->find($user->AccountID);
@@ -601,10 +600,9 @@ class AcademyAPIController extends AppBaseController
             if (array_key_exists($index, $swapKeys)) {
                 return [$swapKeys[$index] => $item];
             } else {
-                return [$index=>null];
+                return [];
             }
-        })->filter()
-          ->all();
+        })->all();
 
         $academy->fill($keyed);
         $academy->save();
