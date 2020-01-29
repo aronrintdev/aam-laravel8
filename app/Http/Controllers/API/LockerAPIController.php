@@ -129,10 +129,14 @@ class LockerAPIController extends AppBaseController
         }
 
         //new or rejected statuses
-        $searchParams = ['AccountID'=>$accountId, 'Deleted'=>false, 'SwingStatusID'=>[0,4]];
+        $searchParams = ['AccountID'=>$accountId, 'Deleted'=>false];
 
+        //are you requesting specific access for attachment viewing?
         if ($ids = $request->input('ids')) {
             $searchParams['SwingID'] = explode(',', $ids);
+        } else {
+            //or are you just browsing your locker?
+            $searchParams['SwingStatusID'] = [0,4];
         }
         $swings = $this->swingRepository->all(
                 $searchParams,
