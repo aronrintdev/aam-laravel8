@@ -25,6 +25,7 @@ Route::group(['middleware' => 'permissive'], function () {
     Route::get('/academies/{id}/instructors', 'AcademyAPIController@showInstructors')->name('academies.instructors');
     Route::get('/avatar/{id}/defaultimage.png', 'AccountAvatarAPIController@defaultImage')->name('avatar.default.image');
     Route::get('/avatar/{id}', 'AccountAvatarAPIController@show');
+    Route::get('/apicheck', 'VersionAPIController@check');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
