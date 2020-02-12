@@ -1,6 +1,6 @@
 <?php
 /**
- *  @OA\Info(title="VOS Account API", version="1.4")
+ *  @OA\Info(title="VOS Account API", version="1.5")
  *
  *  @OA\Server(url="/api201902")
  *
