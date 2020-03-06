@@ -748,7 +748,7 @@ class Academy extends Model
         'AdminAccountID' => 'required',
         'RatingFlag' => 'required',
         'SaveAsFlag' => 'required',
-        'AcademyID' => 'required',
+        //'AcademyID' => 'required',
         'Description' => 'required'
     ];
 

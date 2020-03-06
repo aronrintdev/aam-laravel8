@@ -71,7 +71,7 @@ class AcademyDataTable extends DataTable
                 'data'=>'AcademyID',
                 'title'=>'Academy ID',
                 'orderable'=>true,
-                'searchable'=>true,
+                'searchable'=>false,
             ],
             [
                 'name'=>'HiddenFlag',
@@ -106,7 +106,7 @@ class AcademyDataTable extends DataTable
                 'data'=>'AcademyCountry',
                 'title'=>'Country',
                 'orderable'=>true,
-                'searchable'=>true,
+                'searchable'=>false,
             ],
             [
                 'name'=>'Description',
