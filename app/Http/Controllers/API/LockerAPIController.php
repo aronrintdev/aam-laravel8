@@ -443,6 +443,7 @@ class LockerAPIController extends AppBaseController
         if (substr($thumbUrl, 0, 4) !== 'http') {
             $thumbUrl = 'https://v1sports.com/SwingStore/'.$thumbUrl;
         }
+        //TZ: Dates are stored in OS local timezones in MSSQL (probably Amercia/New_York)
         return [
             'id'            => (int) $swing['SwingID'],
             'type'          => 'video',
@@ -454,7 +455,7 @@ class LockerAPIController extends AppBaseController
             'vimeo_id'      => $swing['VimeoID'],
             'status_id'     => $swing['SwingStatusID'],
             //'thumb_url'    => 'https://v1sports.com/SwingStore/190424231844IP9M2449503.jpg',
-            'date_uploaded' => $swing['DateUploaded'],
+            'date_uploaded' => \Carbon\Carbon::createFromFormat('Y-m-d H:i:s.u', $swing['DateUploaded'], 'America/New_York'),
             ],
         ];
     }

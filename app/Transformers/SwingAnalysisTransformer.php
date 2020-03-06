@@ -79,6 +79,7 @@ class SwingAnalysisTransformer extends Fractal\TransformerAbstract
             $thumbUrl = 'https://v1sports.com/SwingStore/'.$thumbUrl;
         }
 
+        //TZ: Dates are stored in OS local timezones in MSSQL (probably Amercia/New_York)
         return [
             'id'         => (int) $item->SwingID,
             'type'       => 'video',
@@ -87,8 +88,8 @@ class SwingAnalysisTransformer extends Fractal\TransformerAbstract
                 'thumb_url'        => $thumbUrl,
                 'source_video_url' => $videoPrefix.$item->VideoPath,
                 'source_video_id'  => $item->SwingID,
-                'date_uploaded'    => $item->DateAnalyzed,
-                'date_accepted'    => $item->DateAccepted,
+                'date_uploaded'    => \Carbon\Carbon::createFromFormat('Y-m-d H:i:s.u', $item->DateAnalyzed, 'America/New_York'),
+                'date_accepted'    => \Carbon\Carbon::createFromFormat('Y-m-d H:i:s.u', $item->DateAccepted, 'America/New_York'),
                 'instructor_id'    => $item->InstructorID,
                 'status_id'        => $item->SwingStatusID,
                 'account_id'       => $item->AccountID,
