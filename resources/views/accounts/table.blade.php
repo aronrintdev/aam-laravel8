@@ -7,4 +7,5 @@
 @section('scripts')
     @include('layouts.datatables_js')
     {!! $dataTable->scripts() !!}
+    @include('layouts.datatables_fix_search_js')
 @endsection
