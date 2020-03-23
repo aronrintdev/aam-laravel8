@@ -669,7 +669,8 @@ class AcademyAPIController extends AppBaseController
             ->where('AcademyID', $id)
             ->first();
         if (!$academy) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
+            throw new AuthorizationException();
+            //throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
         }
 
         $hash = sha1($id). '-logo';
@@ -746,7 +747,8 @@ class AcademyAPIController extends AppBaseController
             ->where('AcademyID', $id)
             ->first();
         if (!$academy) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
+            throw new AuthorizationException();
+            //throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
         }
 
         $hash = sha1($id). '-banner';
