@@ -194,9 +194,6 @@ class Swing extends Model
      * @var array
      */
     protected $casts = [
-        'DateAnalyzed' => 'datetime',
-        'DateUploaded' => 'datetime',
-        'DateAccepted' => 'datetime',
         'LessLogID' => 'integer',
         'AcademyID' => 'string',
         'BillError' => 'string',
@@ -236,5 +233,81 @@ class Swing extends Model
         'Charge' => 'required'
     ];
 
-    
+    /**
+     * Handle Legacy dattime timezone
+     */
+    public function setDateAnalyzedAttribute($value) {
+
+        if ($value instanceof \DateTime) {
+            $this->attributes['DateAnalyzed'] = $value;
+            return;
+        }
+        $this->attributes['DateAnalyzed'] = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s.v', $value, 'America/New_York');
+    }
+
+    /**
+     * Handle Legacy dattime timezone
+     */
+    public function setDateAcceptedAttribute($value) {
+
+        if ($value instanceof \DateTime) {
+            $this->attributes['DateAccepted'] = $value;
+            return;
+        }
+        $this->attributes['DateAccepted'] = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s.v', $value, 'America/New_York');
+    }
+
+    /**
+     * Handle Legacy dattime timezone
+     */
+    public function setDateUploadedAttribute($value) {
+
+        if ($value instanceof \DateTime) {
+            $this->attributes['DateUploaded'] = $value;
+            return;
+        }
+        $this->attributes['DateUploaded'] = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s.v', $value, 'America/New_York');
+    }
+
+    /**
+     * Handle Legacy dattime timezone
+     */
+    public function getDateAnalyzedAttribute() {
+        if (!key_exists('DateAnalyzed', $this->attributes)) {
+            return null;
+        }
+        $value = $this->attributes['DateAnalyzed'];
+        if ($value instanceof \DateTime) {
+            return $value;
+        }
+        return \Carbon\Carbon::createFromFormat('Y-m-d H:i:s.v', $value, 'America/New_York');
+    }
+
+    /**
+     * Handle Legacy dattime timezone
+     */
+    public function getDateAcceptedAttribute() {
+        if (!key_exists('DateAccepted', $this->attributes)) {
+            return null;
+        }
+        $value = $this->attributes['DateAccepted'];
+        if ($value instanceof \DateTime) {
+            return $value;
+        }
+        return \Carbon\Carbon::createFromFormat('Y-m-d H:i:s.v', $value, 'America/New_York');
+    }
+
+    /**
+     * Handle Legacy dattime timezone
+     */
+    public function getDateUploadedAttribute() {
+        if (!key_exists('DateUploaded', $this->attributes)) {
+            return null;
+        }
+        $value = $this->attributes['DateUploaded'];
+        if ($value instanceof \DateTime) {
+            return $value;
+        }
+        return \Carbon\Carbon::createFromFormat('Y-m-d H:i:s.v', $value, 'America/New_York');
+    }
 }

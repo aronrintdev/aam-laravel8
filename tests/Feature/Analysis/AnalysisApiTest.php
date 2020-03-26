@@ -1,6 +1,6 @@
 <?php 
 
-namespace Tests\Feature\Avatars;
+namespace Tests\Feature\Analysis;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -44,9 +44,26 @@ class AnalysisApiTest extends TestCase
         $this->assertEquals(14, $jsonData[0]->attributes->source_video_id);
     }
 
+    public function test_date_times_are_correct_timezone()
+    {
+        $user = \App\AccountUser::find(1);
+        $user->IsInstructor = 1;
+        $accountAvatar = $this->makeAnalysis();
+        $this->response = $this->actingAs($user)
+            ->json('GET', '/api201902/videolessons/?daysAgo=30');
+
+        $jsonData = $this->response->getData()->data;
+
+        //ensure parsable by carbon
+        $this->assertIsObject(\Carbon\Carbon::parse($jsonData[0]->attributes->date_uploaded));
+        $this->assertIsObject(\Carbon\Carbon::parse($jsonData[0]->attributes->date_accepted));
+    }
+
+
     public function test_api_agent_can_query_any_instructor()
     {
-        $user = \App\User::whereNotNull('api_token')->first();
+        $user = new \App\User();
+        $user->api_token = 'abc123';
         $this->response = $this->actingAs($user)
             ->json('GET', '/api201902/videolessons/?daysAgo=30&instructor_id=1');
         $jsonData = $this->response->getData()->data;
