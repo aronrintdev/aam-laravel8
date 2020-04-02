@@ -480,4 +480,13 @@ class Account extends Model
         $parts = parse_url($r);
         return config('app.url') . $parts['path'];
     }
+
+    /**
+     * Copied form Instructor so that generic "user" could
+     * find relationships with the same AccountID
+     */
+    public function academies() {
+        return $this->belongsToMany('App\Models\Academy', 'AcademyInstructors', 'InstructorID', 'AcademyID')
+            ->wherePivot('IsEnabled', 1);
+    }
 }

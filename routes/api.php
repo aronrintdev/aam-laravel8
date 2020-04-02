@@ -32,6 +32,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 
 });
+Route::middleware('auth:api')->get('/me', 'UserController@details')->name('user.details');
+
 //Route::get('/update-password-test/', 'AccountAPIController@updatePasswordTest');
 Route::group(['middleware' => 'auth:backend,api'], function () {
     Route::get('/search-accounts/', 'AccountAPIController@search');

@@ -1,12 +1,26 @@
 <?php
 namespace App\Http\Controllers\API;
+
 use Illuminate\Http\Request; 
 use App\Http\Controllers\Controller; 
+use App\Models\Account;
+use App\Models\Academy;
 use App\User; 
+use App\AccountUser;
 use Illuminate\Support\Facades\Auth; 
 use Validator;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Neomerx\JsonApi\Encoder\Encoder;
+
+use App\Transformers\UserTransformer;
+use App\Transformers\AcademySchema;
+use App\Transformers\UserSchema;
+use League\Fractal\Manager;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
+use League\Fractal\Serializer\JsonApiSerializer;
+
 
 class UserController extends Controller {
 
@@ -97,10 +111,43 @@ class UserController extends Controller {
      * details api 
      * 
      * @return \Illuminate\Http\Response 
+     *
+     * @OA\GET(
+     *   path="/me",
+     *   summary="Get logged in user details",
+     *   tags={"login"},
+     *   description="User Info",
+     *   @OA\Response(
+     *     response="200",
+     *     description="successful operation",
+     *     @OA\MediaType(
+     *       mediaType="application/json",
+     *       @OA\Schema(
+     *         allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
+     *         @OA\Property(
+     *           property="data",
+     *           type="array",
+     *           @OA\Items(ref="#/components/schemas/user")
+     *         )
+     *       )
+     *     )
+     *   ),
+     * )
      */ 
     public function details() 
     { 
         $user = Auth::user(); 
-        return response()->json(['success' => $user], $this->successStatus); 
+		$encoder = Encoder::instance([
+				Account::class => UserSchema::class,
+				AccountUser::class => UserSchema::class,
+				User::class => UserSchema::class,
+				Academy::class => AcademySchema::class,
+			])
+			->withIncludedPaths([
+				'academies',
+			])
+			->withEncodeOptions(JSON_PRETTY_PRINT);
+
+        return response($encoder->encodeData($user));
     } 
 }
