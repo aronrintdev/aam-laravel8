@@ -8,10 +8,13 @@ var searchWait = 0;
 var searchWaitInterval;
 // Grab the datatables input box and alter how it is bound to events
 $(".dataTables_filter input")
-    .unbind() // Unbind previous default bindings
+	.unbind() // Unbind previous default bindings
 	.bind("input", function(e) { // Bind our desired behavior
 		var item = $(this);
 		searchWait = 0;
+		clearInterval(searchWaitInterval);
+		searchWaitInterval = '';
+
 		if(!searchWaitInterval) searchWaitInterval = setInterval(function(){
 			searchTerm = $(item).val();
 			// if(searchTerm.length >= 3 || e.keyCode == 13) {
