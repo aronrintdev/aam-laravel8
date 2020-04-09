@@ -145,6 +145,7 @@ class UserController extends Controller {
 			])
 			->withIncludedPaths([
 				'academies',
+				'owned_academies',
 			])
 			->withEncodeOptions(JSON_PRETTY_PRINT);
 

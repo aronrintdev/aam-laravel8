@@ -489,4 +489,22 @@ class Account extends Model
         return $this->belongsToMany('App\Models\Academy', 'AcademyInstructors', 'InstructorID', 'AcademyID')
             ->wherePivot('IsEnabled', 1);
     }
+
+    /**
+     * Copied form Instructor so that generic "user" could
+     * find relationships with the same AccountID
+     */
+    public function academiesTeaching() {
+        return $this->belongsToMany('App\Models\Academy', 'AcademyInstructors', 'InstructorID', 'AcademyID')
+            ->wherePivot('IsEnabled', 1);
+    }
+
+    /**
+     * Copied form Instructor so that generic "user" could
+     * find relationships with the same AccountID
+     */
+    public function academiesMaster() {
+        return $this->belongsToMany('App\Models\Academy', 'AcademyInstructors', 'InstructorID', 'AcademyID')
+            ->wherePivot('IsMaster', 1);
+    }
 }
