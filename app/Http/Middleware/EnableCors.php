@@ -21,16 +21,35 @@ class EnableCors {
         // ALLOW OPTIONS METHOD
         $headers = [
             'Access-Control-Allow-Methods'=> 'POST, GET, OPTIONS, PUT, PATCH, DELETE',
-            'Access-Control-Allow-Headers'=> 'Content-Type, X-Auth-Token, Origin,Authorization,X-Csrf-Token,X-Requested-With'
+            'Access-Control-Allow-Headers'=> 'Content-Type, Content-Length, Origin, Authorization, X-Auth-Token, X-Csrf-Token, X-Requested-With',
         ];
+
+        if ($request->header('Tus-Resumable') !== null) {
+            $headers['Access-Control-Allow-Headers'] .= 
+                ', Upload-Key, Upload-Checksum, Upload-Length, Upload-Offset, Tus-Version, Tus-Resumable, Upload-Metadata';
+        }
         if($request->getMethod() == "OPTIONS") {
             // The client-side application can set only headers allowed in Access-Control-Allow-Headers
             return response('OK', 200, $headers);
         }
+        $IlluminateResponse = 'Illuminate\Http\Response';
+        $SymfonyResopnse = 'Symfony\Component\HttpFoundation\Response';
 
         $response = $next($request);
-        foreach($headers as $key => $value)
-            $response->header($key, $value);
+        if($response instanceof $IlluminateResponse) {
+            foreach ($headers as $key => $value) {
+                $response->header($key, $value);
+            }
+            return $response;
+        }
+
+        //working with TUS server
+        if($response instanceof $SymfonyResopnse) {
+            foreach ($headers as $key => $value) {
+                $response->headers->set($key, $value);
+            }
+            return $response;
+        }
         return $response;
     }
 }
