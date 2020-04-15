@@ -37,6 +37,12 @@ Route::middleware('auth:api')->get('/me', 'UserController@details')->name('user.
 
 //Route::get('/update-password-test/', 'AccountAPIController@updatePasswordTest');
 Route::group(['middleware' => 'auth:backend,api'], function () {
+    Route::any('/tus/{any?}', function () {
+        $response = app('tus-server')->serve();
+
+        return $response->send();
+    })->where('any', '.*');
+
     Route::get('/search-accounts/', 'AccountAPIController@search');
     Route::post('/update-password/', 'AccountAPIController@updatePassword');
     Route::get('/academies/{id}', 'AcademyAPIController@show')->name('academies.show');
