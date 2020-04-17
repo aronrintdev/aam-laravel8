@@ -242,7 +242,7 @@ class InstructorAPIController extends AppBaseController
      * @param UpdateInstructorAPIRequest $request
      * @return Response
      *
-     * @OA\Patch(
+     * @OA\Post(
      *   path="/instructors/{id}",
      *   summary="Update the specified Instructor in storage",
      *   tags={"Instructor"},

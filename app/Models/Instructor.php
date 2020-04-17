@@ -354,18 +354,31 @@ class Instructor extends Model
      * @var array
      */
     public static $rules = [
-        /*
-        'Fee' => 'required',
-        'Founder' => 'required',
-        'Available' => 'required',
-        'FreeLessons' => 'required',
-        'DiscountFee' => 'required',
-        'InstructorID' => 'required',
-        'SpecialtyCode' => 'required'
-         */
+        'Philosophy'      => 'nullable|max:512',
+        'Biography'       => 'nullable|max:2048',
+        'Accomplishments' => 'nullable|max:1024',
+        'FirstName'       => 'required|max:50',
+        'LastName'        => 'required|max:50',
+        'Title'           => 'nullable|max:50',
+        'HeadShot'        => 'nullable|max:150',
+        'Email'           => 'required|max:50',
     ];
 
-    
+    /**
+     * Use API style names
+     */
+    public static $updateRules = [
+        'first_name'  => 'nullable|max:50',
+        'last_name'   => 'nullable|max:50',
+        'email'       => 'nullable|max:50',
+        'profile_pic' => 'nullable|max:150',
+        'philo'       => 'nullable|max:512',
+        'bio'         => 'nullable|max:2048',
+        'accolades'   => 'nullable|max:1024',
+        'title'       => 'nullable|max:50',
+        'id'          => 'required|integer',
+    ];
+
     public function academies() {
         return $this->belongsToMany('App\Models\Academy', 'AcademyInstructors', 'InstructorID', 'AcademyID')
             ->wherePivot('IsEnabled', 1);

@@ -31,6 +31,6 @@ class UpdateInstructorAPIRequest extends APIRequest
      */
     public function rules()
     {
-        return Instructor::$rules;
+        return Instructor::$updateRules;
     }
 }
