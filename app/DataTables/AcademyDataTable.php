@@ -5,6 +5,7 @@ namespace App\DataTables;
 use App\Models\Academy;
 use Yajra\DataTables\Services\DataTable;
 use Yajra\DataTables\EloquentDataTable;
+use App\Service\SlyQueryDataTable;
 
 class AcademyDataTable extends DataTable
 {
@@ -16,7 +17,7 @@ class AcademyDataTable extends DataTable
      */
     public function dataTable($query)
     {
-        $dataTable = new EloquentDataTable($query);
+        $dataTable = new SlyQueryDataTable($query);
 
         return $dataTable->addColumn('action', 'academies.datatables_actions');
     }

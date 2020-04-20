@@ -5,6 +5,7 @@ namespace App\DataTables;
 use App\Models\Swing;
 use Yajra\DataTables\Services\DataTable;
 use Yajra\DataTables\EloquentDataTable;
+use App\Service\SlyQueryDataTable;
 
 class SwingDataTable extends DataTable
 {
@@ -16,7 +17,7 @@ class SwingDataTable extends DataTable
      */
     public function dataTable($query)
     {
-        $dataTable = new EloquentDataTable($query);
+        $dataTable = new SlyQueryDataTable($query);
 
         return $dataTable->addColumn('action', 'swings.datatables_actions');
     }

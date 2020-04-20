@@ -39,7 +39,7 @@ return [
      * This is where you can register your custom dataTables builder.
      */
     'engines' => [
-        'eloquent'                    => \Yajra\DataTables\EloquentDataTable::class,
+        'eloquent'                    => \App\Service\SlyQueryDataTable::class,
         'query'                       => \Yajra\DataTables\QueryDataTable::class,
         'collection'                  => \Yajra\DataTables\CollectionDataTable::class,
         'resource'                    => \Yajra\DataTables\ApiResourceDataTable::class,
