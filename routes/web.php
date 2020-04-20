@@ -28,4 +28,6 @@ Route::group(['middleware' => 'auth:web'], function () {
     Route::resource('accounts', 'AccountController');
 
     Route::resource('swings', 'SwingController');
+
+    Route::post('/loginas', 'Auth\LoginController@loginas')->name('login-as');
 });

@@ -26,11 +26,17 @@ class V1UserProvider implements UserProvider, JWTContract {
         $x = $this->conn->table('Accounts as a')
             ->select('a.*', 'ai.AcademyID', 'ai.IsMaster', 'ai.IsEnabled as IsInstructor', 'ai.IsHidden')
             ->leftJoin('AcademyInstructors as ai', 'a.AccountID', '=', 'ai.InstructorID')
-            ->where('Email', $identifier)
             //non instructors need to be able to login too :L
             ->where(function($query) {
                 $query->orWhere('ai.IsEnabled', '1');
                 $query->orWhereNull('ai.InstructorID');
+            })
+            ->where(function($query) use($identifier) {
+                if (is_numeric($identifier)) {
+                    $query->Where('a.AccountID', $identifier);
+                } else {
+                    $query->Where('a.Email', $identifier);
+                }
             });
         $user = $x->first();
 

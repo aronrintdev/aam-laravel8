@@ -2,6 +2,11 @@
 
 @section('content')
     <section class="content-header">
+        <form class="pull-right" action="{{ route('login-as') }}" method="POST">
+            {{ csrf_field() }}
+            <button class="btn btn-default">Login-as</button>
+            <input type="hidden" name="account_id" value="{{ $account->AccountID }}">
+        </form>
         <h1>
             Account
         </h1>

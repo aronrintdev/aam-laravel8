@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Providers\V1UserProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -34,6 +36,27 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        $this->middleware('guest')->except('logout')->except('loginas');
+    }
+
+    public function loginas(Request $request)
+    {
+        $accountId = (int)$request->input('account_id');
+        //$user = \App\AccountUser::find($accountId);
+        $v1up = new V1UserProvider(\DB::connection('sqlsrv'));
+        $user = $v1up->byId($accountId);
+
+        if (!$user) {
+            echo "cannot find user with id " . $accountId;
+            return;
+        }
+
+        if (! $token = \JWTAuth::fromUser($user)) {
+            return response()->json(['error'=>'Incorrect credentials'], 401);
+        }
+
+        return view('admin/loginas', [
+            'access_token' => $token,
+        ]);
     }
 }
