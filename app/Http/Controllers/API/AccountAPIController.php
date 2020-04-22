@@ -342,6 +342,7 @@ class AccountAPIController extends AppBaseController
             throw new \Exception();
         }
 
+        //empty 200 response should be fine
         $this->performPasswordUpdate($updateParams['email'], $updateParams['password']);
     }
 
@@ -356,24 +357,10 @@ class AccountAPIController extends AppBaseController
             $newPassword = hash('sha256', $newSalt. hash('sha256', $password . $newSalt));
 
             $this->accountRepository->update([
+                'Password'    =>$password,
                 'PasswordSalt'=>$newSalt,
                 'PasswordHash'=>$newPassword,
             ], $account->AccountID);
-            /*
-            $account->PasswordSalt = $newSalt;
-            $account->PasswordHash = $newPassword;
-            $account->save();
-             */
-
-        /*
-        $accounts = $this->accountRepository->all(
-                $updateParams,
-                $request->get('skip'),
-                $request->get('limit') ? $request->get('limit') : 10
-                );
-
-        return $this->sendJsonApiResponse('account', 'AccountID', $accounts->toArray());
-         */
     }
 
     /**
