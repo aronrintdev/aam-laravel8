@@ -51,6 +51,7 @@ class SwingController extends AppBaseController
      */
     public function store(CreateSwingRequest $request)
     {
+        return;
         $input = $request->all();
 
         $swing = $this->swingRepository->create($input);
@@ -89,6 +90,7 @@ class SwingController extends AppBaseController
      */
     public function edit($id)
     {
+        return;
         $swing = $this->swingRepository->find($id);
 
         if (empty($swing)) {
@@ -110,6 +112,7 @@ class SwingController extends AppBaseController
      */
     public function update($id, UpdateSwingRequest $request)
     {
+        return;
         $swing = $this->swingRepository->find($id);
 
         if (empty($swing)) {
@@ -134,6 +137,7 @@ class SwingController extends AppBaseController
      */
     public function destroy($id)
     {
+        return;
         $swing = $this->swingRepository->find($id);
 
         if (empty($swing)) {

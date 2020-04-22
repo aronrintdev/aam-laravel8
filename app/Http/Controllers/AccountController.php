@@ -51,6 +51,7 @@ class AccountController extends AppBaseController
      */
     public function store(CreateAccountRequest $request)
     {
+        return;
         $input = $request->all();
 
         $account = $this->accountRepository->create($input);
@@ -89,6 +90,7 @@ class AccountController extends AppBaseController
      */
     public function edit($id)
     {
+        return;
         $account = $this->accountRepository->find($id);
 
         if (empty($account)) {
@@ -110,6 +112,7 @@ class AccountController extends AppBaseController
      */
     public function update($id, UpdateAccountRequest $request)
     {
+        return;
         $account = $this->accountRepository->find($id);
 
         if (empty($account)) {
@@ -134,6 +137,7 @@ class AccountController extends AppBaseController
      */
     public function destroy($id)
     {
+        return;
         $account = $this->accountRepository->find($id);
 
         if (empty($account)) {

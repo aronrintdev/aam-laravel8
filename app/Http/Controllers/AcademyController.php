@@ -51,6 +51,7 @@ class AcademyController extends AppBaseController
      */
     public function store(CreateAcademyRequest $request)
     {
+        return;
         $input = $request->all();
 
         $academy = $this->academyRepository->create($input);
@@ -89,6 +90,7 @@ class AcademyController extends AppBaseController
      */
     public function edit($id)
     {
+        return;
         $academy = $this->academyRepository->find($id);
 
         if (empty($academy)) {
@@ -110,6 +112,7 @@ class AcademyController extends AppBaseController
      */
     public function update($id, UpdateAcademyRequest $request)
     {
+        return;
         $academy = $this->academyRepository->find($id);
 
         if (empty($academy)) {
@@ -134,6 +137,7 @@ class AcademyController extends AppBaseController
      */
     public function destroy($id)
     {
+        return;
         $academy = $this->academyRepository->find($id);
 
         if (empty($academy)) {
