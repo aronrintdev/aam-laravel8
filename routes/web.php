@@ -30,4 +30,5 @@ Route::group(['middleware' => 'auth:web'], function () {
     Route::resource('swings', 'SwingController');
 
     Route::post('/loginas', 'Auth\LoginController@loginas')->name('login-as');
+    Route::get('/lesson-stats', 'HomeController@lessonStats')->name('lesson-stats');
 });

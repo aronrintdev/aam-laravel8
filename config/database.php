@@ -40,6 +40,22 @@ return [
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
 
+        'lessons' => [
+            'driver' => 'mysql',
+            'host' => env('LESSON_DB_HOST', '127.0.0.1'),
+            'port' => env('LESSON_DB_PORT', '3306'),
+            'database' => env('LESSON_DB_DATABASE', 'forge'),
+            'username' => env('LESSON_DB_USERNAME', 'forge'),
+            'password' => env('LESSON_DB_PASSWORD', ''),
+            'unix_socket' => env('LESSON_DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+        ],
+
         'backendmysql' => [
             'driver' => 'mysql',
             'host' => env('BACK_DB_HOST', '127.0.0.1'),

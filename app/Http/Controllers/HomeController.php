@@ -25,4 +25,11 @@ class HomeController extends Controller
     {
         return view('home');
     }
+
+    public function lessonStats() {
+        $res = \DB::connection('lessons')->select('select count(*) as cnt, academy_code, status from lesson
+            group by academy_code, status');
+
+        return response()->json($res);
+    }
 }
