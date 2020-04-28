@@ -77,8 +77,9 @@ class Handler extends ExceptionHandler
             }
             if ($exception instanceof \Illuminate\Validation\ValidationException) {
                 $errors = [];
+                //todo: use detail not details
                 foreach($exception->errors() as $field => $err) {
-                    $errors[] = ['status'=>422, 'source'=>$field, 'title'=>'Validation Failed', 'details' => $err[0]];
+                    $errors[] = ['status'=>422, 'source'=>$field, 'title'=>'Validation Failed', 'details' => $err[0], 'detail' => $err[0]];
                 }
                 return response()->json(['errors'=> $errors ], 422);
             }
