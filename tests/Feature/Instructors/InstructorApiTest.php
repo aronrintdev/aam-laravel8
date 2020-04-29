@@ -22,9 +22,10 @@ class InstructorApiTest extends TestCase
      */
     public function testCreateInstructor()
     {
+        //completely removed route for POST to create new instructor
         $instructor = $this->fakeInstructorData();
         $this->response = $this->json('POST', '/api201902/instructors', $instructor);
-        $this->response->assertStatus(404);
+        $this->response->assertStatus(405);
     }
 
     /**
