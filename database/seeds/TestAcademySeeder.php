@@ -16,42 +16,55 @@ class TestAcademyTableSeeder extends Seeder
         $faker = Faker::create();
         $faker->seed(4321);
         DB::table('Academies')->insert([
-            'AcademyID'          => 'V1AC',
+            'AcademyID'          => 'PPRO',
             'AdminAccountID'     => 1,
-            'Name'               => 'Golfers R Us',
-            'Description'        => 'Golf with a giraffe',
-            'SportID'            => 1,
+            'Name'               => 'Pauline\'s Pro Shop',
+            'Description'        => 'Single Shingle Example Academy',
+            'SportID'            => 'GOLF',
             'BaseColor'          => 'CC9900',
-            'BannerText'         => 'Powered By Docker SQL Server',
+            'BannerText'         => 'https://pauline-pro-golf.test',
             'SampleLesson'       => 999,
             'PrivateFlag'        => 0,
-            'Logo'               => 'https://images-na.ssl-images-amazon.com/images/I/91-2xY0B3WL._SX679_.jpg',
+            'Logo'               => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test/flag-in-hole.png',
         ]);
 
         DB::table('Academies')->insert([
-            'AcademyID'          => 'SHYG',
+            'AcademyID'          => 'CTWO',
             'AdminAccountID'     => 3,
-            'Name'               => 'Shy Guy',
-            'Description'        => 'Shy Guys are from Mario',
-            'SportID'            => 1,
+            'Name'               => 'City Cricket Club',
+            'Description'        => 'Two Instructors',
+            'SportID'            => 'CRIK',
             'BaseColor'          => 'CC0099',
-            'BannerText'         => 'Powered By Docker SQL Server',
+            'BannerText'         => 'Smashing Sticky Wickets',
             'SampleLesson'       => 999,
             'PrivateFlag'        => 0,
-            'Logo'               => 'http://img4.wikia.nocookie.net/__cb20140424011935/fantendo/images/0/02/Shy_Guy_MGGT.png',
+            'Logo'               => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test/cricket-game_1f3cf.png',
         ]);
 
         DB::table('Academies')->insert([
-            'AcademyID'          => 'BOWG',
+            'AcademyID'          => 'BALL',
             'AdminAccountID'     => 5,
-            'Name'               => 'Bowser Golf',
-            'Description'        => 'Main Baddie',
-            'SportID'            => 1,
+            'Name'               => 'Swingin\' for the Fences',
+            'Description'        => 'Multiple Ballin\' Instructors',
+            'SportID'            => 'BASE',
             'BaseColor'          => 'CC0099',
-            'BannerText'         => 'Golf with the best',
+            'BannerText'         => 'baseball-academy.test',
             'SampleLesson'       => 999,
             'PrivateFlag'        => 0,
-            'Logo'               => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test.academy/bowg/Bowser_golf.png',
+            'Logo'               => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test/baseball_26be.png',
+        ]);
+
+        DB::table('Academies')->insert([
+            'AcademyID'          => 'FORE',
+            'AdminAccountID'     => 9,
+            'Name'               => 'Fore All Golfers',
+            'Description'        => 'Round Robin Team',
+            'SportID'            => 'GOLF',
+            'BaseColor'          => 'CC0099',
+            'BannerText'         => 'Power. Accuracy. Discipline',
+            'SampleLesson'       => 999,
+            'PrivateFlag'        => 0,
+            'Logo'               => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test/fore-logo.png',
         ]);
 
 /**

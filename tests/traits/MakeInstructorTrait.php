@@ -44,7 +44,7 @@ trait MakeInstructorTrait
         $fake = Faker::create();
 
         return array_merge([
-            'InstructorID' => $fake->numberBetween(6, 20),
+            'InstructorID' => $fake->numberBetween(20, 40),
             'SalesPerson' => null,
             'NotableStudents' => $fake->word,
             'ProCode' => $fake->randomDigitNotNull,

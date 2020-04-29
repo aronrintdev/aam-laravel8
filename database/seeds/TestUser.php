@@ -28,25 +28,60 @@ class TestUser extends Seeder
             'Email'              => 'carl@customer.test',
             'PasswordHash'       => \Hash::make('password'),
         ]);
-        $shyId = DB::table('Accounts')->insertGetId([
+        $raviId = DB::table('Accounts')->insertGetId([
 //            'AccountID'          => 3,
-            'FirstName'          => 'Shy',
-            'LastName'           => 'Guy',
-            'Email'              => 'shy@example.com',
+            'FirstName'          => 'Ravi',
+            'LastName'           => 'Rabbi',
+            'Email'              => 'ravi@example.com',
             'PasswordHash'       => \Hash::make('password'),
         ]);
 
-        $nancyId = DB::table('Accounts')->insertGetId([
-            'FirstName'          => 'Nancy',
-            'LastName'           => 'NewCustomer',
-            'Email'              => 'nancy@customer.test',
+        $irisId = DB::table('Accounts')->insertGetId([
+            'FirstName'          => 'Iris',
+            'LastName'           => 'Instructor',
+            'Email'              => 'iris@example.com',
             'PasswordHash'       => \Hash::make('password'),
         ]);
 
-        $billId = DB::table('Accounts')->insertGetId([
-            'FirstName'          => 'Bill',
-            'LastName'           => 'Bullet',
-            'Email'              => 'bill@example.com',
+        $samId = DB::table('Accounts')->insertGetId([
+            'FirstName'          => 'Sam',
+            'LastName'           => 'Shortstop',
+            'Email'              => 'sam@example.com',
+            'PasswordHash'       => \Hash::make('password'),
+        ]);
+
+        $johnnyId = DB::table('Accounts')->insertGetId([
+            'FirstName'          => 'Johnny',
+            'LastName'           => 'Junior',
+            'Email'              => 'johnny@example.com',
+            'PasswordHash'       => \Hash::make('password'),
+        ]);
+
+        $landonId = DB::table('Accounts')->insertGetId([
+            'FirstName'          => 'Landon',
+            'LastName'           => 'Leftfield',
+            'Email'              => 'landon@example.com',
+            'PasswordHash'       => \Hash::make('password'),
+        ]);
+
+        $codyId = DB::table('Accounts')->insertGetId([
+            'FirstName'          => 'Cody',
+            'LastName'           => 'Catcher',
+            'Email'              => 'cody@example.com',
+            'PasswordHash'       => \Hash::make('password'),
+        ]);
+
+        $oscarId = DB::table('Accounts')->insertGetId([
+            'FirstName'          => 'Oscar',
+            'LastName'           => 'Owner',
+            'Email'              => 'oscar@example.com',
+            'PasswordHash'       => \Hash::make('password'),
+        ]);
+
+        $aprilId = DB::table('Accounts')->insertGetId([
+            'FirstName'          => 'April',
+            'LastName'           => 'Assistant',
+            'Email'              => 'april@example.com',
             'PasswordHash'       => \Hash::make('password'),
         ]);
 
@@ -54,7 +89,7 @@ class TestUser extends Seeder
             'AcademyID'    => '',
             'InstructorID' => $paulineId,
             'Title'        => 'Sr. Pro Teacher',
-            'HeadShot'     => 'https://vos-media.nyc3.digitaloceanspaces.com/profile/Screenshot%20from%202019-09-27%2017-22-38.png',
+            'HeadShot'     => 'https://vos-media.nyc3.digitaloceanspaces.com/test/academy/72/726531f0084f2b7469188bbe54db21c03f912cc6-hs-1.png',
             'Biography'       => 'Pauline\'s Bio',
             'Philosophy'      => 'Pauline\'s Philosophy',
             'Accomplishments' => 'Pauline\'s Accomplishments',
@@ -62,21 +97,62 @@ class TestUser extends Seeder
 
         DB::table('Instructors')->insert([
             'AcademyID'    => '',
-            'InstructorID' => $shyId,
-            'Title'        => 'Common enemy in the Mario series',
-            'HeadShot'     => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test.profile/fstoppers-dylan-patrick-setting-up-a-successful-headshot-session-8.jpg',
+            'InstructorID' => $raviId,
+            'Title'        => 'Sr. Pro Instructor',
+            'HeadShot'     => 'https://vos-media.nyc3.digitaloceanspaces.com/test/academy/a1/a134d13bc9fb824aa959c1aeeeb29b0560644292-hs-3.jpeg',
         ]);
 
         DB::table('Instructors')->insert([
             'AcademyID'    => '',
-            'InstructorID' => $billId,
-            'Title'        => 'Usually under Bowser\'s control',
-            'HeadShot'     => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test.profile/200px-BulletBillMK8.png',
+            'InstructorID' => $irisId,
+            'Title'        => 'Sr. Pro Instructor',
+            'HeadShot'     => 'https://vos-media.nyc3.digitaloceanspaces.com/test/academy/2e/2e0ff53cc34923793f91984a6321ec4214be2f21-hs-4.jpeg',
         ]);
 
+        DB::table('Instructors')->insert([
+            'AcademyID'    => '',
+            'InstructorID' => $samId,
+            'Title'        => 'Sr. Pro Instructor',
+            'HeadShot'     => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test.profile/sam-headshot-48.jpg',
+        ]);
+
+        DB::table('Instructors')->insert([
+            'AcademyID'    => '',
+            'InstructorID' => $johnnyId,
+            'Title'        => 'Jr. Pro Instructor',
+            'HeadShot'     => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test.profile/johnny-headshot-51.jpg',
+        ]);
+
+        DB::table('Instructors')->insert([
+            'AcademyID'    => '',
+            'InstructorID' => $landonId,
+            'Title'        => 'Outfield Instructor',
+            'HeadShot'     => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test.profile/landon-headshot-37.jpg',
+        ]);
+
+        DB::table('Instructors')->insert([
+            'AcademyID'    => '',
+            'InstructorID' => $codyId,
+            'Title'        => 'Catching Instructor',
+            'HeadShot'     => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test.profile/cody-headshot-76.jpg',
+        ]);
+
+        DB::table('Instructors')->insert([
+            'AcademyID'    => '',
+            'InstructorID' => $oscarId,
+            'Title'        => 'Sr. Pro Instructor',
+            'HeadShot'     => 'https://vos-media.nyc3.digitaloceanspaces.com/test.profile/oscar-headshot-39.jpg',
+        ]);
+
+        DB::table('Instructors')->insert([
+            'AcademyID'    => '',
+            'InstructorID' => $aprilId,
+            'Title'        => 'Asst. Instructor',
+            'HeadShot'     => 'https://vos-media.nyc3.digitaloceanspaces.com/test.profile/april-headshot-38.jpg',
+        ]);
 
         DB::table('AcademyInstructors')->insert([
-            'AcademyID'       => 'V1AC',
+            'AcademyID'       => 'PPRO',
             'InstructorID'    => $paulineId,
             'IsMaster'        => 1,
             'IsEnabled'       => 1,
@@ -84,31 +160,80 @@ class TestUser extends Seeder
         ]);
 
         DB::table('AcademyInstructors')->insert([
-            'AcademyID'    => 'SHYG',
-            'InstructorID' => $shyId,
-            'IsMaster'     => 1,
-            'IsEnabled'    => 1,
-            'IsHidden'     => 0,
+            'AcademyID'       => 'FORE',
+            'InstructorID'    => $paulineId,
+            'IsMaster'        => 0,
+            'IsEnabled'       => 1,
+            'IsHidden'        => 0,
         ]);
 
         DB::table('AcademyInstructors')->insert([
-            'AcademyID'    => 'SHYG',
-            'InstructorID' => $billId,
+            'AcademyID'       => 'FORE',
+            'InstructorID'    => $oscarId,
+            'IsMaster'        => 1,
+            'IsEnabled'       => 1,
+            'IsHidden'        => 0,
+        ]);
+
+        DB::table('AcademyInstructors')->insert([
+            'AcademyID'       => 'FORE',
+            'InstructorID'    => $aprilId,
+            'IsMaster'        => 0,
+            'IsEnabled'       => 1,
+            'IsHidden'        => 0,
+        ]);
+
+
+        DB::table('AcademyInstructors')->insert([
+            'AcademyID'    => 'CTWO',
+            'InstructorID' => $raviId,
             'IsMaster'     => 0,
             'IsEnabled'    => 1,
             'IsHidden'     => 0,
         ]);
 
         DB::table('AcademyInstructors')->insert([
-            'AcademyID'    => 'BOWG',
-            'InstructorID' => $billId,
+            'AcademyID'    => 'CTWO',
+            'InstructorID' => $irisId,
             'IsMaster'     => 1,
             'IsEnabled'    => 1,
             'IsHidden'     => 0,
         ]);
 
+        DB::table('AcademyInstructors')->insert([
+            'AcademyID'    => 'BALL',
+            'InstructorID' => $samId,
+            'IsMaster'     => 1,
+            'IsEnabled'    => 1,
+            'IsHidden'     => 0,
+        ]);
+
+        DB::table('AcademyInstructors')->insert([
+            'AcademyID'    => 'BALL',
+            'InstructorID' => $johnnyId,
+            'IsMaster'     => 0,
+            'IsEnabled'    => 1,
+            'IsHidden'     => 0,
+        ]);
+
+        DB::table('AcademyInstructors')->insert([
+            'AcademyID'    => 'BALL',
+            'InstructorID' => $landonId,
+            'IsMaster'     => 0,
+            'IsEnabled'    => 1,
+            'IsHidden'     => 0,
+        ]);
+
+        DB::table('AcademyInstructors')->insert([
+            'AcademyID'    => 'BALL',
+            'InstructorID' => $codyId,
+            'IsMaster'     => 0,
+            'IsEnabled'    => 1,
+            'IsHidden'     => 0,
+        ]);
+
         DB::table('AcademyStudents')->insert([
-            'AcademyID'    => 'V1AC',
+            'AcademyID'    => 'PPRO',
             'AccountID'    => $carlId,
         ]);
         DB::table('InstructorStudentsMulti')->insert([
@@ -120,11 +245,11 @@ class TestUser extends Seeder
         ]);
 
         DB::table('AcademyStudents')->insert([
-            'AcademyID'    => 'SHYG',
+            'AcademyID'    => 'BALL',
             'AccountID'    => $carlId,
         ]);
         DB::table('InstructorStudentsMulti')->insert([
-            'InstructorID'         => $shyId,
+            'InstructorID'         => $samId,
             'AccountID'            => $carlId,
             'IsVerified'           => 1,
             'StudentVerifiedAt'    => \Carbon\Carbon::now(),
@@ -141,11 +266,11 @@ class TestUser extends Seeder
             ]);
 
             DB::table('AcademyStudents')->insert([
-                'AcademyID'    => 'SHYG',
+                'AcademyID'    => 'CTWO',
                 'AccountID'    => $studentId,
             ]);
             DB::table('InstructorStudentsMulti')->insert([
-                'InstructorID'         => $shyId,
+                'InstructorID'         => $raviId,
                 'AccountID'            => $studentId,
                 'IsVerified'           => 1,
                 'StudentVerifiedAt'    => \Carbon\Carbon::now(),
@@ -164,7 +289,7 @@ class TestUser extends Seeder
             ]);
 
             DB::table('AcademyStudents')->insert([
-                'AcademyID'    => 'V1AC',
+                'AcademyID'    => 'PPRO',
                 'AccountID'    => $studentId,
             ]);
             DB::table('InstructorStudentsMulti')->insert([
@@ -175,5 +300,20 @@ class TestUser extends Seeder
                 'InstructorVerifiedAt' => \Carbon\Carbon::now(),
             ]);
         }
+
+        //customers
+        $gwenId = DB::table('Accounts')->insertGetId([
+            'FirstName'          => 'Gwen',
+            'LastName'           => 'Golfer',
+            'Email'              => 'gwen@customer.test',
+            'PasswordHash'       => \Hash::make('password'),
+        ]);
+
+        $saraId = DB::table('Accounts')->insertGetId([
+            'FirstName'          => 'Sara',
+            'LastName'           => 'Student',
+            'Email'              => 'sara@customer.test',
+            'PasswordHash'       => \Hash::make('password'),
+        ]);
     }
 }

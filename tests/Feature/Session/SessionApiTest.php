@@ -21,7 +21,7 @@ class SessionApiTest extends TestCase
         $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
         $this->withoutMiddleware(\App\Http\Middleware\EnableCors::class);
 
-        $academyId = 'V1AC';
+        $academyId = 'PPRO';
         $pauline = AccountUser::find(1);
         //can't do json call with cookies in 5.8
         $headers = [
@@ -54,7 +54,7 @@ class SessionApiTest extends TestCase
         $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
         $this->withoutMiddleware(\App\Http\Middleware\EnableCors::class);
 
-        $academyId = 'SHYG';
+        $academyId = 'BALL';
         $pauline = AccountUser::find(1);
         //can't do json call with cookies in 5.8
         $headers = [
@@ -82,8 +82,8 @@ class SessionApiTest extends TestCase
         $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
         $this->withoutMiddleware(\App\Http\Middleware\EnableCors::class);
 
-        $academyId = 'SHYG';
-        $bill = AccountUser::find(5);
+        $academyId = 'FORE';
+        $bill = AccountUser::find(1);
         //can't do json call with cookies in 5.8
         $headers = [
             'CONTENT_LENGTH' => mb_strlen('', '8bit'),

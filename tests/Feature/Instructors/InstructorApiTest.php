@@ -101,19 +101,19 @@ class InstructorApiTest extends TestCase
      */
     public function test_read_only_personal_students()
     {
-        //add student to disabled academy,
-        //attach academy to instructor as not enabled
+        //add student to academy, (not directly to instructor)
+        //attach academy to instructor as enabled
         //ensure only 12 students come back.
-        //new student would be 13
+        //?withAcademy=true would result in 13
         $instructor = Instructor::find(1);
         $academy    = $this->makeAcademy();
         $student    = $this->makeAccount();
         $academy->students()->attach($student);
-
-        $student    = $this->makeAccount();
-        $academy->students()->attach($student);
+        $academy->push();
 
         $instructor->academies()->attach($academy->AcademyID, ['IsEnabled'=>1]);
+        //$instructor->push();
+        //dd($instructor->academies()->count());
 
         $user = \App\AccountUser::find(1);
         $user->InstructorID = $instructor->InstructorID;
@@ -122,5 +122,10 @@ class InstructorApiTest extends TestCase
             ->json('GET', '/api201902/instructors/'.$instructor->InstructorID.'/students/');
 
         $this->assertEquals(12, $this->response->getData()->meta->total);
+
+        $this->response = $this->actingAs($user)
+            ->json('GET', '/api201902/instructors/'.$instructor->InstructorID.'/students/?withAcademy=true');
+
+        $this->assertEquals(13, $this->response->getData()->meta->total);
     }
 }
