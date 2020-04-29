@@ -26,6 +26,7 @@ Route::group(['middleware' => 'permissive'], function () {
     Route::get('/avatar/{id}/defaultimage.png', 'AccountAvatarAPIController@defaultImage')->name('avatar.default.image');
     Route::get('/avatar/{id}', 'AccountAvatarAPIController@show');
     Route::get('/apicheck', 'VersionAPIController@check');
+    Route::get('/instructors/', 'InstructorAPIController@index');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
