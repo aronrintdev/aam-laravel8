@@ -1,5 +1,5 @@
 
-            <canvas id="myChart" width="400" height="400"></canvas>
+            <canvas id="myChart" width="700" height="400"></canvas>
 
 @push('scripts')
 <script
@@ -24,8 +24,9 @@ var myChart = new Chart(ctx, {
     options: {
         scales: {
             xAxes: [{
-                //type: 'category',
+                type: 'category',
                 ticks: {
+                    /*
                     callback:function(value, index, values) {
                         if (!this.options.academyLabels) {
                             return '';
@@ -33,6 +34,7 @@ var myChart = new Chart(ctx, {
                         return this.options.academyLabels[value];
 
                     }
+                    */
                 },
 			}],
             yAxes: [{
@@ -64,8 +66,8 @@ $.get('/lesson-stats').then((response) => {
     });
     myChart.options.academyLabels = newlabels;
     myChart.options.scales.xAxes[0].academyLabels = newlabels;
-    console.log(newlabels);
-//    myChart.options.scales.xAxes[0].labels = newlabels;
+    //console.log(newlabels);
+    myChart.options.scales.xAxes[0].labels = newlabels;
 //    myChart.scales['x-axis-0'].buildTicks();
 
     response.forEach((item) => {
@@ -80,7 +82,7 @@ $.get('/lesson-stats').then((response) => {
             thisy = 4;
         }
         myChart.data.datasets[0].data.push({
-            x:newlabels.indexOf(item.academy_code), y: thisy, r:item.cnt*5
+            x:item.academy_code, y: thisy, r:item.cnt*5
         });
     });
     myChart.update();
