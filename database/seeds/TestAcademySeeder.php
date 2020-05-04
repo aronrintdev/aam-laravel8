@@ -67,6 +67,18 @@ class TestAcademyTableSeeder extends Seeder
             'Logo'               => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test/fore-logo.png',
         ]);
 
+
+        DB::table('Academies_AddOns')->insert([
+            "AcademyID"         => "",
+            "BillingAmount"     => "10.0",
+            "AddOn_Description" => "V1 Pro App",
+            "DateAdded"         => "Oct 26 2017 10:51AM",
+            "StartDate"         => "12/1/2019",
+            "DateDeleted"       => null,
+            "Live"              => "1",
+            "InstructorID"      => "1",
+        ]);
+
 /**
 CREATE TABLE `Academies` (
  `AcademyID` char(8) NOT NULL,

@@ -23,6 +23,7 @@ class TestDatabaseSeeder extends Seeder
         \DB::statement("TRUNCATE TABLE InstructorStudents");
         \DB::statement("TRUNCATE TABLE InstructorStudentsMulti");
         \DB::statement("TRUNCATE TABLE InstructorStudentsFollow");
+        \DB::statement("TRUNCATE TABLE Academies_AddOns");
         \DB::statement("ALTER TABLE [dbo].[AccountAvatars]  WITH CHECK ADD  CONSTRAINT [FK__AccountAv__Accou__741A2336] FOREIGN KEY([AccountID]) REFERENCES [dbo].[Accounts] ([AccountID])ALTER TABLE [dbo].[AccountAvatars] CHECK CONSTRAINT [FK__AccountAv__Accou__741A2336]");
         $this->call(TestAcademyTableSeeder::class);
         $this->call(TestUser::class);
