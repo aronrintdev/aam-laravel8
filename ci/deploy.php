@@ -158,7 +158,7 @@ if (strlen(getenv('GITLOG'))) {
 before('success', 'success:check');
 task('success:check', function() use($gitlog) {
         $stage = Deployer::get()->getInput()->getArgument('stage');
-        if ($stage != 'test') {
+        if ($stage == 'prod') {
             set('slack_success_text', "Deploy to *{{target}}* successful".$gitlog);
             set('slack_webhook', 'https://hooks.slack.com/services/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');
         }
