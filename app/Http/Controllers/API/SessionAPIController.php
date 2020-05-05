@@ -60,6 +60,7 @@ class SessionAPIController {
         if ($matchingAcademy->count() < 1) {
             throw new AuthorizationException('User does not belong to the chosen academy.', 403);
         }
+        $matchingAcademy = $matchingAcademy->first();
 
         $auth = auth();
         $token = $auth->parseToken();
@@ -69,8 +70,14 @@ class SessionAPIController {
             throw new UnauthorizedHttpException('jwt-auth', 'User not found');
         }
 
-        $auth->customClaims(['accid' => $id]);
+        $newClaims = array_merge($user->getJWTCustomClaims(), [
+            'accid' => $id,
+        ]);
+        $auth->customClaims(
+            $newClaims
+        );
         $newtoken = $auth->refresh(false, true);
+
         //refresh doesn't update JWT internals, so we
         //do surgery here on the base64 blob
         $parts = explode('.', $newtoken);

@@ -380,17 +380,18 @@ class Instructor extends Model
     ];
 
     public function academies() {
-        return $this->belongsToMany('App\Models\Academy', 'AcademyInstructors', 'InstructorID', 'AcademyID')
-            ->wherePivot('IsEnabled', 1);
+        return $this->academiesTeaching();
     }
 
     public function academiesTeaching() {
         return $this->belongsToMany('App\Models\Academy', 'AcademyInstructors', 'InstructorID', 'AcademyID')
-            ->wherePivot('IsEnabled', 1);
+            ->wherePivot('IsEnabled', 1)
+            ->withPivot('IsEnabled', 'IsMaster', 'IsHidden');
     }
 
     public function academiesMaster() {
         return $this->belongsToMany('App\Models\Academy', 'AcademyInstructors', 'InstructorID', 'AcademyID')
-            ->wherePivot('IsMaster', 1);
+            ->wherePivot('IsMaster', 1)
+            ->withPivot('IsEnabled', 'IsMaster', 'IsHidden');
     }
 }
