@@ -1,12 +1,12 @@
 <?php
 namespace App\Providers;
+
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Str;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Connection;
-
 use Tymon\JWTAuth\Contracts\Providers\Auth as JWTContract;
 
 class V1UserProvider implements UserProvider, JWTContract {
@@ -23,6 +23,19 @@ class V1UserProvider implements UserProvider, JWTContract {
     }
 
     public function retrieveById($identifier) {
+        //set the preferred academy ID from the "session"
+        $preferredAcademyId = '';
+        try {
+            \JWTAuth::parseToken();
+            $payload = \JWTAuth::checkOrFail();
+            if ($accid = $payload->get('accid')) {
+                $preferredAcademyId = $accid;
+            }
+        } catch (\Exception $e) {
+            //maybe the user hasn't logged in yet, oh well
+            //just use the default account ID from the left join
+        }
+
         $x = $this->conn->table('Accounts as a')
             ->select('a.*', 'ai.AcademyID', 'ai.IsMaster', 'ai.IsEnabled as IsInstructor', 'ai.IsHidden')
             ->leftJoin('AcademyInstructors as ai', 'a.AccountID', '=', 'ai.InstructorID')
@@ -30,6 +43,11 @@ class V1UserProvider implements UserProvider, JWTContract {
             ->where(function($query) {
                 $query->orWhere('ai.IsEnabled', '1');
                 $query->orWhereNull('ai.InstructorID');
+            })
+            ->where(function($query) use ($preferredAcademyId) {
+                if ($preferredAcademyId != '') {
+                    $query->where('ai.AcademyID', $preferredAcademyId);
+                }
             })
             ->where(function($query) use($identifier) {
                 if (is_numeric($identifier)) {
@@ -43,6 +61,8 @@ class V1UserProvider implements UserProvider, JWTContract {
         \App\User::unguard();
         $u = new \App\User((array)$user);
         \App\User::reguard();
+
+        $this->u = $u;
         return $u;
     }
 
@@ -57,6 +77,19 @@ class V1UserProvider implements UserProvider, JWTContract {
     }
 
     public function retrieveByCredentials(array $credentials) {
+        //set the preferred academy ID from the "session"
+        $preferredAcademyId = '';
+        try {
+            \JWTAuth::parseToken();
+            $payload = \JWTAuth::checkOrFail();
+            if ($accid = $payload->get('accid')) {
+                $preferredAcademyId = $accid;
+            }
+        } catch (\Exception $e) {
+            //maybe the user hasn't logged in yet, oh well
+            //just use the default account ID from the left join
+        }
+
         $query = $this->conn->table('Accounts as a')
             ->select('a.*', 'ai.AcademyID', 'ai.IsMaster', 'ai.IsEnabled as IsInstructor', 'ai.IsHidden')
             ->leftJoin('AcademyInstructors as ai', 'a.AccountID', '=', 'ai.InstructorID')
@@ -64,6 +97,11 @@ class V1UserProvider implements UserProvider, JWTContract {
             ->where(function($query) {
                 $query->orWhere('ai.IsEnabled', '1');
                 $query->orWhereNull('ai.InstructorID');
+            })
+            ->where(function($query) use ($preferredAcademyId) {
+                if ($preferredAcademyId != '') {
+                    $query->where('ai.AcademyID', $preferredAcademyId);
+                }
             });
 
         foreach ($credentials as $key => $value) {
@@ -95,7 +133,6 @@ class V1UserProvider implements UserProvider, JWTContract {
 
         $this->u = $u;
         return $u;
-
     }
 
     public function user() {
