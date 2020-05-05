@@ -49,6 +49,7 @@ class AcademySchema extends BaseSchema
     public function getAttributes($resource, ContextInterface $context): iterable
     {
         return [
+			'name'           =>  $resource->Name,
 			'banner_graphic' =>  $resource->LogInGraphic,
 			'banner_text'    =>  $resource->BannerText,
 			'logo'           =>  $resource->Logo,
