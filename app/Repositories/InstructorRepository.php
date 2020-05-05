@@ -154,6 +154,7 @@ class InstructorRepository extends BaseRepository
 
         $query->join('Accounts',           'Instructors.InstructorID', 'Accounts.AccountID');
         $query->join('AcademyInstructors', 'Accounts.AccountID', 'AcademyInstructors.InstructorID');
+        $query->orderBy('AcademyInstructors.IsMaster', 'DESC');
         return $query->get($columns);
     }
 
