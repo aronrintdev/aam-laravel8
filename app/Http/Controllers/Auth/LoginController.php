@@ -54,9 +54,20 @@ class LoginController extends Controller
         if (! $token = \JWTAuth::fromUser($user)) {
             return response()->json(['error'=>'Incorrect credentials'], 401);
         }
+        $host = 'https://app.v1sports.com';
+        if (config('app.env') == 'local') {
+            $host = 'http://v1a.test:8000';
+        }
+        if (config('app.env') == 'stage') {
+            $host = 'https://stage.app.v1sports.com';
+        }
+        if (config('app.env') == 'testing') {
+            $host = 'https://test.app.v1sports.com';
+        }
 
         return view('admin/loginas', [
             'access_token' => $token,
+            'marketplaceHost' => $host,
         ]);
     }
 }
