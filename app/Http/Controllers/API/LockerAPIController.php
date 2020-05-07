@@ -13,6 +13,8 @@ use App\Http\Controllers\AppBaseController;
 use Response;
 
 use App\Transformers\SwingAnalysisTransformer;
+use Carbon\Carbon;
+use DateTimeZone;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
@@ -381,7 +383,6 @@ class LockerAPIController extends AppBaseController
 
         $resource = new Collection($swings->toArray(), [$this, 'swingRecordTranslate']);
         return response()->json((new Manager)->createData($resource)->toArray());
-
     }
 
 
@@ -436,12 +437,16 @@ class LockerAPIController extends AppBaseController
      */
     public function swingRecordTranslate(array $swing) {
         $videoUrl = $swing['VideoPath'];
-        if (substr($videoUrl, 0, 4) !== 'http') {
+        if (substr($videoUrl, 0, 4) !== 'http' && $videoUrl != '') {
             $videoUrl = 'https://v1sports.com/SwingStore/'.$swing['VideoPath'];
         }
         $thumbUrl = str_replace( ['.mp4', '.webm'], '.jpg', $swing['VideoPath']);
-        if (substr($thumbUrl, 0, 4) !== 'http') {
+        if (substr($thumbUrl, 0, 4) !== 'http' && $thumbUrl != '') {
             $thumbUrl = 'https://v1sports.com/SwingStore/'.$thumbUrl;
+        }
+        $dateUploaded = $swing['DateUploaded'];
+        if (!$swing['DateUploaded'] instanceof \DateTime) {
+            $dateUploaded = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s.v', $swing['DateUploaded'], 'America/New_York');
         }
         //TZ: Dates are stored in OS local timezones in MSSQL (probably Amercia/New_York)
         return [
@@ -455,8 +460,55 @@ class LockerAPIController extends AppBaseController
             'vimeo_id'      => $swing['VimeoID'],
             'status_id'     => $swing['SwingStatusID'],
             //'thumb_url'    => 'https://v1sports.com/SwingStore/190424231844IP9M2449503.jpg',
-            'date_uploaded' => \Carbon\Carbon::createFromFormat('Y-m-d H:i:s.u', $swing['DateUploaded'], 'America/New_York'),
+            'date_uploaded' => $dateUploaded,
             ],
         ];
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/locker/",
+     *   summary="Create a new locker item",
+     *   tags={"Locker"},
+     *   @OA\RequestBody(
+     *     description="",
+     *     required=false,
+     *   ),
+     *   @OA\Response(
+     *     response=201,
+     *     description="Create a locker item, send URL to PUT a new file",
+     *     @OA\MediaType(
+     *       mediaType="application/json",
+     *
+     *       @OA\Schema(
+     *         allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
+     *         @OA\Property(
+     *           property="data",
+     *           type="array",
+     *           @OA\Items(ref="#/components/schemas/swing")
+     *         )
+     *       )
+     *     )
+     *   )
+     * )
+     */
+    public function store(Request $request)
+    {
+        $user = $request->user();
+        $limit = $request->get('limit') ? intval($request->get('limit')) : 100;
+
+        $nowInNyc =  Carbon::now(new DateTimeZone('America/New_York'));
+        $lockerItem = $this->swingRepository->create([
+            'Description'   => $request->input('description'),
+            'SwingStatusID' => 0,
+            'DateUploaded'  => $nowInNyc,
+            'AccountID'     => $user->AccountID,
+            'VideoPath'     => '',
+            'VimeoID'       => '',
+        ]);
+        $resource = new Item($lockerItem->toArray(), [$this, 'swingRecordTranslate']);
+        return response()
+            ->json((new Manager)->createData($resource)->toArray(), 201)
+            ->header('Location', 'http://foo.foo');
     }
 }

@@ -73,6 +73,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('avatar', 'AccountAvatarAPIController');
 
     #Route::resource('locker', 'LockerAPIController');
+    Route::post('locker', 'LockerAPIController@store');
     Route::get('locker/{swingId}/analysis', 'LockerAPIController@swingAnalysis');
     Route::get('locker/{accountId?}', 'LockerAPIController@index');
     #Route::get('videolessons', 'LockerAPIController@videoLessonIndex');
