@@ -17,28 +17,10 @@ class TusServerProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('tus-server', function ($app) {
-            \ignore_user_abort(true);
+            //\ignore_user_abort(true);
 
-            $awsAccessKey = env('AWS_ACCESS_KEY_ID'); // YOUR AWS ACCESS KEY
-            $awsSecretKey = env('AWS_SECRET_ACCESS_KEY'); // YOUR AWS SECRET KEY
-            $awsRegion    = env('AWS_DEFAULT_REGION');      // YOUR AWS BUCKET REGION
-            $basePath     = env('AWS_BUCKET');
-            $awsUrl       = env('AWS_URL');
+            $s3Client = $this->app->make('s3-client');
 
-            $s3Client = new S3Client([
-                'version'     => 'latest',
-                'region'      => 'us-east-1',
-                'endpoint'    => 'https://nyc3.digitaloceanspaces.com',
-                'debug'       => false,
-                'credentials' => new Credentials($awsAccessKey, $awsSecretKey)
-            ]);
-            // Create a new Space
-            //$s3Client->createBucket([
-            //     'Bucket' => 'vos-videos',
-            //]);
-            //$spaces = $s3Client->listBuckets();
-
-            $s3Client->registerStreamWrapper();
             //\ignore_user_abort ( true );
             $fileCache = new \TusPhp\Cache\FileStore(
                 storage_path('app/public/cache/'),
