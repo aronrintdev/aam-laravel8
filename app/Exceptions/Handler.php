@@ -75,6 +75,13 @@ class Handler extends ExceptionHandler
             if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
                 return response()->json(['errors'=>[ ['status'=>404, 'title'=>'Not Found', 'message'=>'Model not found', 'detail' => $exception->getMessage()] ]], 404);
             }
+            if ($exception instanceof \InvalidArgumentException) {
+                $errors = [];
+                //todo: use detail not details
+                $errors[] = ['status'=>422, 'title'=>'Invalid Argument', 'detail' => $exception->getMessage()];
+                return response()->json(['errors'=> $errors ], 422);
+            }
+
             if ($exception instanceof \Illuminate\Validation\ValidationException) {
                 $errors = [];
                 //todo: use detail not details
