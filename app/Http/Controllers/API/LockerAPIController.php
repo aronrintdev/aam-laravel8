@@ -2,23 +2,25 @@
 
 namespace App\Http\Controllers\API;
 
-//use App\Http\Requests\API\CreateInstructorAPIRequest;
-//use App\Http\Requests\API\UpdateInstructorAPIRequest;
+use App\Http\Controllers\AppBaseController;
+use App\Jobs\ThumbnailVideo;
 use App\Models\Swing;
 use App\Models\Instructor;
 use App\Repositories\SwingRepository;
 use App\Repositories\InstructorRepository;
-use Illuminate\Http\Request;
-use App\Http\Controllers\AppBaseController;
-use Response;
-
 use App\Transformers\SwingAnalysisTransformer;
 use Carbon\Carbon;
 use DateTimeZone;
+use Illuminate\Http\Request;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Validation\ValidationException;
+use InvalidArgumentException;
+
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\Serializer\JsonApiSerializer;
+use Response;
 
 
 /**
@@ -440,7 +442,7 @@ class LockerAPIController extends AppBaseController
         if (substr($videoUrl, 0, 4) !== 'http' && $videoUrl != '') {
             $videoUrl = 'https://v1sports.com/SwingStore/'.$swing['VideoPath'];
         }
-        $thumbUrl = str_replace( ['.mp4', '.webm'], '.jpg', $swing['VideoPath']);
+        $thumbUrl = str_replace( ['.mp4', '.webm', '.bin', '.mov'], '.jpg', $swing['VideoPath']);
         if (substr($thumbUrl, 0, 4) !== 'http' && $thumbUrl != '') {
             $thumbUrl = 'https://v1sports.com/SwingStore/'.$thumbUrl;
         }
@@ -509,6 +511,124 @@ class LockerAPIController extends AppBaseController
         $resource = new Item($lockerItem->toArray(), [$this, 'swingRecordTranslate']);
         return response()
             ->json((new Manager)->createData($resource)->toArray(), 201)
-            ->header('Location', 'http://foo.foo');
+            ->header('Location', route('api.locker-upload-put').'?id='.$lockerItem->SwingID);
+    }
+
+    /**
+     * @OA\Put(
+     *   path="/locker/upload",
+     *   summary="Uplaod video resource for locker item created previously",
+     *   tags={"Locker"},
+     *   @OA\RequestBody(
+     *     description="",
+     *     required=false,
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Create a locker item, send URL to PUT a new file",
+     *     @OA\MediaType(
+     *       mediaType="application/json",
+     *
+     *       @OA\Schema(
+     *         allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
+     *         @OA\Property(
+     *           property="data",
+     *           type="array",
+     *           @OA\Items(ref="#/components/schemas/swing")
+     *         )
+     *       )
+     *     )
+     *   )
+     * )
+     */
+    public function upload(Request $request)
+    {
+        $user = $request->user();
+        $lockerItemId = $request->query('id') ? intval($request->query('id')) : null;
+        if ($lockerItemId == null) {
+            throw new InvalidArgumentException('id query parameter missing or invalid');
+        }
+        //find Content-Length header
+        $byteLimit   = (int)$request->header('content-length') ?? 0;
+        if ($byteLimit == 0) {
+            throw new InvalidArgumentException('Content-Length header must be specified');
+        }
+        $contentType   = $request->header('content-type') ?? '';
+        if (!in_array($contentType, ['video/mp4', 'video/webm', 'video/quicktime', 'application/octet-stream'])) {
+            throw new InvalidArgumentException('Content-Type header must be specified.  Acceptable values: video/mp4, video/webm, video/quicktime');
+        }
+
+        $lockerItem = $this->swingRepository->find($lockerItemId);
+        if ($lockerItem->AccountID != $user->AccountID) {
+            throw new AuthorizationException();
+        }
+        /*
+        if ($lockerItem->VideoPath != '') {
+            throw new AuthorizationException('Video already uploaded');
+        }
+         */
+        $destinationFilename = 'swings/'.date('Y').'/'.date('Ymdhis');
+        if (in_array(config('app.env'), ['testing', 'local'])) {
+            $destinationFilename = 'test/'.$destinationFilename;
+        }
+        switch ($contentType) {
+            case 'video/mp4':
+                $destinationFilename .= '.mp4';
+                break;
+            case 'video/webm':
+                $destinationFilename .= '.webm';
+                break;
+            case 'video/quicktime':
+                $destinationFilename .= '.mov';
+                break;
+            default:
+                $destinationFilename .= '.bin';
+                break;
+        }
+
+        /*
+        $bytesCopied = $this->copyInputStreamToS3($destinationFilename, $byteLimit);
+
+        //echo "Byte Limit is ".$byteLimit . " \n";
+        //echo "Copied byes: ".$bytesCopied . " \n";
+
+        $lockerItem->VideoPath = 'https://vos-media.nyc3.digitaloceanspaces.com/'.$destinationFilename;
+        $lockerItem->save();
+         */
+        ThumbnailVideo::dispatch($lockerItem->SwingID);
+
+        $resource = new Item($lockerItem->toArray(), [$this, 'swingRecordTranslate']);
+        return response()
+            ->json((new Manager)->createData($resource)->toArray(), 200);
+    }
+
+    public function copyInputStreamToS3($dest, $byteLimit=0) {
+        $bucket = 'vos-media';
+        //making the object from the Provider calls "registerStreamWrapper"
+        //so even if $s3Client is not used here, it is required to be make()'d
+        $s3Client = \app()->make('s3-client');
+
+        //64-bit arch has hardcoded internal buffer of 8k
+        //stream_copy_to_stream has flexible buffer limit
+        $chunksize =  8192 * 24;
+
+        $input  = @fopen('php://input', 'rb');
+        //TODO support mode 'ab' with resumable uploads
+        $output = @fopen('s3://'.$bucket.'/'.$dest, 'wb', false, stream_context_create([
+            's3' => [
+                'ACL' => 'public-read',
+            ]])
+        );
+
+        $bytes = 0;
+        while (!feof($input)) {
+            $bytes += stream_copy_to_stream($input, $output, $chunksize);
+            if ($byteLimit && $bytes > $byteLimit) {
+                //do nothing
+            }
+        }
+        @fclose($oputput);
+        @fclose($input);
+        return $bytes;
     }
 }

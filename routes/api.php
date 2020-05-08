@@ -74,6 +74,9 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     #Route::resource('locker', 'LockerAPIController');
     Route::post('locker', 'LockerAPIController@store');
+    Route::post('locker/upload', 'LockerAPIController@upload')->name('locker-upload-post');
+    Route::put('locker/upload', 'LockerAPIController@upload')->name('locker-upload-put');
+
     Route::get('locker/{swingId}/analysis', 'LockerAPIController@swingAnalysis');
     Route::get('locker/{accountId?}', 'LockerAPIController@index');
     #Route::get('videolessons', 'LockerAPIController@videoLessonIndex');
