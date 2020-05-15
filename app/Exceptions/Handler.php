@@ -29,13 +29,19 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
+     * Run this same code as the SentryUserProvider as late as possible
+     * to hope that we have passed the Http Middleware proxy check
+     * and gotten the real user IP.
+     *
      * @param  \Exception  $exception
      * @return void
      */
     public function report(Exception $exception)
     {
-        /*
         if (app()->bound('sentry') && $this->shouldReport($exception) && config('app.debug') == true){
+            //this is required to get a client and a layer in the sentry hub...
+            //if there's no client, the configure scope just silently fails
+            app('sentry')->getClient();
             //sentry people are django people, so they
             //don't get Laravel
             //the IP Address is not taken from Laravel / Symfony
@@ -44,14 +50,14 @@ class Handler extends ExceptionHandler
             \Sentry\Laravel\Integration::configureScope(function (\Sentry\State\Scope $scope): void {
                 $u = \Auth()->user();
                 $scope->setUser([
-                    'email' => optional($u)->Email,
-                    'id' => optional($u)->AccountID,
+                    'email'      => optional($u)->email,
+                    'id'         => optional($u)->account_id,
+                    'name'       => optional($u)->first_name. ' ' .optional($u)->last_name,
                     'ip_address' => Request()->ip(),
-                ]);
+                ], true);
             });
-            app('sentry')->captureException($exception);
+            //app('sentry')->captureException($exception);
         }
-        */
         parent::report($exception);
     }
 

@@ -13,19 +13,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (app()->bound('sentry') && config('app.debug') == false){
-            \Sentry\configureScope(function (\Sentry\State\Scope $scope) {
-                try {
-                    $u = \Auth()->user();
-                    $scope->setUser([
-                        'email' => optional($u)->Email,
-                        'id' => optional($u)->AccountID,
-                        'ip_address' => Request()->ip(),
-                    ]);
-                } catch (\Exception $e) {
-                    //what exception?
-                }
-            });
+        //disable notices (missing array keys) on production
+        if (config('app.env') == 'production') {
+            \error_reporting(E_ALL ^ E_NOTICE);
         }
     }
 
@@ -36,6 +26,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
     }
 }
