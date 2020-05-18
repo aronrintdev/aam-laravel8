@@ -525,6 +525,7 @@ class Academy extends Model
 
     protected $primaryKey = 'AcademyID';
     public $incrementing = false;
+    public $keyType = 'string';
 
     public $fillable = [
         'BaseColor',
