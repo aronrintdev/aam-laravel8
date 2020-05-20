@@ -280,6 +280,9 @@ class Swing extends Model
         if ($value instanceof \DateTime) {
             return $value;
         }
+        if ($value == null) {
+            return null;
+        }
         return \Carbon\Carbon::createFromFormat('Y-m-d H:i:s.v', $value, 'America/New_York');
     }
 
@@ -294,6 +297,9 @@ class Swing extends Model
         if ($value instanceof \DateTime) {
             return $value;
         }
+        if ($value == null) {
+            return null;
+        }
         return \Carbon\Carbon::createFromFormat('Y-m-d H:i:s.v', $value, 'America/New_York');
     }
 
@@ -307,6 +313,9 @@ class Swing extends Model
         $value = $this->attributes['DateUploaded'];
         if ($value instanceof \DateTime) {
             return $value;
+        }
+        if ($value == null) {
+            return null;
         }
         return \Carbon\Carbon::createFromFormat('Y-m-d H:i:s.v', $value, 'America/New_York');
     }
