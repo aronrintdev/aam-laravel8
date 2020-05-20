@@ -70,12 +70,20 @@ class SwingRepository extends BaseRepository
                 }
             }
         }
+        //jake thurm experiencing problems when we try to combine
+        //type 2 and 3.  We might need this in the future,
+        //but for now we also want to sort by DateAnalyzed DESC
+        //so joining type 2 where no DateAnalyzed exists is
+        //not worth it.
+        $query->orWhere('DateAnalyzed', '>=', $dateAnalyzed);
         //join type 2 with type 3
+        /*
         $query->where(function($q) use ($dateAnalyzed) {
             $q->orWhere('DateAnalyzed', '>=', $dateAnalyzed);
             $q->orWhereNull('DateAnalyzed');
             return $q;
         });
+         */
 
         if (!is_null($skip)) {
             $query->skip($skip);
@@ -84,6 +92,7 @@ class SwingRepository extends BaseRepository
         if (!is_null($limit)) {
             $query->limit($limit);
         }
+        $query->orderBy('DateAnalyzed', 'DESC');
 
         return $query->get($columns);
     }

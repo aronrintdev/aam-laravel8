@@ -269,10 +269,12 @@ class LockerAPIController extends AppBaseController
             }
         }
 
+        //don't search 2 and 3 anymore, don't try to 
+        //fix broken videos
         $searchParams = [
             'InstructorID'  => $instructorId,
             'Deleted'       => false,
-            'SwingStatusID' => [3,2],
+            'SwingStatusID' => [3],
         ];
 
         $swings = $this->swingRepository->searchBrokenVideos(
