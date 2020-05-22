@@ -168,12 +168,10 @@ return [
          */
         Collective\Html\HtmlServiceProvider::class,
         Laracasts\Flash\FlashServiceProvider::class,
-        Prettus\Repository\Providers\RepositoryServiceProvider::class,
         \InfyOm\Generator\InfyOmGeneratorServiceProvider::class,
         \InfyOm\AdminLTETemplates\AdminLTETemplatesServiceProvider::class, 
         \Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         \Sentry\Laravel\ServiceProvider::class,
-        \Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
 
 
         /*
