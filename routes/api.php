@@ -27,6 +27,7 @@ Route::group(['middleware' => 'permissive'], function () {
     Route::get('/avatar/{id}', 'AccountAvatarAPIController@show');
     Route::get('/apicheck', 'VersionAPIController@check');
     Route::get('/instructors/', 'InstructorAPIController@index');
+    Route::post('/session/refresh', 'SessionAPIController@refresh');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

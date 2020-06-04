@@ -52,6 +52,10 @@ class UserController extends Controller {
      *           property="password",
      *           type="string"
      *         ),
+     *         @OA\Property(
+     *           property="remember",
+     *           type="string"
+     *         ),
      *       )
      *     ),
      *   ),
@@ -73,16 +77,48 @@ class UserController extends Controller {
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
-        return response()->json([
+        $user = JWTAuth::user();
+        $ua = $request->header('User-Agent');
+        if (empty($ua)) {
+            $ua = 'web';
+        }
+
+        $additionalJsonReponse = [];
+        if ($request->get('remember') == '1') {
+            $refreshToken = $this->generateUniqueIdentifier();
+            $result = \DB::table('jwt_refresh_tokens')->insert([
+                'refresh_token' => $refreshToken,
+                'user_agent'    => substr($request->input('device_name', $ua), 0, 255),
+                'user_id'       => $user->AccountID,
+                'expires'       => \Carbon\Carbon::now()->addMonths(6),
+                'revoked'       => 0,
+            ]);
+            $additionalJsonReponse = ['refresh_token'=>$refreshToken];
+        }
+
+        return response()->json(array_merge([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => env('JWT_TTL', 60) * 60
-        ])
+            'expires_in' => config('jwt.ttl', 60) * 60
+        ], $additionalJsonReponse))
         ->withCookie( cookie('token', $token, 60*60));
         //cookie name token is not configurable (yet) by JWT
 //        return response()->json(compact('token'));
     }
 
+    protected function generateUniqueIdentifier($length = 40)
+    {
+        try {
+            return \bin2hex(\random_bytes($length));
+            // @codeCoverageIgnoreStart
+        } catch (Error $e) {
+            throw \UnexpectedValueException('An unexpected error has occurred', 0, $e);
+        } catch (Exception $e) {
+            // If you get this message, the CSPRNG failed hard.
+            throw \RuntimeException('Could not generate a random string', 0, $e);
+        }
+        // @codeCoverageIgnoreEnd
+    }
     /** 
      * Register api 
      * 
