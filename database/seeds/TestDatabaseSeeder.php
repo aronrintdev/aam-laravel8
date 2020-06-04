@@ -13,7 +13,7 @@ class TestDatabaseSeeder extends Seeder
     public function run()
     {
         //Schema::disableForeignKeyConstraints();
-        \DB::statement("ALTER TABLE [dbo].[AccountAvatars] DROP CONSTRAINT [FK__AccountAv__Accou__741A2336]");
+        \DB::statement("ALTER TABLE [dbo].[AccountAvatars] DROP CONSTRAINT [FK__AccountAv__Accou__001]");
         \DB::statement("TRUNCATE Table AccountAvatars");
         \DB::statement("TRUNCATE TABLE Accounts");
         \DB::statement("TRUNCATE TABLE SwingStatusIDs");
@@ -24,7 +24,7 @@ class TestDatabaseSeeder extends Seeder
         \DB::statement("TRUNCATE TABLE InstructorStudentsMulti");
         \DB::statement("TRUNCATE TABLE InstructorStudentsFollow");
         \DB::statement("TRUNCATE TABLE Academies_AddOns");
-        \DB::statement("ALTER TABLE [dbo].[AccountAvatars]  WITH CHECK ADD  CONSTRAINT [FK__AccountAv__Accou__741A2336] FOREIGN KEY([AccountID]) REFERENCES [dbo].[Accounts] ([AccountID])ALTER TABLE [dbo].[AccountAvatars] CHECK CONSTRAINT [FK__AccountAv__Accou__741A2336]");
+        \DB::statement("ALTER TABLE [dbo].[AccountAvatars]  WITH CHECK ADD  CONSTRAINT [FK__AccountAv__Accou__001] FOREIGN KEY([AccountID]) REFERENCES [dbo].[Accounts] ([AccountID])ALTER TABLE [dbo].[AccountAvatars] CHECK CONSTRAINT [FK__AccountAv__Accou__001]");
         $this->call(TestAcademyTableSeeder::class);
         $this->call(TestUser::class);
         $this->call(TestSwingSeeder::class);
