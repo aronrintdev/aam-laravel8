@@ -39,6 +39,12 @@ use League\Fractal;
  *         format="uri"
  *       ),
  *       @OA\Property(
+ *         property="title",
+ *         description="",
+ *         example="iPhone Video",
+ *         type="string",
+ *       ),
+ *       @OA\Property(
  *         property="source_video_url",
  *         description="",
  *         example="https://vos-media.nyc3.digitaloceanspaces.com/profile/ab/abcdefg-123.mp4",
@@ -88,6 +94,7 @@ class SwingAnalysisTransformer extends Fractal\TransformerAbstract
             'attributes' => [
                 'video_url'        => $analysisPrefix.$item->AnalysisPath,
                 'thumb_url'        => $thumbUrl,
+                'title'            => $item->Description,
                 'source_video_url' => $videoPrefix.$item->VideoPath,
                 'source_video_id'  => $item->SwingID,
                 'date_uploaded'    => $item->DateAnalyzed,
