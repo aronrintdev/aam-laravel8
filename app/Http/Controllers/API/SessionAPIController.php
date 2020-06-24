@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\AppBaseController;
+use App\Models\Account;
 use App\Repositories\AcademyRepository;
 use App\Repositories\InstructorRepository;
 use Illuminate\Http\Request;
@@ -56,13 +57,12 @@ class SessionAPIController {
 
         $instructorRepository = app()->make('App\Repositories\InstructorRepository');
         $instructor = $instructorRepository->find($user->AccountID);
-        $matchingAcademy = $instructor->academies->filter(function($item) use($id) {
+        $matchingAcademy = $instructor->academies->first(function($item) use($id) {
             return strtolower(trim($item->AcademyID)) === strtolower(trim($id));
         });
-        if ($matchingAcademy->count() < 1) {
+        if ($matchingAcademy == null) {
             throw new AuthorizationException('User does not belong to the chosen academy.', 403);
         }
-        $matchingAcademy = $matchingAcademy->first();
 
         $auth = auth();
         $token = $auth->parseToken();
@@ -72,8 +72,18 @@ class SessionAPIController {
             throw new UnauthorizedHttpException('jwt-auth', 'User not found');
         }
 
+        $account = Account::find($user->AccountID);
+        $ownedAcademies = $account->academiesMaster;
+        $isOwner = $ownedAcademies->first(function($item) use($matchingAcademy) {
+            if ($item->AcademyID == $matchingAcademy->AcademyID) {
+                return true;
+            }
+        });
+
+
         $newClaims = array_merge($user->getJWTCustomClaims(), [
             'accid' => $id,
+            'own'   => $isOwner,
         ]);
         $auth->customClaims(
             $newClaims
