@@ -10,6 +10,12 @@ use League\Fractal;
  *   schema="Branding",
  *   required={""},
  *   @OA\Property(
+ *     property="name",
+ *     description="name",
+ *     default="Fore all Golfers",
+ *     type="string"
+ *   ),
+ *   @OA\Property(
  *     property="banner_graphic",
  *     description="banner_graphic",
  *     default="/images/ludwig-schreier-1081991-unsplash.jpg",
@@ -126,6 +132,7 @@ class BrandingTransformer extends Fractal\TransformerAbstract
 	        'id'         => $acct->AcademyID,
 	        'type'       => 'branding',
             'attributes' => [
+                'name'           =>  $acct->Name,
                 'banner_graphic' =>  $acct->LogInGraphic,
                 'banner_text'    =>  $acct->BannerText,
                 'logo'           =>  $acct->Logo,

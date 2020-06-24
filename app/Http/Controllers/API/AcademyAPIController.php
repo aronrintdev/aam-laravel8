@@ -580,14 +580,15 @@ class AcademyAPIController extends AppBaseController
         $academy = $instructor->academiesMaster
             ->where('AcademyID', $id)
             ->first();
-        if (!$academy) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
-        }
 
-        $input = collect($request->input());
+        //check for academy ownership
+        if (!$academy) {
+            throw new AuthorizationException();
+        }
 
         //only update these fields
         $swapKeys = [
+            'name'           => 'Name',
             'banner_graphic' => 'LogInGraphic',
             'banner_text'    => 'BannerText',
             'logo'           => 'Logo',
@@ -596,6 +597,7 @@ class AcademyAPIController extends AppBaseController
             'btn_color'      => 'BGColor'       ,
             'selected_color' => 'SelectedColor' ,
         ];
+        $input = collect($request->input());
         $keyed = $input->mapWithKeys(function($item, $index) use($swapKeys) {
             if (array_key_exists($index, $swapKeys)) {
                 return [$swapKeys[$index] => $item];
