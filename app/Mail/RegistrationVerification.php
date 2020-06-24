@@ -30,14 +30,14 @@ class RegistrationVerification extends Mailable
         }
         $this->message = (new MailMessage)
             ->greeting(' ')
-            ->subject(Lang::getFromJson('Verify Email Address | V1 Sports'))
-            ->line(Lang::getFromJson('Click the button below to verify your email address and activate your account.'))
+            ->subject(Lang::get('Verify Email Address | V1 Sports'))
+            ->line(Lang::get('Click the button below to verify your email address and activate your account.'))
             ->action(
-                Lang::getFromJson('Verify Email Address'),
+                Lang::get('Verify Email Address'),
                 $url
             )
-            ->line(Lang::getFromJson('Please note, your account will not be accessible until you have authenticated your account information by verifying your email address entered at sign up. If you did not create an account, no further action is required.'))
-            ->line(Lang::getFromJson('If you need further support help, please contact us at <support@v1sports.com>.'));
+            ->line(Lang::get('Please note, your account will not be accessible until you have authenticated your account information by verifying your email address entered at sign up. If you did not create an account, no further action is required.'))
+            ->line(Lang::get('If you need further support help, please contact us at <support@v1sports.com>.'));
     }
 
     /**

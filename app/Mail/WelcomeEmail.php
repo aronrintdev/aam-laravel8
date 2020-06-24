@@ -21,11 +21,11 @@ class WelcomeEmail extends Mailable
     public function __construct()
     {
         $this->message = (new MailMessage)
-            ->subject(Lang::getFromJson('Welcome to V1 Sports'))
-            ->greeting(Lang::getFromJson('Thank you for creating an account with us!'))
-            ->line(Lang::getFromJson('Thank you for signing up for V1 Account. You now have access to a personal portal where you can purchase online lessons, communicate directly with your pros, and keep track of the progression of your game!'))
+            ->subject(Lang::get('Welcome to V1 Sports'))
+            ->greeting(Lang::get('Thank you for creating an account with us!'))
+            ->line(Lang::get('Thank you for signing up for V1 Account. You now have access to a personal portal where you can purchase online lessons, communicate directly with your pros, and keep track of the progression of your game!'))
             ->line('')
-            ->line(Lang::getFromJson('If you need further support help, please contact us at <support@v1sports.com>.'))
+            ->line(Lang::get('If you need further support help, please contact us at <support@v1sports.com>.'))
             ->line('')
             ->salutation("Welcome to the team,\n\nV1 Sports");
     }
