@@ -97,4 +97,44 @@ class SwingRepository extends BaseRepository
         return $query->get($columns);
     }
 
+    /**
+     * Copy of SP Account_ListSwings
+     *
+     * CREATE PROCEDURE [isa_login].[Account_ListSwings](@AccountID integer)
+     */
+    public function loadStudentSwings($instructorId) {
+        $spAccountListSwings =
+        "
+            SELECT
+              dbo.Swings.SwingID
+            , dbo.Swings.DateUploaded
+            , dbo.Swings.Description
+            , dbo.Swings.SwingStatusID
+            , dbo.SwingStatusIDs.Description AS SwingStatus
+            , dbo.Accounts.FirstName + ' ' + dbo.Accounts.LastName AS Instructor
+            , dbo.Swings.VideoPath
+            , dbo.Swings.AnalysisPath
+            , dbo.Swings.SportID
+            , dbo.SportsIDs.Description AS SportDesc
+            , dbo.Swings.DateAnalyzed
+            , dbo.Swings.InstructorID
+            , dbo.Swings.DateAccepted
+            , dbo.Swings.Description_U
+            , dbo.Swings.AcademyID
+            , dbo.Swings.Rating
+            FROM
+            dbo.Swings
+                INNER JOIN dbo.SwingStatusIDs
+                    ON dbo.Swings.SwingStatusID = dbo.SwingStatusIDs.SwingStatusID
+                INNER JOIN dbo.SportsIDs
+                    ON dbo.Swings.SportID = dbo.SportsIDs.SportID
+                INNER JOIN dbo.Accounts
+                    ON dbo.Swings.InstructorID = dbo.Accounts.AccountID
+            WHERE
+                    (dbo.Swings.AccountID = :instructorId)
+                AND (dbo.Swings.Deleted = 0)
+            ORDER BY dbo.Swings.SwingID DESC
+";
+        \DB::select($spAccountListSwings, ['instructorId' => $instructorId]);
+    }
 }
