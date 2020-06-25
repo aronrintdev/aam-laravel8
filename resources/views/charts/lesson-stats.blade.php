@@ -113,7 +113,7 @@ $.get('/lesson-stats').then((response) => {
             thisy = 4;
         }
         myChart.data.datasets[thisy-1].data.push({
-            x:item.academy_code, y: thisy, r:item.cnt*5
+            x:item.academy_code, y: thisy, r:Math.cbrt(item.cnt)*5
         });
     });
     myChart.update();
