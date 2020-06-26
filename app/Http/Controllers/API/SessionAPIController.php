@@ -83,7 +83,7 @@ class SessionAPIController {
 
         $newClaims = array_merge($user->getJWTCustomClaims(), [
             'accid' => $id,
-            'own'   => $isOwner,
+            'own'   => $isOwner ? true : false,
         ]);
         $auth->customClaims(
             $newClaims
