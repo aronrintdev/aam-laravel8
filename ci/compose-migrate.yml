@@ -9,9 +9,10 @@ networks:
 services:
   migrate:
     tty: true
-    build:
-      context: ./
-      dockerfile: dockerfile-phpfpm
+    image: markkimsal/phusion-lemp:7.3.14-mssql
+    #build:
+    #  context: ./
+    #  dockerfile: dockerfile-phpfpm
     networks:
         - db
         - zto
@@ -24,9 +25,10 @@ services:
 
   migrate-status:
     tty: true
-    build:
-      context: ./
-      dockerfile: dockerfile-phpfpm
+    image: markkimsal/phusion-lemp:7.3.14-mssql
+    #build:
+    #  context: ./
+    #  dockerfile: dockerfile-phpfpm
     networks:
         - db
         - zto
