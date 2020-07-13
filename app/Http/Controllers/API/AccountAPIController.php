@@ -184,7 +184,7 @@ class AccountAPIController extends AppBaseController
         }
 
         if ((int)$id < 1) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
+            throw new AuthorizationException();
         }
 
         /** @var Account $account */
@@ -238,7 +238,10 @@ class AccountAPIController extends AppBaseController
 
     public function update($id, UpdateAccountAPIRequest $request)
     {
-        throw new AuthorizationException('Please register your account');
+        if ($request->user()->AccountID !== $id) {
+            throw new AuthorizationException('Please register your account');
+        }
+
         $input = $request->all();
 
         /** @var Account $account */
@@ -250,7 +253,10 @@ class AccountAPIController extends AppBaseController
 
         $account = $this->accountRepository->update($input, $id);
 
-        return $this->sendResponse($account->toArray(), 'Account updated successfully');
+        $manager = new Manager();
+        $manager->setSerializer(new JsonApiSerializer());
+        $resource = (new Item($account, new AccountTransformer));
+        return response()->json((new Manager)->createData($resource)->toArray());
     }
 
     /**
