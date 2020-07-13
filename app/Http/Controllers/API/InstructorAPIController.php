@@ -588,18 +588,18 @@ class InstructorAPIController extends AppBaseController
             return $this->sendError('Not owner of account');
         }
         $hash = sha1($account->Email). '-hs-'.$account->AccountID;
-        $filepath = 'academy/'.substr($hash, 0, 2).'/';
+        $filepath = 'academy/'.substr($hash, 0, 2);
         $file = $request->file('headshot');
         if ($extension = $file->guessExtension()) {
             $hash .= '.'.$extension;
         }
 
-        $q = \Storage::disk('do-vos-media')->put($filepath.$hash, (string)file_get_contents((string)$file));
+        $finalUrl = \Storage::disk('do-vos-media')->putFileAs($filepath, $file, $hash, 'public');
         //$url = $file->storeAs($filepath, $hash, 'do-vos-media');
         $prefix = config('filesystems.disks.do-vos-media.root');
 
         $instructor = $this->instructorRepository->update([
-          'HeadShot'=>'https://vos-media.nyc3.digitaloceanspaces.com/'.$prefix.$filepath.$hash,
+            'HeadShot'=>'https://vos-media.nyc3.cdn.digitaloceanspaces.com/'.$prefix.$finalUrl,
         ], $instructor->InstructorID);
 
         $manager = new Manager();

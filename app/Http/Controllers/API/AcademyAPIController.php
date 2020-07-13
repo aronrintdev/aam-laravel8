@@ -676,18 +676,21 @@ class AcademyAPIController extends AppBaseController
         }
 
         $hash = sha1($id). '-logo';
-        $filepath = 'academy/'.substr($hash, 0, 2).'/';
+        $filepath = 'academy/'.substr($hash, 0, 2);
         $file = $request->file('logo');
 
         if ($extension = $file->guessExtension()) {
             $hash .= '.'.$extension;
         }
 
-        $q = \Storage::disk('do-vos-media')->put($filepath.$hash, (string)file_get_contents((string)$file));
+        $finalUrl = \Storage::disk('do-vos-media')->putFileAs($filepath, $file, $hash, 'public');
         $prefix = config('filesystems.disks.do-vos-media.root');
 
         $academy = $this->academyRepository->update([
-          'Logo'=>'https://vos-media.nyc3.digitaloceanspaces.com/'.$prefix.$filepath.$hash,
+            'Logo'=>sprintf('%s/%s',
+                'https://vos-media.nyc3.cdn.digitaloceanspaces.com',
+                $prefix.$finalUrl
+            ),
         ], $academy->AcademyID);
 
         return $this->sendJsonApiResponse('academy', 'AcademyID', $academy->getAttributes());
@@ -754,18 +757,21 @@ class AcademyAPIController extends AppBaseController
         }
 
         $hash = sha1($id). '-banner';
-        $filepath = 'academy/'.substr($hash, 0, 2).'/';
+        $filepath = 'academy/'.substr($hash, 0, 2);
         $file = $request->file('banner');
 
         if ($extension = $file->guessExtension()) {
             $hash .= '.'.$extension;
         }
 
-        $q = \Storage::disk('do-vos-media')->put($filepath.$hash, (string)file_get_contents((string)$file));
+        $finalUrl = \Storage::disk('do-vos-media')->putFileAs($filepath, $file, $hash, 'public');
         $prefix = config('filesystems.disks.do-vos-media.root');
 
         $academy = $this->academyRepository->update([
-          'LogInGraphic'=>'https://vos-media.nyc3.digitaloceanspaces.com/'.$prefix.$filepath.$hash,
+            'LoginGraphic'=>sprintf('%s/%s',
+                'https://vos-media.nyc3.cdn.digitaloceanspaces.com',
+                $prefix.$finalUrl
+            ),
         ], $academy->AcademyID);
 
         return $this->sendJsonApiResponse('academy', 'AcademyID', $academy->getAttributes());

@@ -122,8 +122,11 @@ class AccountAvatarAPIController extends AppBaseController
 
         try {
             $accountAvatar = $this->accountAvatarRepository->create([
-              'AccountID'=>(int)$id,
-              'AvatarURL'=>'https://vos-media.nyc3.digitaloceanspaces.com/'.$prefix.$url,
+                'AccountID'=>(int)$id,
+                'AvatarURL'=>sprintf('%s/%s',
+                    'https://vos-media.nyc3.cdn.digitaloceanspaces.com',
+                    $prefix.$url
+                ),
             ]);
         } catch (\Exception $e) {
             return response()->json(['errors'=>[['title'=>'Internal server error', 'status'=>500]]], 500);
@@ -280,13 +283,13 @@ class AccountAvatarAPIController extends AppBaseController
 
         $account = \Auth::user();
         $hash = sha1($account->Email). '-'.$account->AccountID;
-        $filepath = 'profile/'.substr($hash, 0, 2).'/';
+        $filepath = 'profile/'.substr($hash, 0, 2);
         $file = $request->file('avatar');
         if ($extension = $file->guessExtension()) {
             $hash .= '.'.$extension;
         }
 
-        $q = \Storage::disk('do-vos-media')->put($filepath.$hash, $file);
+        $q = \Storage::disk('do-vos-media')->putFileAs($filepath, $file, $hash, 'public');
         //$url = $file->storeAs($filepath, $hash, 'do-vos-media');
         $prefix = config('filesystems.disks.do-vos-media.root');
 
