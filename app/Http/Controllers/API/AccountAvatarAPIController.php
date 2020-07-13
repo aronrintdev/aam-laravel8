@@ -129,7 +129,7 @@ class AccountAvatarAPIController extends AppBaseController
                 ),
             ]);
         } catch (\Exception $e) {
-            return response()->json(['errors'=>[['title'=>'Internal server error', 'status'=>500]]], 500);
+            return response()->json(['errors'=>[['title'=>'Internal server error', 'status'=>500, 'detail'=>$e->getMessage()]]], 500);
         }
 
         $manager = new Manager();
@@ -248,13 +248,25 @@ class AccountAvatarAPIController extends AppBaseController
      * @param UpdateAccountAvatarAPIRequest $request
      * @return Response
      *
-     * @OA\Patch(
+     * @OA\Post(
      *   path="/avatar/{id}/update",
      *   summary="Update the avatar specified by the AccountID",
      *   tags={"Avatar"},
      *   description="Update Avatar",
-     *   @OA\MediaType(
-     *     mediaType="application/json",
+     *
+     *   @OA\RequestBody(
+     *     description="Upload images request body",
+     *     @OA\MediaType(
+     *       mediaType="multipart/form-data",
+     *       @OA\Schema(
+     *         type="object",
+     *           @OA\Property(
+     *            property="avatar",
+     *            type="string",
+     *            format="binary",
+     *          )
+     *       )
+     *     )
      *   ),
      *   @OA\Parameter(
      *     name="id",
