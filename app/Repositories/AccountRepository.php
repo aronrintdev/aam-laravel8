@@ -111,4 +111,39 @@ class AccountRepository extends BaseRepository
 
         return $query->find($id, $columns);
     }
+
+    /**
+     * Translate API field names into legacy db field names
+     *
+     * @param array $input
+     * @param int $id
+     *
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|Model
+     */
+    public function update($input, $id)
+    {
+        $query = $this->model->newQuery();
+
+        $model = $query->findOrFail($id);
+
+
+        //only update these fields
+        $updatable = [
+            'first_name'  => 'FirstName',
+            'last_name'   => 'LastName',
+        ];
+        $keyed = collect($input)->mapWithKeys(function($item, $index) use($updatable) {
+            if (array_key_exists($index, $updatable)) {
+                return [$updatable[$index] => $item];
+            } else {
+                return [];
+            }
+        })->all();
+
+        $model->fill($keyed);
+
+        $model->save();
+
+        return $model;
+    }
 }
