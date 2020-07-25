@@ -301,13 +301,13 @@ class AccountAvatarAPIController extends AppBaseController
             $hash .= '.'.$extension;
         }
 
-        $q = \Storage::disk('do-vos-media')->putFileAs($filepath, $file, $hash, 'public');
+        $finalUrl = \Storage::disk('do-vos-media')->putFileAs($filepath, $file, $hash, 'public');
         //$url = $file->storeAs($filepath, $hash, 'do-vos-media');
         $prefix = config('filesystems.disks.do-vos-media.root');
 
         $accountAvatar = $this->accountAvatarRepository->update([
-          'AccountID'=>(int)$account->AccountID,
-          'AvatarURL'=>'https://vos-media.nyc3.digitaloceanspaces.com/'.$prefix.$filepath.$hash,
+            'AccountID'=>(int)$account->AccountID,
+            'AvatarURL'=>'https://vos-media.nyc3.cdn.digitaloceanspaces.com/'.$prefix.$finalUrl,
         ], $accountAvatar->AccountAvatarID);
 
         //$accountAvatar = $this->accountAvatarRepository->update($input, $id);
