@@ -39,7 +39,7 @@ class AcademyBrandingTest extends TestCase
 
         //the loading is off of a relationship that defines IsMaster = 1 in the join
         //so a non-master will always see no academy loaded
-        $this->assertEquals(404, $this->response->getStatusCode());
+        $this->assertEquals(403, $this->response->getStatusCode());
     }
 
     /**

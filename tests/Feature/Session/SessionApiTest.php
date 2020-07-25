@@ -176,7 +176,6 @@ class SessionApiTest extends TestCase
         $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
         $this->withoutMiddleware(\App\Http\Middleware\EnableCors::class);
 
-        $academyId = 'SHYG';
         $sam = AccountUser::find(5);
         //can't do json call with cookies in 5.8
         $headers = [
