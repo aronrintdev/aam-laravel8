@@ -311,4 +311,94 @@ class SessionAPIController {
         }
         // @codeCoverageIgnoreEnd
     }
+
+    /**
+     * @param string $id
+     * @return Response
+     *
+     * @OA\POST(
+     *   path="/session/logout",
+     *   summary="Clear session, revoke any supplied refresh_token",
+     *   tags={"session"},
+     *   @OA\MediaType(
+     *     mediaType="application/json"
+     *   ),
+     *   @OA\RequestBody(
+     *     description="RefreshToken in json format",
+     *     required=true,
+     *     @OA\JsonContent(
+     *       type="object",
+     *         @OA\Property(
+     *           property="refresh_token",
+     *           type="string",
+     *         )
+     *     )
+     *   ),
+     *  @OA\Response(
+     *     response=200,
+	 *     description="session invalidated successfully",
+	 *     @OA\MediaType(
+	 *       mediaType="application/json",
+	 *       @OA\Schema(
+     *       )
+     *     )
+     *   ),
+     *  @OA\Response(
+     *     response=401,
+	 *     description="invalid token",
+	 *     @OA\MediaType(
+	 *       mediaType="application/json",
+	 *       @OA\Schema(
+     *       )
+     *     )
+     *   )
+     * )
+     */
+    /**
+     * User needs an access_token that is not total garbage (can be expired)
+     * and, optionally a refresh token.
+     */
+    public function logout(Request $request)
+    {
+        $jwtManager = JWTAuth::manager();
+        $blacklist  = JWTAuth::blacklist();
+        $jwtParsedToken   = JWTAuth::parseToken();
+        $refreshToken = $request->input('refresh_token');
+
+
+        try {
+            if (!$jwtParsedToken->authenticate()) { // Check user not found. Check token has expired.
+                //\Log::info('no auth in refresh token');
+                throw new UnauthorizedHttpException('jwt-auth', 'User not found');
+            }
+
+            $payload = $jwtManager->getPayloadFactory()->make();
+            $blacklist->add($payload);
+
+            if ($refreshToken) {
+                \DB::beginTransaction();
+                //revoke existing token
+                \DB::table('jwt_refresh_tokens')
+                    ->where([
+                        'refresh_token' => $refreshToken,
+                        'revoked'       => 0
+                    ])->update([
+                        'revoked'    => '1',
+                        'revoked_on' => \Carbon\Carbon::now(),
+                    ]);
+                \DB::commit();
+            }
+
+            $expires = config('jwt.ttl') * 60;
+            //time is unix timestmp, no ms, no tz
+            $exp = $payload['exp'] - time();
+            return response()->json([])
+            ->withCookie( cookie('token', '', $expires, '/', null, false, false) );
+        } catch (JWTException $e) {
+            \Log::error('failed to refresh', ['exception'=>$e]);
+            throw new UnauthorizedHttpException('jwt-auth', $e->getMessage(), $e, $e->getCode());
+        } catch (TokenExpiredException $t) {
+            throw new UnauthorizedHttpException('jwt-auth', $e->getMessage(), $e, $e->getCode());
+        }
+    }
 }

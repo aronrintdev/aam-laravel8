@@ -83,6 +83,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/academies/{id}/enroll', 'AcademyAPIController@enrollAcademy');
     Route::post('/session/{id}/switch', 'SessionAPIController@switchAcademy');
     Route::post('/session/check', 'SessionAPIController@checkJwt');
+    Route::post('/session/logout', 'SessionAPIController@logout');
 
     Route::resource('licenses', 'LicenseAPIController');
 });

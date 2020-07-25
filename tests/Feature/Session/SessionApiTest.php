@@ -219,4 +219,110 @@ class SessionApiTest extends TestCase
         $this->assertEquals($sam->AccountID, $jwt['aid']);
         $this->assertEquals($sam->Email, $jwt['sub']);
     }
+
+    /**
+     * @test
+     */
+    public function test_revoked_token_cannot_refresh()
+    {
+        $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
+        $this->withoutMiddleware(\App\Http\Middleware\EnableCors::class);
+
+        $sam = AccountUser::find(5);
+        //can't do json call with cookies in 5.8
+        $headers = [
+            //'CONTENT_LENGTH' => mb_strlen('', '8bit'),
+            'CONTENT_TYPE' => 'application/json',
+            'Accept' => 'application/json',
+        ];
+        $token   = \JWTAuth::fromUser($sam);
+        $refresh = \bin2hex(\random_bytes(40));
+
+        $headers['Authorization'] = 'Bearer ' . $token;
+
+        $result = \DB::table('jwt_refresh_tokens')->insert([
+            'refresh_token' => $refresh,
+            'user_agent'    => "User-Agent",
+            'user_id'       => $sam->AccountID,
+            'expires'       => \Carbon\Carbon::now()->addMonths(6),
+            'revoked'       => 1,
+            'revoked_on'    => \Carbon\Carbon::now(),
+        ]);
+        $headers = $this->transformHeadersToServerVars($headers);
+
+        $this->response = $this->actingAs($sam, 'api')
+            ->call('POST', '/api201902/session/refresh',
+                //params
+                [
+                ],
+                //cookies
+                [
+                ],
+                //files
+                [],
+                //server-vars
+                $headers,
+                //body
+                json_encode(['refresh_token' => $refresh ]),
+            );
+        $this->response->assertStatus(401);
+        $this->response->assertJsonStructure(['message']);
+    }
+
+    /**
+     * @test
+     */
+    public function test_logout_revokes_token()
+    {
+        $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
+        $this->withoutMiddleware(\App\Http\Middleware\EnableCors::class);
+
+        $sam = AccountUser::find(5);
+        //can't do json call with cookies in 5.8
+        $headers = [
+            //'CONTENT_LENGTH' => mb_strlen('', '8bit'),
+            'CONTENT_TYPE' => 'application/json',
+            'Accept' => 'application/json',
+        ];
+        $token   = \JWTAuth::fromUser($sam);
+        $refresh = \bin2hex(\random_bytes(40));
+
+        $headers['Authorization'] = 'Bearer ' . $token;
+
+        $result = \DB::table('jwt_refresh_tokens')->insert([
+            'refresh_token' => $refresh,
+            'user_agent'    => "User-Agent",
+            'user_id'       => $sam->AccountID,
+            'expires'       => \Carbon\Carbon::now()->addMonths(6),
+            'revoked'       => 0,
+        ]);
+        $headers = $this->transformHeadersToServerVars($headers);
+
+        $this->response = $this->actingAs($sam, 'api')
+            ->call('POST', '/api201902/session/logout',
+                //params
+                [
+                ],
+                //cookies
+                [
+                ],
+                //files
+                [],
+                //server-vars
+                $headers,
+                //body
+                json_encode(['refresh_token' => $refresh ]),
+            );
+
+        $this->response->assertStatus(200);
+        $this->response->assertJsonStructure([]);
+
+        $result = \DB::table('jwt_refresh_tokens')->where([
+            'refresh_token' => $refresh,
+            'user_agent'    => "User-Agent",
+            'user_id'       => $sam->AccountID,
+        ])->get();
+
+        $this->assertEquals(1, $result[0]->revoked);
+    }
 }
