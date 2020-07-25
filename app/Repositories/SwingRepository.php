@@ -75,7 +75,7 @@ class SwingRepository extends BaseRepository
         //but for now we also want to sort by DateAnalyzed DESC
         //so joining type 2 where no DateAnalyzed exists is
         //not worth it.
-        $query->orWhere('DateAnalyzed', '>=', $dateAnalyzed);
+        $query->where('DateAnalyzed', '>=', $dateAnalyzed);
         //join type 2 with type 3
         /*
         $query->where(function($q) use ($dateAnalyzed) {
