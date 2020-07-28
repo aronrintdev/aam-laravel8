@@ -12,7 +12,7 @@ class TestAcademyTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement('TRUNCATE TABLE [Academies]');
+        DB::statement('DELETE FROM [Academies]');
         $faker = Faker::create();
         $faker->seed(4321);
         DB::table('Academies')->insert([

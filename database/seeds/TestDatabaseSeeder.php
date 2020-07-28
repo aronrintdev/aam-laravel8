@@ -15,11 +15,15 @@ class TestDatabaseSeeder extends Seeder
         //Schema::disableForeignKeyConstraints();
         \DB::statement("ALTER TABLE [dbo].[AccountAvatars] DROP CONSTRAINT [FK__AccountAv__Accou__001]");
         \DB::statement("TRUNCATE Table AccountAvatars");
-        \DB::statement("TRUNCATE TABLE Accounts");
+        //\DB::statement("TRUNCATE TABLE Accounts");
+        \DB::statement("DELETE FROM  Accounts");
+        \DB::statement("DBCC CHECKIDENT ('Accounts',RESEED, 0)");
         \DB::statement("TRUNCATE TABLE SwingStatusIDs");
         \DB::statement("TRUNCATE TABLE AcademyStudents");
-        \DB::statement("TRUNCATE TABLE AcademyInstructors");
-        \DB::statement("TRUNCATE TABLE Instructors");
+        //\DB::statement("TRUNCATE TABLE AcademyInstructors");
+        \DB::statement("DELETE FROM  AcademyInstructors");
+        //\DB::statement("TRUNCATE TABLE Instructors");
+        \DB::statement("DELETE FROM Instructors");
         \DB::statement("TRUNCATE TABLE InstructorStudents");
         \DB::statement("TRUNCATE TABLE InstructorStudentsMulti");
         \DB::statement("TRUNCATE TABLE InstructorStudentsFollow");
