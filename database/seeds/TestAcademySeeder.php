@@ -26,6 +26,7 @@ class TestAcademyTableSeeder extends Seeder
             'SampleLesson'       => 999,
             'PrivateFlag'        => 0,
             'Logo'               => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test/flag-in-hole.png',
+            'Live'               => 1,
         ]);
 
         DB::table('Academies')->insert([
@@ -33,12 +34,13 @@ class TestAcademyTableSeeder extends Seeder
             'AdminAccountID'     => 3,
             'Name'               => 'City Cricket Club',
             'Description'        => 'Two Instructors',
-            'SportID'            => 'CRIK',
+            'SportID'            => 'CRKT',
             'BaseColor'          => 'CC0099',
             'BannerText'         => 'Smashing Sticky Wickets',
             'SampleLesson'       => 999,
             'PrivateFlag'        => 0,
             'Logo'               => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test/cricket-game_1f3cf.png',
+            'Live'               => 1,
         ]);
 
         DB::table('Academies')->insert([
@@ -52,6 +54,7 @@ class TestAcademyTableSeeder extends Seeder
             'SampleLesson'       => 999,
             'PrivateFlag'        => 0,
             'Logo'               => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test/baseball_26be.png',
+            'Live'               => 1,
         ]);
 
         DB::table('Academies')->insert([
@@ -65,6 +68,7 @@ class TestAcademyTableSeeder extends Seeder
             'SampleLesson'       => 999,
             'PrivateFlag'        => 0,
             'Logo'               => 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/test/fore-logo.png',
+            'Live'               => 1,
         ]);
 
 
