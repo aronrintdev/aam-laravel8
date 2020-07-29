@@ -5,6 +5,7 @@ use App\Models\Account;
 use App\Models\Instructor;
 use League\Fractal;
 
+
 /**
  * @OA\Schema(
  *   schema="instructor",
@@ -58,8 +59,18 @@ use League\Fractal;
  *         type="string"
  *       ),
  *       @OA\Property(
+ *         property="title",
+ *         description="Optional Title",
+ *         type="string"
+ *       ),
+ *       @OA\Property(
  *         property="email",
  *         description="Email",
+ *         type="string"
+ *       ),
+ *       @OA\Property(
+ *         property="academy_id",
+ *         description="Optional Academy Code",
  *         type="string"
  *       )
  *   )
@@ -79,6 +90,10 @@ class InstructorTransformer extends Fractal\TransformerAbstract
         if ($acct->Accomplishments != '') {
             $extraFields['accolades'] = $acct->Accomplishments;
         }
+        if ($acct->AcademyID != '') {
+            $extraFields['academy_id'] = trim($acct->AcademyID);
+        }
+
 
         //depending on how the instructor is loaded, we might hit
         //the account table and we might not.  InstructorID is a pointer
@@ -92,6 +107,7 @@ class InstructorTransformer extends Fractal\TransformerAbstract
                 'title'        =>  $acct->Title,
                 'profile_pic'  =>  $acct->HeadShot,
                 'email'        =>  $acct->Email,
+                'title'        =>  $acct->Title,
             ], $extraFields)
         ];
     }

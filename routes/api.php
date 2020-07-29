@@ -27,6 +27,7 @@ Route::group(['middleware' => 'permissive'], function () {
     Route::get('/avatar/{id}', 'AccountAvatarAPIController@show');
     Route::get('/apicheck', 'VersionAPIController@check');
     Route::get('/instructors/', 'InstructorAPIController@index');
+    Route::get('/instructors/search', 'InstructorAPIController@search')->name('instructors.search');
     Route::post('/session/refresh', 'SessionAPIController@refresh');
 });
 

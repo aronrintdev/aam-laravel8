@@ -57,6 +57,7 @@ class AcademySchema extends BaseSchema
 			'base_color_lt'  =>  $resource->BaseColorLt,
 			'btn_color'      =>  $resource->BGColor,
 			'selected_color' =>  $resource->SelectedColor,
+			'sport_code'     =>  $resource->SportID,
         ];
     }
 

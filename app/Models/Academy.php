@@ -528,6 +528,7 @@ class Academy extends Model
     public $keyType = 'string';
 
     public $fillable = [
+        'AcademyID',
         'BaseColor',
         'AdamPaid',
         'BaseColorLt',

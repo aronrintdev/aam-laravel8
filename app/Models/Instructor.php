@@ -296,6 +296,10 @@ class Instructor extends Model
         'SpecialtyCode',
         'CourseCountry',
         'SportID',
+        'FirstName',
+        'LastName',
+        'Email',
+        'InstructorID',
         'V1GAProCode'
     ];
 

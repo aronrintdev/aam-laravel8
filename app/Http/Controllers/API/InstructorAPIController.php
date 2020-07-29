@@ -4,7 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\API\CreateInstructorAPIRequest;
 use App\Http\Requests\API\UpdateInstructorAPIRequest;
+use App\AccountUser;
+use App\Models\Account;
+use App\Models\Academy;
 use App\Models\Instructor;
+use App\Models\SearchResult;
 use App\Repositories\InstructorRepository;
 use App\Repositories\AccountRepository;
 use Illuminate\Http\Request;
@@ -17,6 +21,12 @@ use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\Serializer\JsonApiSerializer;
+
+use Neomerx\JsonApi\Encoder\Encoder;
+use App\Transformers\UserTransformer;
+use App\Transformers\AcademySchema;
+use App\Transformers\UserSchema;
+use App\Transformers\InstructorSearchResultSchema;
 
 
 /**
@@ -135,6 +145,81 @@ class InstructorAPIController extends AppBaseController
     }
 
     /**
+     * @param Request $request
+     * @return Response
+     *
+     * @OA\Get(
+     *   path="/instructors/search",
+     *   summary="Search a listing of the Instructors.",
+     *   tags={"Instructor"},
+     *   description="Search all Instructors",
+     *   @OA\Parameter(
+     *     name="name",
+     *     description="search query",
+     *     @OA\Schema(
+     *       type="string"
+     *     ),
+     *     required=false,
+     *     in="query"
+     *   ),
+     *   @ OA\MediaType(
+     *     mediaType="application/json"
+     *   ),
+     *
+     *   @ OA\Response(
+     *     response=200,
+     *     ref="#/components/responses/Instructors"
+     *   )
+     * )
+     */
+    public function search(Request $request)
+    {
+        ini_set('display_html_errors', 0);
+        $limit = $request->get('limit') ? (int)$request->get('limit') : 100;
+        if ($limit > 500) {
+            $limit = 500;
+        }
+        $ftsearch = $request->get('name');
+        $ftsearch = substr($ftsearch, 0, 200);
+
+        $results = \DB::select('
+            select  s.*, i.HeadShot from  freetexttable(dbo.AcademyInstructorSearch, *, ?) as ft
+            join AcademyInstructorSearch s on ft.[key] = s.id
+            join Instructors i on s.AccountID          =  i.InstructorID
+            order by ft.[rank] DESC
+        ', [$ftsearch]
+        );
+
+        $instructors = collect($results)->map(function($item) {
+            $item->AcademyID = trim($item->AcademyID);
+            return new SearchResult((array)$item);
+        });
+
+		$encoder = Encoder::instance([
+				Account::class => UserSchema::class,
+				SearchResult::class => InstructorSearchResultSchema::class,
+				AccountUser::class => UserSchema::class,
+				Academy::class => AcademySchema::class,
+			])
+			->withIncludedPaths([
+				'academies',
+			])
+			->withEncodeOptions(JSON_PRETTY_PRINT);
+
+        return response($encoder->encodeData($instructors));
+
+
+        $manager = new Manager();
+        $manager->setSerializer(new JsonApiSerializer());
+        $resource = new Collection($instructors, new InstructorTransformer);
+        return response()->json((new Manager)->createData($resource)->toArray());
+
+        return $this->sendResponse($instructors->toArray(), 'Instructors retrieved successfully');
+    }
+
+
+
+    /**
      * @param CreateInstructorAPIRequest $request
      * @return Response
      *
@@ -225,6 +310,8 @@ class InstructorAPIController extends AppBaseController
 
         /** @var Instructor $instructor */
         $instructor = $this->instructorRepository->find($id, $fields);
+
+        ini_set('display_html_errors', 0);
 
         if (empty($instructor)) {
             return $this->sendError('Instructor not found');
