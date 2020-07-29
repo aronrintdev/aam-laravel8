@@ -744,13 +744,7 @@ class Academy extends Model
      */
     public static $rules = [
         'Name' => 'required',
-        'PrivateFlag' => 'required',
         'SportID' => 'required',
-        'HashTagFlag' => 'required',
-        'AdminAccountID' => 'required',
-        'RatingFlag' => 'required',
-        'SaveAsFlag' => 'required',
-        //'AcademyID' => 'required',
         'Description' => 'required'
     ];
 

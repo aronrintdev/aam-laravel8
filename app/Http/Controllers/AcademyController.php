@@ -90,7 +90,6 @@ class AcademyController extends AppBaseController
      */
     public function edit($id)
     {
-        return;
         $academy = $this->academyRepository->find($id);
 
         if (empty($academy)) {
@@ -112,7 +111,6 @@ class AcademyController extends AppBaseController
      */
     public function update($id, UpdateAcademyRequest $request)
     {
-        return;
         $academy = $this->academyRepository->find($id);
 
         if (empty($academy)) {
@@ -121,7 +119,11 @@ class AcademyController extends AppBaseController
             return redirect(route('academies.index'));
         }
 
-        $academy = $this->academyRepository->update($request->all(), $id);
+        //allowable fields
+        $allow = ['Live', 'Name', 'HiddenFlag', 'Description'];
+
+
+        $academy = $this->academyRepository->update($request->only($allow), $id);
 
         Flash::success('Academy updated successfully.');
 
