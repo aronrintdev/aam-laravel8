@@ -1,13 +1,63 @@
+<!-- Academyid Field -->
+<div class="form-group">
+    {!! Form::label('AcademyID', 'Academyid:') !!}
+    <p>{!! $academy->AcademyID !!}</p>
+    <p><a href="https://app.v1sports.com/{!! $academy->AcademyID !!}" target="_blank">Public Profile</a>
+</div>
+
+<!-- Name Field -->
+<div class="form-group">
+    {!! Form::label('Name', 'Name:') !!}
+    <p>{!! $academy->Name !!}</p>
+</div>
+
+<!-- Logo Field -->
+<div class="form-group">
+    {!! Form::label('Logo', 'Logo:') !!}
+    <p>{!! $academy->Logo !!}</p>
+    <img src="{!! $academy->Logo !!}"/>
+</div>
+
+<!-- Sportid Field -->
+<div class="form-group">
+    {!! Form::label('SportID', 'Sportid:') !!}
+    <p>{!! $academy->SportID !!}</p>
+</div>
+
+<!-- Bannertext Field -->
+<div class="form-group">
+    {!! Form::label('BannerText', 'Bannertext:') !!}
+    <p>{!! $academy->BannerText !!}</p>
+</div>
+
+<!-- Description Field -->
+<div class="form-group">
+    {!! Form::label('Description', 'Description:') !!}
+    <p>{!! $academy->Description !!}</p>
+</div>
+
+<!-- Hiddenflag Field -->
+<div class="form-group">
+    {!! Form::label('HiddenFlag', 'Hiddenflag:') !!}
+    <p>{!! $academy->HiddenFlag !!}</p>
+</div>
+
+<!-- Live Field -->
+<div class="form-group">
+    {!! Form::label('Live', 'Live:') !!}
+    <p>{!! $academy->Live !!}</p>
+</div>
+
+
+
+<hr/>
+Legacy Fields
+<hr/>
+
 <!-- Basecolor Field -->
 <div class="form-group">
     {!! Form::label('BaseColor', 'Basecolor:') !!}
     <p>{!! $academy->BaseColor !!}</p>
-</div>
-
-<!-- Adampaid Field -->
-<div class="form-group">
-    {!! Form::label('AdamPaid', 'Adampaid:') !!}
-    <p>{!! $academy->AdamPaid !!}</p>
 </div>
 
 <!-- Basecolorlt Field -->
@@ -40,12 +90,6 @@
     <p>{!! $academy->YT_Password !!}</p>
 </div>
 
-<!-- Name Field -->
-<div class="form-group">
-    {!! Form::label('Name', 'Name:') !!}
-    <p>{!! $academy->Name !!}</p>
-</div>
-
 <!-- Sendmoveemail Field -->
 <div class="form-group">
     {!! Form::label('SendMoveEmail', 'Sendmoveemail:') !!}
@@ -58,34 +102,16 @@
     <p>{!! $academy->HidePoweredBy !!}</p>
 </div>
 
-<!-- Logo Field -->
-<div class="form-group">
-    {!! Form::label('Logo', 'Logo:') !!}
-    <p>{!! $academy->Logo !!}</p>
-</div>
-
 <!-- Contractpdf Field -->
 <div class="form-group">
     {!! Form::label('ContractPDF', 'Contractpdf:') !!}
     <p>{!! $academy->ContractPDF !!}</p>
 </div>
 
-<!-- Live Field -->
-<div class="form-group">
-    {!! Form::label('Live', 'Live:') !!}
-    <p>{!! $academy->Live !!}</p>
-</div>
-
 <!-- Proadv Serial Field -->
 <div class="form-group">
     {!! Form::label('ProAdv_Serial', 'Proadv Serial:') !!}
     <p>{!! $academy->ProAdv_Serial !!}</p>
-</div>
-
-<!-- Tw Secret Field -->
-<div class="form-group">
-    {!! Form::label('TW_Secret', 'Tw Secret:') !!}
-    <p>{!! $academy->TW_Secret !!}</p>
 </div>
 
 <!-- Yt Url Field -->
@@ -170,18 +196,6 @@
 <div class="form-group">
     {!! Form::label('BillingStatusID', 'Billingstatusid:') !!}
     <p>{!! $academy->BillingStatusID !!}</p>
-</div>
-
-<!-- Dividebythreshold Field -->
-<div class="form-group">
-    {!! Form::label('DivideByThreshold', 'Dividebythreshold:') !!}
-    <p>{!! $academy->DivideByThreshold !!}</p>
-</div>
-
-<!-- Sportid Field -->
-<div class="form-group">
-    {!! Form::label('SportID', 'Sportid:') !!}
-    <p>{!! $academy->SportID !!}</p>
 </div>
 
 <!-- Bodytext Field -->
@@ -436,12 +450,6 @@
     <p>{!! $academy->YT_Login !!}</p>
 </div>
 
-<!-- Hiddenflag Field -->
-<div class="form-group">
-    {!! Form::label('HiddenFlag', 'Hiddenflag:') !!}
-    <p>{!! $academy->HiddenFlag !!}</p>
-</div>
-
 <!-- Frontpagetext2 Field -->
 <div class="form-group">
     {!! Form::label('FrontPageText2', 'Frontpagetext2:') !!}
@@ -508,12 +516,6 @@
     <p>{!! $academy->IFrame_Width !!}</p>
 </div>
 
-<!-- Academyid Field -->
-<div class="form-group">
-    {!! Form::label('AcademyID', 'Academyid:') !!}
-    <p>{!! $academy->AcademyID !!}</p>
-</div>
-
 <!-- Bgcolor Field -->
 <div class="form-group">
     {!! Form::label('BGColor', 'Bgcolor:') !!}
@@ -550,12 +552,6 @@
     <p>{!! $academy->PlayerPartnerLogos !!}</p>
 </div>
 
-<!-- Description Field -->
-<div class="form-group">
-    {!! Form::label('Description', 'Description:') !!}
-    <p>{!! $academy->Description !!}</p>
-</div>
-
 <!-- Tw Login Field -->
 <div class="form-group">
     {!! Form::label('TW_Login', 'Tw Login:') !!}
@@ -590,12 +586,6 @@
 <div class="form-group">
     {!! Form::label('DateV1ProSoftware', 'Datev1Prosoftware:') !!}
     <p>{!! $academy->DateV1ProSoftware !!}</p>
-</div>
-
-<!-- Bannertext Field -->
-<div class="form-group">
-    {!! Form::label('BannerText', 'Bannertext:') !!}
-    <p>{!! $academy->BannerText !!}</p>
 </div>
 
 <!-- Lessonthreshold Field -->

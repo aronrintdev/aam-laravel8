@@ -78,7 +78,7 @@ class AcademyController extends AppBaseController
             return redirect(route('academies.index'));
         }
 
-        return view('academies.show')->with('academy', $academy);
+        return view('academies.show')->with('academy', $academy)->with('instructors', $academy->instructors);
     }
 
     /**

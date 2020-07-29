@@ -762,4 +762,12 @@ class Academy extends Model
     public function students() {
         return $this->belongsToMany('App\Models\Account', 'AcademyStudents', 'AcademyID', 'AccountID');
     }
+
+    public function instructors() {
+        return $this->belongsToMany('App\Models\Instructor', 'AcademyInstructors', 'AcademyID', 'InstructorID')
+            ->wherePivot('IsEnabled', 1)
+            ->withPivot('IsEnabled', 'IsMaster', 'IsHidden')
+            ->with('account')
+            ;
+    }
 }

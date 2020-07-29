@@ -384,6 +384,10 @@ class Instructor extends Model
         return $this->academiesTeaching();
     }
 
+    public function account() {
+        return $this->hasOne('App\Models\Account', 'AccountID', 'InstructorID');
+    }
+
     public function academiesTeaching() {
         return $this->belongsToMany('App\Models\Academy', 'AcademyInstructors', 'InstructorID', 'AcademyID')
             ->wherePivot('IsEnabled', 1)
