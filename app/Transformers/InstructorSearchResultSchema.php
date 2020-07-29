@@ -12,7 +12,7 @@ use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 
 /**
  * @OA\Schema(
- *   schema="instructor",
+ *   schema="instructor-search-result",
  *   required={""},
  *   @OA\Property(
  *     property="id",
@@ -54,7 +54,7 @@ use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
  *         type="string"
  *       ),
  *       @OA\Property(
- *         property="academy_id",
+ *         property="academy_code",
  *         description="Currently selected academy ID (instructor only)",
  *         type="string"
  *       ),
@@ -138,7 +138,7 @@ class InstructorSearchResultSchema extends BaseSchema
             'email'         => $user->Email,
             'account_type'  => 'instructor',
             'title'         => $user->Title,
-            'academy_id'    => trim($user->AcademyID),
+            'academy_code'    => trim($user->AcademyID),
             'instructor_id'    => trim($user->AccountID),
         ];
     }
