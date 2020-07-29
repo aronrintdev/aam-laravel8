@@ -168,7 +168,7 @@ class AcademyAPIController extends AppBaseController
     public function show($id)
     {
         /** @var Academy $academy */
-        $academy = $this->academyRepository->find($id);
+        $academy = $this->academyRepository->findVisible($id);
 
         if (empty($academy)) {
             return $this->sendError('Academy not found');
@@ -229,7 +229,7 @@ class AcademyAPIController extends AppBaseController
         $input = $request->all();
 
         /** @var Academy $academy */
-        $academy = $this->academyRepository->find($id);
+        $academy = $this->academyRepository->findVisible($id);
 
         if (empty($academy)) {
             return $this->sendError('Academy not found');
@@ -285,7 +285,7 @@ class AcademyAPIController extends AppBaseController
     {
         throw new AuthorizationException();
         /** @var Academy $academy */
-        $academy = $this->academyRepository->find($id);
+        $academy = $this->academyRepository->findVisible($id);
 
         if (empty($academy)) {
             return $this->sendError('Academy not found');
@@ -325,7 +325,7 @@ class AcademyAPIController extends AppBaseController
     public function showInstructors($id, Request $request)
     {
         $user = \Auth::user();
-        $academy = $this->academyRepository->find($id);
+        $academy = $this->academyRepository->findVisible($id);
 
         $this->instructorRepository = new InstructorRepository(app());
 
@@ -393,7 +393,7 @@ class AcademyAPIController extends AppBaseController
     public function enrollAcademy($id, Request $request)
     {
         $user = \Auth::user();
-        $academy = $this->academyRepository->find($id);
+        $academy = $this->academyRepository->findVisible($id);
 
         //This should check academy join preferences, but we don't
         //have that in the legacy DB
@@ -451,7 +451,7 @@ class AcademyAPIController extends AppBaseController
     public function enrollAcademyUser($id, $userid, Request $request)
     {
         $user = \Auth::user();
-        $academy = $this->academyRepository->find($id);
+        $academy = $this->academyRepository->findVisible($id);
 
         //if the user is NOT an API agent do not allow
         if(!$user->isApiAgent()) {
@@ -519,7 +519,7 @@ class AcademyAPIController extends AppBaseController
 
         $fields = ['BaseColor', 'BaseColorLt', 'Logo', 'LogInGraphic', 'SelectedColor', 'SelectedColorLt', 'BGColor', 'AcademyID', 'BannerText'];
 
-        $academy = $this->academyRepository->find(
+        $academy = $this->academyRepository->findVisible(
             $id,
             $fields
         );

@@ -149,4 +149,23 @@ class AcademyRepository extends BaseRepository
 
         return $query->find($id, $columns);
     }
+
+    /**
+     * Find model record for given id
+     *
+     * Where Hidden = 0
+     *
+     * @param int $id
+     * @param array $columns
+     *
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|Model|null
+     */
+    public function findVisible($id, $columns = ['*'])
+    {
+        $query = $this->model->newQuery();
+
+        return $query->where('AcademyID', '=', $id)
+            ->where('HiddenFlag', '=', 0)
+            ->first($columns);
+    }
 }
