@@ -94,6 +94,10 @@ class InstructorTransformer extends Fractal\TransformerAbstract
             $extraFields['academy_id'] = trim($acct->AcademyID);
         }
 
+        $avatarUrl = $acct->HeadShot;
+        if ($avatarUrl == null || $avatarUrl == 'NotAvailable.gif') {
+            $avatarUrl = 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/profile/profile_empty.png';
+        }
 
         //depending on how the instructor is loaded, we might hit
         //the account table and we might not.  InstructorID is a pointer
@@ -105,7 +109,7 @@ class InstructorTransformer extends Fractal\TransformerAbstract
                 'first_name'   =>  $acct->FirstName,
                 'last_name'    =>  $acct->LastName,
                 'title'        =>  $acct->Title,
-                'profile_pic'  =>  $acct->HeadShot,
+                'profile_pic'  =>  $avatarUrl,
                 'email'        =>  $acct->Email,
                 'title'        =>  $acct->Title,
             ], $extraFields)

@@ -131,6 +131,9 @@ class InstructorSearchResultSchema extends BaseSchema
     {
         //$avatarUrl = $acct->avatar ? $acct->avatar->AvatarURL : null;
         $avatarUrl = $user->HeadShot;
+        if ($avatarUrl == null || $avatarUrl == 'NotAvailable.gif') {
+            $avatarUrl = 'https://vos-media.nyc3.cdn.digitaloceanspaces.com/profile/profile_empty.png';
+        }
         return [
             'first_name'    => $user->FirstName,
             'last_name'     => $user->LastName,
