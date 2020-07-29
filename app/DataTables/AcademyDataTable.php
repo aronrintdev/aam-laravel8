@@ -45,6 +45,7 @@ class AcademyDataTable extends DataTable
             ->addAction(['width' => '120px', 'printable' => false], 1)
             ->minifiedAjax()
             ->parameters([
+                'pageLength' => 20,
                 'dom'       => 'Bfrtip',
                 'stateSave' => true,
                 'order'     => [[0, 'desc']],
