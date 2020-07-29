@@ -1,6 +1,6 @@
 <?php
 /**
- *  @OA\Info(title="VOS Account API", version="1.8")
+ *  @OA\Info(title="VOS Account API", version="1.9")
  *
  *  @OA\Server(url="/api201902")
  *  @OA\Server(url="https://stage.aam.v1sports.com/api201902")
