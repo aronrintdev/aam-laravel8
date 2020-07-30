@@ -179,15 +179,23 @@ class InstructorAPIController extends AppBaseController
         if ($limit > 500) {
             $limit = 500;
         }
+
+        //make every term prefix term to find some names like
+        //vincent => vince*
         $ftsearch = $request->get('name');
         $ftsearch = substr($ftsearch, 0, 200);
+        $ftkw     = explode(' ', $ftsearch);
+        $ftsearch = collect($ftkw)->map(function($item) {
+                return '"'.$item.'*"';
+        });
 
+        $ftsearch = implode(' and ', $ftsearch->all());
         $results = \DB::select('
-            select  s.*, i.HeadShot from  freetexttable(dbo.AcademyInstructorSearch, *, ?) as ft
+            select top (?) s.*, i.HeadShot from  containstable(dbo.AcademyInstructorSearch, *, ?) as ft
             join AcademyInstructorSearch s on ft.[key] = s.id
             join Instructors i on s.AccountID          =  i.InstructorID
             order by ft.[rank] DESC
-        ', [$ftsearch]
+        ', [$limit, $ftsearch]
         );
 
         $instructors = collect($results)->map(function($item) {
@@ -195,16 +203,16 @@ class InstructorAPIController extends AppBaseController
             return new SearchResult((array)$item);
         });
 
-		$encoder = Encoder::instance([
-				Account::class => UserSchema::class,
-				SearchResult::class => InstructorSearchResultSchema::class,
-				AccountUser::class => UserSchema::class,
-				Academy::class => AcademySchema::class,
-			])
-			->withIncludedPaths([
-				'academies',
-			])
-			->withEncodeOptions(JSON_PRETTY_PRINT);
+        $encoder = Encoder::instance([
+            Account::class => UserSchema::class,
+            SearchResult::class => InstructorSearchResultSchema::class,
+            AccountUser::class => UserSchema::class,
+            Academy::class => AcademySchema::class,
+        ])
+        ->withIncludedPaths([
+            'academies',
+        ])
+        ->withEncodeOptions(JSON_PRETTY_PRINT);
 
         return response($encoder->encodeData($instructors));
 
