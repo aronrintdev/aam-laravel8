@@ -17,10 +17,14 @@
                 <div class="row" style="padding-left: 20px">
 @foreach($instructors as $inst)
     <a href="{!! route('accounts.show', $inst->InstructorID) !!}" class="">
+@if($inst->accout)
 {{ $inst->account->FirstName }}
 {{ $inst->account->LastName }}
 -
 {{ $inst->account->Email }}
+@else
+Broken Accounts
+@endif
 </a>
     @if ($inst->pivot->IsMaster) 
 <span class="small">
