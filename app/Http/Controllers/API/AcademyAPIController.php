@@ -768,7 +768,7 @@ class AcademyAPIController extends AppBaseController
         $prefix = config('filesystems.disks.do-vos-media.root');
 
         $academy = $this->academyRepository->update([
-            'LoginGraphic'=>sprintf('%s/%s',
+            'LogInGraphic'=>sprintf('%s/%s',
                 'https://vos-media.nyc3.cdn.digitaloceanspaces.com',
                 $prefix.$finalUrl
             ),
