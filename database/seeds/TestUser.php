@@ -315,5 +315,20 @@ class TestUser extends Seeder
             'Email'              => 'sara@customer.test',
             'PasswordHash'       => \Hash::make('password'),
         ]);
+
+        DB::table('V1GolfPlus')->insert([
+            'AccountID'      => $saraId,
+            'CustID'         => 'Android',
+            'SubID'          => null,
+            'Active'         => 1,
+            'Created'        => \Carbon\Carbon::now('UTC')->subDays(366),
+            'StripeDate'     => null,
+            'Unsubbed'       => null,
+            'AndroidToken'   => null,
+            'AndroidPackage' => 'v1_golf_plus_annual',
+            'Trial'          => 0,
+            'TrialStartDate' => null,
+            'PlanType'       => null,
+        ]);
     }
 }

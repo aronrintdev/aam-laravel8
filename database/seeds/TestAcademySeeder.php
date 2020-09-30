@@ -83,6 +83,18 @@ class TestAcademyTableSeeder extends Seeder
             "InstructorID"      => "1",
         ]);
 
+        $samId = 5;
+        DB::table('Academies_AddOns')->insert([
+            "AcademyID"         => "",
+            "BillingAmount"     => "10.0",
+            "AddOn_Description" => "V1 Pro App",
+            "DateAdded"         => "Oct 26 2018 10:51AM",
+            "StartDate"         => "1/1/2020",
+            "DateDeleted"       => null,
+            "Live"              => "1",
+            "InstructorID"      => $samId,
+        ]);
+
 /**
 CREATE TABLE `Academies` (
  `AcademyID` char(8) NOT NULL,
