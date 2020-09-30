@@ -88,20 +88,49 @@ class LicenseAPIController extends Controller {
         //    $user->AccountID,
         //]);
 
-        $records = \DB::connection('sqlsrv')->select('SELECT * FROM Academies_AddOns
+        $academyRecords = \DB::connection('sqlsrv')->select('SELECT * FROM Academies_AddOns
             WHERE InstructorID = ?', [
             $user->AccountID,
         ]);
 
-        //TODO: the dates are stored as varchar(50) in various formats
-        //so we need to clean them up in code
-        //
-        return response()->json([
-            'data' => [
-				$this->transformLicenseRecords($records)
-            ],
+        $personalRecords = \DB::connection('sqlsrv')->select('SELECT * FROM V1GolfPlus
+            WHERE AccountID = ?', [
+            $user->AccountID,
         ]);
-    } 
+
+        return response()->json([
+            'data' => array_merge([],
+				$this->transformLicenseRecords($academyRecords),
+				$this->transformPlusRecords($personalRecords),
+            ),
+        ]);
+    }
+
+    /**
+     * Remove unsubbed records
+     */
+    public function transformPlusRecords($records) {
+        $records = array_filter($records, function($item) {
+            return $item->Unsubbed == null;
+        });
+        return array_map(function($item) {
+            $startDate = \Carbon\Carbon::parse($item->Created, 'America/New_York');
+            //DateTime::W3C format is the same as DateTime::RFC3339
+            //SubID is stripe subscription ID, not always present, empty string if not available.
+            return [
+                'id' => $item->ID,
+                'type' => 'license',
+                'attributes' => [
+                    'name'       => $item->AndroidPackage,
+                    'serial'     => $item->SubID,
+                    'code'       => strtolower(str_replace(' ', '_', $item->AndroidPackage)),
+                    'start_date' => $startDate->toW3cString(),
+                    'is_active'  => $item->Active == '1' ? true : false,
+                ],
+            ];
+        }, $records);
+
+    }
 
     public function transformLicenseRecords($records) {
         $records = array_filter($records, function($item) {
