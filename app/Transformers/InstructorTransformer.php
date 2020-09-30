@@ -59,11 +59,6 @@ use League\Fractal;
  *         type="string"
  *       ),
  *       @OA\Property(
- *         property="title",
- *         description="Optional Title",
- *         type="string"
- *       ),
- *       @OA\Property(
  *         property="email",
  *         description="Email",
  *         type="string"
@@ -111,7 +106,6 @@ class InstructorTransformer extends Fractal\TransformerAbstract
                 'title'        =>  $acct->Title,
                 'profile_pic'  =>  $avatarUrl,
                 'email'        =>  $acct->Email,
-                'title'        =>  $acct->Title,
             ], $extraFields)
         ];
     }
