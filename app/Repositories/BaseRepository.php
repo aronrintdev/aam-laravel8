@@ -101,6 +101,55 @@ abstract class BaseRepository
     }
 
     /**
+     * Paginate records with given filter criteria
+     *
+     * @param array $search
+     * @param int|null $after
+     * @param int|null $limit
+     * @param array $columns
+     *
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function paginate($search = [], $orderBy, $orderAscDesc, $after = null, $limit = null, $columns = ['*'], $cb=null)
+    {
+        $query = $this->model->newQuery();
+
+        if (count($search)) {
+            foreach($search as $key => $value) {
+                if (in_array($key, $this->getFieldsSearchable())) {
+                    if (is_array($value) && $value[0] instanceof \Datetime) {
+                        $query->where($key, $value[1], $value[0]->format('Y-m-d H:i:s.v'));
+                    } elseif (is_array($value)) {
+                        $query->whereIn($key, $value);
+                    } else {
+                        $query->where($key, $value);
+                    }
+                }
+            }
+        }
+        $query->orderBy($orderBy, $orderAscDesc);
+
+        if (!is_null($after)) {
+            if ($orderAscDesc == 'DESC') {
+                $query->where($this->model->getKeyName(), '<', $after);
+            } else {
+                $query->where($this->model->getKeyName(), '>', $after);
+            }
+        }
+
+        if (!is_null($limit)) {
+            $query->limit($limit);
+        }
+
+        if (null != $cb) {
+            $query = $cb($query);
+        }
+
+        return $query->get($columns);
+    }
+
+
+    /**
      * Create model record
      *
      * @param array $input

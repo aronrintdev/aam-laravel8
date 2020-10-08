@@ -80,7 +80,7 @@ class SwingAnalysisTransformer extends Fractal\TransformerAbstract
             $videoPrefix = 'https://v1sports.com/SwingStore/';
         }
 
-        $thumbUrl = str_replace( ['.mp4', '.webm'], '.jpg', $item->AnalysisPath);
+        $thumbUrl = str_replace( ['.mp4', '.webm', '.avi'], '.jpg', $item->AnalysisPath);
         if (substr($thumbUrl, 0, 4) !== 'http') {
             $thumbUrl = 'https://v1sports.com/SwingStore/'.$thumbUrl;
         }
@@ -94,7 +94,7 @@ class SwingAnalysisTransformer extends Fractal\TransformerAbstract
             'attributes' => [
                 'video_url'        => $analysisPrefix.$item->AnalysisPath,
                 'thumb_url'        => $thumbUrl,
-                'title'            => $item->Description,
+                'title'            => trim($item->Description),
                 'source_video_url' => $videoPrefix.$item->VideoPath,
                 'source_video_id'  => $item->SwingID,
                 'date_uploaded'    => $item->DateAnalyzed,

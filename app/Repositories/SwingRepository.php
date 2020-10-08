@@ -23,6 +23,7 @@ class SwingRepository extends BaseRepository
         'InstructorID',
         'DateUploaded',
         'DateAnalyzed',
+        'Deleted',
     ];
 
     /**

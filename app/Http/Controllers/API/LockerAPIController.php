@@ -7,6 +7,8 @@ namespace App\Http\Controllers\API;
 use App\Models\Swing;
 use App\Models\Instructor;
 use App\Repositories\SwingRepository;
+use App\Repositories\SwingExampleRepository;
+use App\Repositories\SwingExamplePlusRepository;
 use App\Repositories\InstructorRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
@@ -61,9 +63,11 @@ class LockerAPIController extends AppBaseController
     /** @var  SwingRepository */
     private $swingRepository;
 
-    public function __construct(SwingRepository $swingRepo)
+    public function __construct(SwingRepository $swingRepo, SwingExampleRepository $modelsRepo, SwingExamplePlusRepository $modelsProRepo)
     {
         $this->swingRepository = $swingRepo;
+        $this->modelsRepository = $modelsRepo;
+        $this->modelsPlusRepository = $modelsProRepo;
     }
 
     /**
@@ -441,7 +445,7 @@ class LockerAPIController extends AppBaseController
         if (substr($videoUrl, 0, 4) !== 'http') {
             $videoUrl = 'https://v1sports.com/SwingStore/'.$swing['VideoPath'];
         }
-        $thumbUrl = str_replace( ['.mp4', '.webm'], '.jpg', $swing['VideoPath']);
+        $thumbUrl = str_replace( ['.mp4', '.webm', '.avi'], '.jpg', $swing['VideoPath']);
         if (substr($thumbUrl, 0, 4) !== 'http') {
             $thumbUrl = 'https://v1sports.com/SwingStore/'.$thumbUrl;
         }
@@ -451,7 +455,7 @@ class LockerAPIController extends AppBaseController
             'type'          => 'video',
             'attributes'    => [
             'account_id'    => (int) $swing['AccountID'],
-            'title'         => $swing['Description'],
+            'title'         => trim($swing['Description']),
             'video_url'     => $videoUrl,
             'thumb_url'     => $thumbUrl,
             'vimeo_id'      => $swing['VimeoID'],
@@ -460,5 +464,335 @@ class LockerAPIController extends AppBaseController
             'date_uploaded' => \Carbon\Carbon::createFromFormat('Y-m-d H:i:s.u', $swing['DateUploaded'], 'America/New_York'),
             ],
         ];
+    }
+
+    /**
+     * @OA\Schema(
+     *   schema="video",
+     *   required={""},
+     *   @OA\Property(
+     *     property="id",
+     *     description="Swing ID",
+     *     type="integer",
+     *     format="int32"
+     *   ),
+     *   @OA\Property(
+     *     property="attributes",
+     *     type="object",
+     *     @OA\Property(
+     *       property="title",
+     *       description="title or description",
+     *       type="string"
+     *     ),
+     *     @OA\Property(
+     *       property="date_uploaded",
+     *       description="Date video was uploaded",
+     *       type="string"
+     *     ),
+     *     @OA\Property(
+     *       property="thumb_url",
+     *       description="URL of thumbnail picture",
+     *       type="string"
+     *     ),
+     *     @OA\Property(
+     *       property="video_url",
+     *       description="URL of video file",
+     *       type="string"
+     *     ),
+     *   )
+     * )
+     */
+    public function videoRecordTransform(array $swing) {
+        $videoUrl = $swing['VideoPath'];
+        if (substr($videoUrl, 0, 4) !== 'http') {
+            $videoUrl = 'https://v1sports.com/SwingStore/'.$swing['VideoPath'];
+        }
+        $thumbUrl = str_replace( ['.mp4', '.webm', '.avi'], '.jpg', $swing['VideoPath']);
+        if (substr($thumbUrl, 0, 4) !== 'http') {
+            $thumbUrl = 'https://v1sports.com/SwingStore/'.$thumbUrl;
+        }
+        // if (intval($swing['InstructorID']) !== 1) {
+        //     return [];
+        // }
+        //TZ: Dates are stored in OS local timezones in MSSQL (probably Amercia/New_York)
+        return [
+            'id'            => (int) $swing['SwingID'],
+            'type'          => 'video',
+            'attributes'    => [
+            'title'         => trim($swing['Description']),
+            'instructor'    => trim($swing['InstructorID']),
+            'video_url'     => $videoUrl,
+            'thumb_url'     => $thumbUrl,
+            'date_uploaded' => \Carbon\Carbon::createFromFormat('Y-m-d H:i:s.u', $swing['DateUploaded'], 'America/New_York'),
+            ],
+        ];
+    }
+
+    /**
+     * Remove the video_url for anonymous users
+     */
+    public function videoRecordTransformAnon(array $swing) {
+        $record = $this->videoRecordTransform($swing);
+        $record['attributes']['video_url'] = '';
+        return $record;
+    }
+
+
+    /**
+     * @param Request $request
+     * @return Response
+     *
+     * @OA\Get(
+     *   path="/videos/models",
+     *   tags={"Locker"},
+     *   summary="Get model videos",
+     *   @OA\MediaType(
+     *     mediaType="application/json"
+     *   ),
+     *   @OA\Parameter(
+     *     name="limit",
+     *     description="Number of items to return",
+     *     @OA\Schema(
+     *       type="int",
+     *       format="int32",
+     *     ),
+     *     required=false,
+     *     example=30,
+     *     in="query"
+     *   ),
+     *   @OA\Parameter(
+     *     name="after",
+     *     description="The record id to start listing afterwards",
+     *     @OA\Schema(
+     *       type="int",
+     *       format="int32",
+     *     ),
+     *     required=false,
+     *     example=12345,
+     *     in="query"
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="List of example videos",
+     *     @OA\MediaType(
+     *     mediaType="application/json",
+     *       @OA\Schema(
+     *        allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
+     *        @OA\Property(
+     *           property="data",
+     *           type="array",
+     *           @OA\Items(ref="#/components/schemas/video")
+     *         )
+     *       )
+     *     )
+     *   )
+     * )
+     */
+    public function showModels(Request $request)
+    {
+        $user = $request->user();
+        $limit = $request->get('limit') ? intval($request->get('limit')) : 20;
+
+        // if (!$user) {
+        //     return response()->json('Unauthorized', 403);
+        // }
+        //
+        $searchParams = [
+            'AccountID'  => 3233,
+            //'AccountID'  => 260690,
+            'Deleted'    => 0,
+            'SportID'    => 'GOLF',
+            'InstructorID'    => 1,
+        ];
+
+        $swings = $this->modelsRepository->paginate(
+                $searchParams,
+                //'SwingID',
+                //'DESC',
+
+                 'Description',
+                 'ASC',
+                $request->get('after'),
+                $limit
+        );
+
+        if (!$user) {
+            $resource = new Collection($swings->toArray(), [$this, 'videoRecordTransformAnon']);
+            return response()->json((new Manager)->createData($resource)->toArray());
+        }
+        $resource = new Collection($swings->toArray(), [$this, 'videoRecordTransform']);
+        return response()->json((new Manager)->createData($resource)->toArray());
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     *
+     * @OA\Get(
+     *   path="/videos/plus-models",
+     *   tags={"Locker"},
+     *   summary="Get plus model videos",
+     *   @OA\MediaType(
+     *     mediaType="application/json"
+     *   ),
+     *   @OA\Parameter(
+     *     name="limit",
+     *     description="Number of items to return",
+     *     @OA\Schema(
+     *       type="int",
+     *       format="int32",
+     *     ),
+     *     required=false,
+     *     example=30,
+     *     in="query"
+     *   ),
+     *   @OA\Parameter(
+     *     name="after",
+     *     description="The record id to start listing afterwards",
+     *     @OA\Schema(
+     *       type="int",
+     *       format="int32",
+     *     ),
+     *     required=false,
+     *     example=12345,
+     *     in="query"
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="List of example videos for plus subscribers",
+     *     @OA\MediaType(
+     *     mediaType="application/json",
+     *       @OA\Schema(
+     *        allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
+     *        @OA\Property(
+     *           property="data",
+     *           type="array",
+     *           @OA\Items(ref="#/components/schemas/video")
+     *         )
+     *       )
+     *     )
+     *   )
+     * )
+     */
+    public function showPlusModels(Request $request)
+    {
+        $user = $request->user();
+        $limit = $request->get('limit') ? intval($request->get('limit')) : 20;
+
+        // if (!$user) {
+        //     return response()->json('Unauthorized', 403);
+        // }
+        //
+        $searchParams = [
+            'AccountID'  => 260690,
+            'Deleted'    => 0,
+            'SportID'    => 'GOLF',
+        ];
+        //iphoneModels == drill
+        //no name == model
+
+        $swings = $this->modelsPlusRepository->paginate(
+                $searchParams,
+                'SwingID',
+                'DESC',
+                $request->get('after'),
+                $limit
+        );
+
+        if (!$user) {
+            $resource = new Collection($swings->toArray(), [$this, 'videoRecordTransformAnon']);
+            return response()->json((new Manager)->createData($resource)->toArray());
+        }
+        $resource = new Collection($swings->toArray(), [$this, 'videoRecordTransform']);
+        return response()->json((new Manager)->createData($resource)->toArray());
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     *
+     * @OA\Get(
+     *   path="/videos/drills",
+     *   tags={"Locker"},
+     *   summary="Get drill videos",
+     *   @OA\MediaType(
+     *     mediaType="application/json"
+     *   ),
+     *   @OA\Parameter(
+     *     name="limit",
+     *     description="Number of items to return",
+     *     @OA\Schema(
+     *       type="int",
+     *       format="int32",
+     *     ),
+     *     required=false,
+     *     example=30,
+     *     in="query"
+     *   ),
+     *   @OA\Parameter(
+     *     name="after",
+     *     description="The record id to start listing afterwards",
+     *     @OA\Schema(
+     *       type="int",
+     *       format="int32",
+     *     ),
+     *     required=false,
+     *     example=12345,
+     *     in="query"
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="List of drill videos",
+     *     @OA\MediaType(
+     *     mediaType="application/json",
+     *       @OA\Schema(
+     *        allOf={@OA\Schema(ref="./jsonapi-schema.json#/definitions/success")},
+     *        @OA\Property(
+     *           property="data",
+     *           type="array",
+     *           @OA\Items(ref="#/components/schemas/video")
+     *         )
+     *       )
+     *     )
+     *   )
+     * )
+     */
+    public function showDrills(Request $request)
+    {
+        $user = $request->user();
+        $limit = $request->get('limit') ? intval($request->get('limit')) : 20;
+
+        // if (!$user) {
+        //     return response()->json('Unauthorized', 403);
+        // }
+        //
+        $searchParams = [
+            'AccountID'  => 3233,
+            'Deleted'    => 0,
+            'SportID'    => 'GOLF',
+            'InstructorID'  => 3233,
+        ];
+        //iphoneModels == drill
+        //no name == model
+
+        $swings = $this->modelsRepository->paginate(
+                $searchParams,
+                //'SwingID',
+                //'DESC',
+
+                'Description',
+                'ASC',
+
+                $request->get('after'),
+                $limit,
+                '*'
+        );
+
+        if (!$user) {
+            $resource = new Collection($swings->toArray(), [$this, 'videoRecordTransformAnon']);
+            return response()->json((new Manager)->createData($resource)->toArray());
+        }
+        $resource = new Collection($swings->toArray(), [$this, 'videoRecordTransform']);
+        return response()->json((new Manager)->createData($resource)->toArray());
     }
 }

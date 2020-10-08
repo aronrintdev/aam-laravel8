@@ -29,6 +29,10 @@ Route::group(['middleware' => 'permissive'], function () {
     Route::get('/instructors/', 'InstructorAPIController@index');
     Route::get('/instructors/search', 'InstructorAPIController@search')->name('instructors.search');
     Route::post('/session/refresh', 'SessionAPIController@refresh');
+
+    Route::get('videos/models', 'LockerAPIController@showModels');
+    Route::get('videos/pro-models', 'LockerAPIController@showPlusModels');
+    Route::get('videos/drills', 'LockerAPIController@showDrills');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
@@ -67,6 +71,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::patch('/avatar/{id}', 'AccountAvatarAPIController@update');
     Route::delete('/avatar/{id}', 'AccountAvatarAPIController@destroy');
     Route::resource('avatar', 'AccountAvatarAPIController');
+
 
     #Route::resource('locker', 'LockerAPIController');
     Route::get('locker/{swingId}/analysis', 'LockerAPIController@swingAnalysis');

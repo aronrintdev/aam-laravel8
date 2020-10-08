@@ -55,7 +55,21 @@ return [
             'strict' => true,
             'engine' => null,
         ],
-
+        'v1ga' => [
+            'driver' => 'sqlsrv',
+            'host' => env('V1GADB_HOST', '127.0.0.1'),
+            'port' => env('V1GADB_PORT', '1433'),
+            'database' => env('V1GADB_DATABASE', 'forge'),
+            'username' => env('V1GADB_USERNAME', 'forge'),
+            'password' => env('V1GADB_PASSWORD', ''),
+            'unix_socket' => env('V1GADB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+        ],
         'backendmysql' => [
             'driver' => 'mysql',
             'host' => env('BACK_DB_HOST', '127.0.0.1'),
