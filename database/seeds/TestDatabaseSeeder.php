@@ -33,6 +33,7 @@ class TestDatabaseSeeder extends Seeder
         $this->call(TestAcademyTableSeeder::class);
         $this->call(TestUser::class);
         $this->call(TestSwingSeeder::class);
+        $this->call(TestLibrarySeeder::class);
 /*
     IF EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK__AccountAv__Accou__741A2336]') AND parent_object_id = OBJECT_ID(N'[dbo].[AccountAvatars]'))
     ALTER TABLE [dbo].[AccountAvatars] DROP CONSTRAINT [FK__AccountAv__Accou__741A2336]
