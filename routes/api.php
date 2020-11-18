@@ -32,6 +32,7 @@ Route::group(['middleware' => 'permissive'], function () {
 
     Route::get('videos/models', 'LockerAPIController@showModels');
     Route::get('videos/pro-models', 'LockerAPIController@showPlusModels');
+    Route::get('videos/plus-models', 'LockerAPIController@showPlusModels');
     Route::get('videos/drills', 'LockerAPIController@showDrills');
 });
 
