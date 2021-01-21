@@ -8,6 +8,29 @@ Third DB is the V1A or lessons db, since writing a formal API for this site to h
 Some features added to that lessons db need to be over here and we just don't have the time to properly port 
 the functionality from that laravel to this one and create and test live migrations for SQL server.
 
+Local env
+===
+Copy `.env.example` to `.env` and add the following
+
+```
+DB_CONNECTION=sqlsrv
+DB_HOST=IP of sqlserver-dev or 127.0.0.1
+DB_PORT=1433
+DB_DATABASE=isa_test
+DB_USERNAME=SA
+DB_PASSWORD='' # get this from docker-compose.yml in sqlserver-dev
+
+BACK_DB_CONNECTION=mysql
+BACK_DB_HOST='localhost'
+BACK_DB_DATABASE='vos_account_dev'
+BACK_DB_USERNAME='homestead-or-valet'
+BACK_DB_PASSWORD='secret' 
+```
+
+Then, because the default database is MSSQL - and it already has a schema. 
+```
+php artisan migrate --database=mysql
+```
 
 Sample Data
 ===
