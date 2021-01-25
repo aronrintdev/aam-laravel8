@@ -104,8 +104,9 @@ task('build:package', function () {
     $stage = input()->hasArgument('stage') ? ''.input()->getArgument('stage') : 'test';
     run("mkdir -p build/");
     $files = [
-        'public/', 'app/', 'ci/', 'config/', 'database/', 'vendor/', 'resources/', 'routes/', 'bootstrap/', 'artisan', 'docker-compose.yml', 'docker-compose.'.$stage.'.yml', '.env',
+        'public/', 'app/', 'ci/', 'config/', 'database/', 'vendor/', 'resources/', 'routes/', 'bootstrap/', 'artisan', '.env',
     ];
+    /*
     if ($stage == 'test') {
         $files[] = "docker-compose.test.yml";
     }
@@ -115,6 +116,7 @@ task('build:package', function () {
     if ($stage == 'prod') {
         $files[] = "docker-compose.prod.yml";
     }
+     */
     run("tar -czf build/$packageName " . implode(' ' , $files));
 })->local();
 
