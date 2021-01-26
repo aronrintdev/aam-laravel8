@@ -20,7 +20,7 @@ DB_DATABASE=isa_test
 DB_USERNAME=SA
 DB_PASSWORD='' # get this from docker-compose.yml in sqlserver-dev
 
-BACK_DB_CONNECTION=mysql
+BACK_DB_CONNECTION=backendmysql
 BACK_DB_HOST='localhost'
 BACK_DB_DATABASE='vos_account_dev'
 BACK_DB_USERNAME='homestead-or-valet'
@@ -42,7 +42,7 @@ Do not run migrations, the SQL Server migrations are handled in dev-database pro
 Production migrations are run by hand
 
 ```
-php artisan db:seed --class="TestDatabase"
+php artisan db:seed --class="TestDatabaseSeeder"
 ```
 
 
