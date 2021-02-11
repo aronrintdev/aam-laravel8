@@ -552,7 +552,7 @@ class AccountAPIController extends AppBaseController
             ! $user->isApiAgent()) {
                 return response()->json(['errors'=>['status'=>403]], 403);
         }
-        //table unique constraints ensure only 1 row per account/instrcutor combo
+        //table unique constraints ensure only 1 row per account/instructor combo
         $result = InstructorStudentsMulti::find([
             'AccountID' => $id,
             'InstructorID' => $instructorId
@@ -582,13 +582,7 @@ class AccountAPIController extends AppBaseController
         if ($result['InstructorVerifiedAt'] != '' && $result['StudentVerifiedAt'] != '') {
             $result['IsVerified'] = 1;
         }
-
-        try {
-            $result->save();
-        } catch (QueryException $ex) {
-            //just ignore, it's probably duplicate key and we're fine with that
-        }
-
+        $result->save();
         return $this->sendResponse([], 'Account saved successfully');
     }
 }

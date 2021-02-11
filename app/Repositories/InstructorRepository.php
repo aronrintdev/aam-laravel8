@@ -137,6 +137,7 @@ class InstructorRepository extends BaseRepository
     public function forAcademy($academyId, $search = [], $skip = null, $limit = null, $columns = ['*'])
     {
         $columns[] = 'Accounts.AccountID';
+        $columns[] = 'Instructors.InstructorID';
         $query = $this->model->newQuery();
         $query->where('AcademyInstructors.AcademyID', '=', $academyId);
         if (count($search)) {

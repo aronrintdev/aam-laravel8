@@ -10,7 +10,7 @@ class InstructorStudentsMulti extends Model
 
   protected $table      = 'InstructorStudentsMulti';
   protected $primaryKey = ['AccountID', 'InstructorID'];
-  protected $fillable   = ['AccountID', 'InstructorID'];
+  protected $fillable   = ['AccountID', 'InstructorID', 'StudentVerifiedAt', 'InstructorVerifiedAt'];
   public $incrementing  = false;
   public $timestamps    = false;
 }
