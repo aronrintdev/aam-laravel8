@@ -53,6 +53,8 @@ Route::group(['middleware' => 'auth:backend,api'], function () {
     Route::post('/accounts/{id}/pick/{instructorId}', 'AccountAPIController@pick')->name('accounts.pick.instructor');
     Route::post('/academies/{id}/enroll/{userid}', 'AcademyAPIController@enrollAcademyUser');
     Route::get('/videolessons', 'LockerAPIController@videoLessonIndex');
+
+    Route::get('/accounts/{id}/', 'AccountAPIController@show');
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
