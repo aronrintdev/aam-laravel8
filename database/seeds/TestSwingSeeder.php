@@ -103,5 +103,30 @@ class TestSwingSeeder extends Seeder
             'AnalysisPath'       => '190422225737FJ5V2349216.mp4',
             'AcademyID'          => 'SHYG',
         ]);
+
+
+        //random locker swings
+        for ($z = 0; $z < 12; $z++) {
+            $videoPath = $faker->randomElement([
+                'https://vos-videos.nyc3.digitaloceanspaces.com/test/md-library/test_baseball_portrait_720p_r60.mp4',
+                'https://vos-videos.nyc3.digitaloceanspaces.com/test/md-library/test_baseball_landscape_720p_r60.mp4',
+                'https://vos-videos.nyc3.digitaloceanspaces.com/test/md-library/test_golf_landscape_720p_r60.mp4',
+                'https://vos-videos.nyc3.digitaloceanspaces.com/test/md-library/test_pattern_1080.mp4',
+            ]);
+            $id = DB::table('Swings')->insertGetId([
+                'AccountID'          => $faker->randomElement([2, 47, 48]),
+                'SwingStatusID'      => 0,
+                'DateUploaded'       => $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now', $timezone = 'America/New_York'),
+                'Description'        => $faker->realText($maxNbChars=240),
+                'SportID'            => 'GOLF',
+                'VideoPath'          => $videoPath,
+                'InstructorID'       => 0,
+                'DateAccepted'       => NULL,
+                'DateAnalyzed'       => NULL,
+                'AnalysisPath'       => NULL,
+                'AcademyID'          => '',
+            ]);
+        }
+
     }
 }
