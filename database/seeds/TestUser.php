@@ -316,6 +316,13 @@ class TestUser extends Seeder
             'PasswordHash'       => \Hash::make('password'),
         ]);
 
+        $kyle = DB::table('Accounts')->insertGetId([
+            'FirstName'          => 'Kyle',
+            'LastName'           => 'Customer',
+            'Email'              => 'kyle@customer.test',
+            'PasswordHash'       => \Hash::make('password'),
+        ]);
+
         DB::table('V1GolfPlus')->insert([
             'AccountID'      => $saraId,
             'CustID'         => 'Android',

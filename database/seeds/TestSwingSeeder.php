@@ -114,7 +114,7 @@ class TestSwingSeeder extends Seeder
                 'https://vos-videos.nyc3.digitaloceanspaces.com/test/md-library/test_pattern_1080.mp4',
             ]);
             $id = DB::table('Swings')->insertGetId([
-                'AccountID'          => $faker->randomElement([2, 47, 48]),
+                'AccountID'          => $faker->randomElement([2, 47, 48, 49]),
                 'SwingStatusID'      => 0,
                 'DateUploaded'       => $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now', $timezone = 'America/New_York'),
                 'Description'        => $faker->realText($maxNbChars=240),
