@@ -106,7 +106,7 @@ class TestSwingSeeder extends Seeder
 
 
         //random locker swings
-        for ($z = 0; $z < 12; $z++) {
+        for ($z = 0; $z < 32; $z++) {
             $videoPath = $faker->randomElement([
                 'https://vos-videos.nyc3.digitaloceanspaces.com/test/md-library/test_baseball_portrait_720p_r60.mp4',
                 'https://vos-videos.nyc3.digitaloceanspaces.com/test/md-library/test_baseball_landscape_720p_r60.mp4',
